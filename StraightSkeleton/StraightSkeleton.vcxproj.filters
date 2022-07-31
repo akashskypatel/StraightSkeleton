@@ -1,0 +1,240 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Header Files\Circular">
+      <UniqueIdentifier>{95ccfbb4-34af-4e89-8a45-4dc26029b6e4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Events">
+      <UniqueIdentifier>{0b45fcf4-c915-4ca6-b2c7-8dddbfbfde89}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Path">
+      <UniqueIdentifier>{b3d9c28d-7be4-4395-a99b-f9357265e6bc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Primitives">
+      <UniqueIdentifier>{e9382daa-34f8-46b2-829d-f9f5e3508837}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Events\Chains">
+      <UniqueIdentifier>{497e2c19-560c-4acc-89ed-a3f7766a3ac1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Circular">
+      <UniqueIdentifier>{03b727c5-0029-4736-b46b-a04c8c12b068}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Events">
+      <UniqueIdentifier>{67cb2caa-f3a7-4305-aaa4-34764d780e6b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Events\Chains">
+      <UniqueIdentifier>{89f8c928-b93c-409d-87dd-e831b9a9fee4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Path">
+      <UniqueIdentifier>{a44a8cc3-8b1c-4a7e-bd7e-f98b366e49c9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Primitives">
+      <UniqueIdentifier>{143e6aba-48c1-42c3-a9e4-03261f85fc5e}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="EdgeResult.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="LavUtil.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Skeleton.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SkeletonBuilder.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="EChainType.cpp">
+      <Filter>Source Files\Events\Chains</Filter>
+    </ClCompile>
+    <ClCompile Include="CircularList.cpp">
+      <Filter>Source Files\Circular</Filter>
+    </ClCompile>
+    <ClCompile Include="Edge.cpp">
+      <Filter>Source Files\Circular</Filter>
+    </ClCompile>
+    <ClCompile Include="EdgeEvent.cpp">
+      <Filter>Source Files\Events</Filter>
+    </ClCompile>
+    <ClCompile Include="EdgeChain.cpp">
+      <Filter>Source Files\Events\Chains</Filter>
+    </ClCompile>
+    <ClCompile Include="FaceNode.cpp">
+      <Filter>Source Files\Path</Filter>
+    </ClCompile>
+    <ClCompile Include="FaceQueue.cpp">
+      <Filter>Source Files\Path</Filter>
+    </ClCompile>
+    <ClCompile Include="FaceQueueUtil.cpp">
+      <Filter>Source Files\Path</Filter>
+    </ClCompile>
+    <ClCompile Include="IChain.cpp">
+      <Filter>Source Files\Events\Chains</Filter>
+    </ClCompile>
+    <ClCompile Include="LineLinear2d.cpp">
+      <Filter>Source Files\Primitives</Filter>
+    </ClCompile>
+    <ClCompile Include="LineParametric2d.cpp">
+      <Filter>Source Files\Primitives</Filter>
+    </ClCompile>
+    <ClCompile Include="MultiEdgeEvent.cpp">
+      <Filter>Source Files\Events</Filter>
+    </ClCompile>
+    <ClCompile Include="MultiSplitEvent.cpp">
+      <Filter>Source Files\Events</Filter>
+    </ClCompile>
+    <ClCompile Include="PathQueue.cpp">
+      <Filter>Source Files\Path</Filter>
+    </ClCompile>
+    <ClCompile Include="PathQueueNode.cpp">
+      <Filter>Source Files\Path</Filter>
+    </ClCompile>
+    <ClCompile Include="PickEvent.cpp">
+      <Filter>Source Files\Events</Filter>
+    </ClCompile>
+    <ClCompile Include="SingleEdgeChain.cpp">
+      <Filter>Source Files\Events\Chains</Filter>
+    </ClCompile>
+    <ClCompile Include="VertexSplitEvent.cpp">
+      <Filter>Source Files\Events</Filter>
+    </ClCompile>
+    <ClCompile Include="Vector2d.cpp">
+      <Filter>Source Files\Primitives</Filter>
+    </ClCompile>
+    <ClCompile Include="Vertex.cpp">
+      <Filter>Source Files\Circular</Filter>
+    </ClCompile>
+    <ClCompile Include="SplitEvent.cpp">
+      <Filter>Source Files\Events</Filter>
+    </ClCompile>
+    <ClCompile Include="SplitChain.cpp">
+      <Filter>Source Files\Events\Chains</Filter>
+    </ClCompile>
+    <ClCompile Include="SkeletonEvent.cpp">
+      <Filter>Source Files\Events</Filter>
+    </ClCompile>
+    <ClCompile Include="PrimitiveUtils.cpp">
+      <Filter>Source Files\Primitives</Filter>
+    </ClCompile>
+    <ClCompile Include="PriorityQueue.cpp">
+      <Filter>Source Files\Primitives</Filter>
+    </ClCompile>
+    <ClCompile Include="leaker.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CircularNode.cpp">
+      <Filter>Source Files\Circular</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="EdgeResult.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="LavUtil.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Skeleton.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SkeletonBuilder.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CircularList.h">
+      <Filter>Header Files\Circular</Filter>
+    </ClInclude>
+    <ClInclude Include="Edge.h">
+      <Filter>Header Files\Circular</Filter>
+    </ClInclude>
+    <ClInclude Include="Vertex.h">
+      <Filter>Header Files\Circular</Filter>
+    </ClInclude>
+    <ClInclude Include="IChain.h">
+      <Filter>Header Files\Events\Chains</Filter>
+    </ClInclude>
+    <ClInclude Include="EChainType.h">
+      <Filter>Header Files\Events\Chains</Filter>
+    </ClInclude>
+    <ClInclude Include="EdgeChain.h">
+      <Filter>Header Files\Events\Chains</Filter>
+    </ClInclude>
+    <ClInclude Include="SplitChain.h">
+      <Filter>Header Files\Events\Chains</Filter>
+    </ClInclude>
+    <ClInclude Include="SingleEdgeChain.h">
+      <Filter>Header Files\Events\Chains</Filter>
+    </ClInclude>
+    <ClInclude Include="EdgeEvent.h">
+      <Filter>Header Files\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="MultiEdgeEvent.h">
+      <Filter>Header Files\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="MultiSplitEvent.h">
+      <Filter>Header Files\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="PickEvent.h">
+      <Filter>Header Files\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="SkeletonEvent.h">
+      <Filter>Header Files\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="SplitEvent.h">
+      <Filter>Header Files\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="VertexSplitEvent.h">
+      <Filter>Header Files\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="LineLinear2d.h">
+      <Filter>Header Files\Primitives</Filter>
+    </ClInclude>
+    <ClInclude Include="LineParametric2d.h">
+      <Filter>Header Files\Primitives</Filter>
+    </ClInclude>
+    <ClInclude Include="PrimitiveUtils.h">
+      <Filter>Header Files\Primitives</Filter>
+    </ClInclude>
+    <ClInclude Include="PriorityQueue.h">
+      <Filter>Header Files\Primitives</Filter>
+    </ClInclude>
+    <ClInclude Include="Vector2d.h">
+      <Filter>Header Files\Primitives</Filter>
+    </ClInclude>
+    <ClInclude Include="PathQueueNode.h">
+      <Filter>Header Files\Path</Filter>
+    </ClInclude>
+    <ClInclude Include="PathQueue.h">
+      <Filter>Header Files\Path</Filter>
+    </ClInclude>
+    <ClInclude Include="FaceQueue.h">
+      <Filter>Header Files\Path</Filter>
+    </ClInclude>
+    <ClInclude Include="FaceNode.h">
+      <Filter>Header Files\Path</Filter>
+    </ClInclude>
+    <ClInclude Include="FaceQueueUtil.h">
+      <Filter>Header Files\Path</Filter>
+    </ClInclude>
+    <ClInclude Include="leaker.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CircularNode.h">
+      <Filter>Header Files\Circular</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
