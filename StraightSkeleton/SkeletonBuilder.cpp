@@ -18,25 +18,25 @@ inline Vertex* SkeletonBuilder::GetEdgeInLav(CircularList& lav, Edge& oppositeEd
 	return nullptr;
 }
 
-inline void SkeletonBuilder::AddFaceBack(Vertex newVertex, Vertex* va, Vertex* vb)
+inline void SkeletonBuilder::AddFaceBack(Vertex* newVertex, Vertex* va, Vertex* vb)
 {
 	std::shared_ptr<FaceNode> fn = std::make_shared<FaceNode>(FaceNode(newVertex));
 	va->RightFace->AddPush(fn);
 	FaceQueueUtil::ConnectQueues(fn, vb->LeftFace);
 }
 
-inline void SkeletonBuilder::AddFaceRight(Vertex newVertex, Vertex vb)
+inline void SkeletonBuilder::AddFaceRight(Vertex* newVertex, Vertex vb)
 {
 	std::shared_ptr<FaceNode> fn = std::make_shared<FaceNode>(FaceNode(newVertex));
 	vb.RightFace->AddPush(fn);
-	newVertex.RightFace = fn;
+	newVertex->RightFace = fn;
 }
 
-inline void SkeletonBuilder::AddFaceLeft(Vertex newVertex, Vertex va)
+inline void SkeletonBuilder::AddFaceLeft(Vertex* newVertex, Vertex va)
 {
 	std::shared_ptr<FaceNode> fn = std::make_shared<FaceNode>(FaceNode(newVertex));
 	va.LeftFace->AddPush(fn);
-	newVertex.LeftFace = fn;
+	newVertex->LeftFace = fn;
 }
 
 inline double SkeletonBuilder::CalcDistance(Vector2d intersect, Edge currentEdge)
@@ -52,12 +52,12 @@ inline Vector2d SkeletonBuilder::CalcVectorBisector(Vector2d norm1, Vector2d nor
 	return PrimitiveUtils::BisectorNormalized(norm1, norm2);
 }
 
-inline std::shared_ptr<LineParametric2d> SkeletonBuilder::CalcBisector(Vector2d* p, Edge e1, Edge e2)
+inline LineParametric2d SkeletonBuilder::CalcBisector(Vector2d* p, Edge e1, Edge e2)
 {
 	Vector2d norm1 = *e1.Norm;
 	Vector2d norm2 = *e2.Norm;
 	Vector2d bisector = CalcVectorBisector(norm1, norm2);
-	return std::make_shared<LineParametric2d>(p, bisector);
+	return LineParametric2d(p, bisector);
 }
 /*
 Skeleton SkeletonBuilder::Build(std::vector<Vector2d>& polygon)
@@ -101,58 +101,55 @@ std::vector<Vector2d> SkeletonBuilder::MakeCounterClockwise(std::vector<Vector2d
 {
 	return PrimitiveUtils::MakeCounterClockwise(polygon);
 }
-/*
-void SkeletonBuilder::InitSlav(std::vector<Vector2d>& polygon, std::unordered_set<std::shared_ptr<CircularList>, CircularList::HashFunction>& sLav, std::vector<std::shared_ptr<Edge>>& edges, std::vector<FaceQueue>& faces)
-{	
-	
+
+void SkeletonBuilder::InitSlav(std::vector<Vector2d>& polygon, std::unordered_set<std::shared_ptr<CircularList>, CircularList::HashFunction>& sLav, std::vector<Edge*>& edges, std::vector<FaceQueue*>& faces)
+{
 	CircularList edgesList;
 	size_t size = polygon.size();
 	for (size_t i = 0; i < size; i++)
 	{
 		size_t j = (i + 1) % size;
-		edgesList.AddLast(std::shared_ptr<Edge>(Edge(polygon[i], polygon[j])));
+		edgesList.AddLast(std::make_shared<Edge>(Edge(polygon[i], polygon[j])));
 	}
 	for (auto edge : edgesList)
 	{
 		auto nextEdge =  std::dynamic_pointer_cast<Edge>(edge->Next);
-		auto curEdge = std::dynamic_pointer_cast<Edge>(edge);
-		auto end = *std::dynamic_pointer_cast<Edge>(edge)->End;
-		auto bisector = CalcBisector(end, *curEdge, *nextEdge.get());
+		auto curEdge = dynamic_cast<Edge*>(edge);
+		auto end = dynamic_cast<Edge*>(edge)->End;
+		auto bisector = CalcBisector(end.get(), *curEdge, *nextEdge.get());
 
-		curEdge->BisectorNext = bisector;
-		nextEdge->BisectorPrevious = bisector;
+		curEdge->BisectorNext = std::make_shared<LineParametric2d>(LineParametric2d(bisector.A, *bisector.U));
+		nextEdge->BisectorPrevious = std::make_shared<LineParametric2d>(LineParametric2d(bisector.A, *bisector.U));
 		edges.push_back(curEdge);
 	}
 	std::shared_ptr<CircularList> lav = std::make_shared<CircularList>();
 	sLav.insert(lav);
 	for (auto edge : edgesList)
 	{
-		auto curEdge = std::dynamic_pointer_cast<Edge>(edge);
+		auto curEdge = dynamic_cast<Edge*>(edge);
 		auto nextEdge = std::dynamic_pointer_cast<Edge>(edge->Next);
-		auto vertex = std::make_shared<Vertex>(Vertex(curEdge->End, 0, curEdge->BisectorNext, curEdge, nextEdge));
+		auto vertex = std::make_shared<Vertex>(Vertex(curEdge->End.get(), 0, curEdge->BisectorNext.get(), curEdge, nextEdge.get()));
 		lav->AddLast(vertex);
 	}
 	for (auto vertex : *lav)
 	{
 		auto next = std::dynamic_pointer_cast<Vertex>(vertex->Next);
-		auto curVertex = std::dynamic_pointer_cast<Vertex>(vertex);
+		auto curVertex = dynamic_cast<Vertex*>(vertex);
 		// create face on right site of vertex
 		
-		auto rightFace = std::shared_ptr<FaceNode>(FaceNode(curVertex));
+		auto rightFace = std::make_shared<FaceNode>(FaceNode(curVertex));
 
-		var faceQueue = new FaceQueue();
-		faceQueue.Edge = (vertex.NextEdge);
+		auto faceQueue = std::make_shared<FaceQueue>(FaceQueue());
+		faceQueue->SetEdge(curVertex->NextEdge);
 
-		faceQueue.AddFirst(rightFace);
-		faces.Add(faceQueue);
-		vertex.RightFace = rightFace;
+		faceQueue->AddFirst(rightFace);
+		faces.push_back(faceQueue.get());
+		curVertex->RightFace = rightFace;
 
 		// create face on left site of next vertex
-		var leftFace = new FaceNode(next);
-		rightFace.AddPush(leftFace);
-		next.LeftFace = leftFace;
-		
+		auto leftFace = std::make_shared<FaceNode>(FaceNode(next.get()));
+		rightFace->AddPush(leftFace);
+		next->LeftFace = leftFace;
 	}
-	
 }
-*/
+

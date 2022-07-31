@@ -2,17 +2,9 @@
 #include "Vertex.h"
 #include "FaceQueue.h"
 
-FaceNode::FaceNode(Vertex vert)
+FaceNode::FaceNode(Vertex* vert)
 {
-	vertex = std::make_shared<Vertex>(Vertex(vert));
-	Next = nullptr;
-	Previous = nullptr;
-	List = nullptr;
-}
-
-FaceNode::FaceNode(std::shared_ptr<Vertex> vert)
-{
-
+	vertex = vert;
 }
 
 FaceNode::~FaceNode()
@@ -20,15 +12,9 @@ FaceNode::~FaceNode()
 	//delete vertex;
 }
 
-std::shared_ptr<Vertex> FaceNode::GetVertex()
+Vertex* FaceNode::GetVertex()
 {
 	return vertex;
-}
-
-void FaceNode::SetVertex(Vertex val)
-{
-	//delete vertex;
-	vertex = std::make_shared<Vertex>(Vertex(val));
 }
 
 FaceQueue* FaceNode::GetFaceQueue()

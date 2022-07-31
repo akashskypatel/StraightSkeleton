@@ -88,7 +88,7 @@ private:
 	static int AssertMaxNumberOfInteraction(int count);
 	static std::vector<std::vector<Vector2d>>& MakeClockwise(std::vector<std::vector<Vector2d>>& holes);
 	static std::vector<Vector2d> MakeCounterClockwise(std::vector<Vector2d>& polygon);
-	static void InitSlav(std::vector<Vector2d>& polygon, std::unordered_set<std::shared_ptr<CircularList>, CircularList::HashFunction>& sLav, std::vector<std::shared_ptr<Edge>>& edges, std::vector<FaceQueue>& faces);
+	static void InitSlav(std::vector<Vector2d>& polygon, std::unordered_set<std::shared_ptr<CircularList>, CircularList::HashFunction>& sLav, std::vector<Edge*>& edges, std::vector<FaceQueue*>& faces);
 	static Skeleton AddFacesToOutput(std::vector<FaceQueue> faces);
 	static void InitEvents(std::unordered_set<Vertex,CircularList> sLav, std::priority_queue<SkeletonEvent> queue, std::vector<Edge> edges);
 	static void ComputeSplitEvents(Vertex vertex, std::vector<Edge> edges, std::priority_queue<SkeletonEvent> queue, double distanceSquared);
@@ -116,12 +116,12 @@ private:
 		///     site of edge.
 		/// </summary>
 	static Vertex* GetEdgeInLav(CircularList& lav, Edge& oppositeEdge);
-	static void AddFaceBack(Vertex newVertex, Vertex* va, Vertex* vb);
-	static void AddFaceRight(Vertex newVertex, Vertex vb);
-	static void AddFaceLeft(Vertex newVertex, Vertex va);
+	static void AddFaceBack(Vertex* newVertex, Vertex* va, Vertex* vb);
+	static void AddFaceRight(Vertex* newVertex, Vertex vb);
+	static void AddFaceLeft(Vertex* newVertex, Vertex va);
 	static double CalcDistance(Vector2d intersect, Edge currentEdge);
 	static Vector2d CalcVectorBisector(Vector2d norm1, Vector2d norm2);
-	static std::shared_ptr<LineParametric2d> CalcBisector(Vector2d* p, Edge e1, Edge e2);
+	static LineParametric2d CalcBisector(Vector2d* p, Edge e1, Edge e2);
 	template<typename T>
 	size_t hash(const std::shared_ptr<T>& ptr)
 	{
