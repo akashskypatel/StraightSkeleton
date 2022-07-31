@@ -40,10 +40,10 @@ Vertex::Vertex(Vector2d point, double distance, LineParametric2d bisector, Edge 
 */
 Vertex::Vertex(spv2d point, double distance, splp2d bisector, spe previousEdge, spe nextEdge)
 {
-    Point = point;
-    Bisector = bisector;
-    NextEdge = nextEdge;
-    PreviousEdge = previousEdge;
+    Point = point.get();
+    Bisector = bisector.get();
+    NextEdge = nextEdge.get();
+    PreviousEdge = previousEdge.get();
     Distance = distance;
     IsProcessed = false;
     LeftFace = nullptr;

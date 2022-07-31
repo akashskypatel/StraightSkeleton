@@ -20,11 +20,11 @@ private:
     double Round(double value, double precision);
 public:
     friend class CircularNode;
-    spv2d Point = nullptr;
+    Vector2d* Point = nullptr;
     double Distance;
-    splp2d Bisector = nullptr;
-    spe NextEdge = nullptr;
-    spe PreviousEdge = nullptr;    
+    LineParametric2d* Bisector = nullptr;
+    Edge* NextEdge = nullptr;
+    Edge* PreviousEdge = nullptr;
     bool IsProcessed;
 
     Vertex();

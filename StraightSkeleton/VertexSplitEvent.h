@@ -7,9 +7,10 @@ class VertexSplitEvent :
     public SplitEvent
 {
 private:
+    using spv2d = std::shared_ptr<Vector2d>;
     using spv = std::shared_ptr<Vertex>;
 public:
-    VertexSplitEvent(Vector2d point, double distance, spv parent);
+    VertexSplitEvent(spv2d point, double distance, spv parent);
     std::string ToString();
 };
 

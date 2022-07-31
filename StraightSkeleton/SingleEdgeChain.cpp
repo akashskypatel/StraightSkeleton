@@ -1,5 +1,5 @@
 #include "SingleEdgeChain.h"
-
+/*
 SingleEdgeChain::SingleEdgeChain(Edge oppositeEdge, Vertex nextVertex)
 {
     _oppositeEdge = std::make_shared<Edge>(Edge(oppositeEdge));
@@ -12,7 +12,13 @@ SingleEdgeChain::SingleEdgeChain(Edge oppositeEdge, Vertex nextVertex)
     _previousVertex = std::dynamic_pointer_cast<Vertex>(nextVertex.Previous);
     //_previousVertex = dynamic_cast<Vertex*>(nextVertex.Previous.get());
 }
-
+*/
+SingleEdgeChain::SingleEdgeChain(spe oppositeEdge, spv nextVertex)
+{
+    _oppositeEdge = oppositeEdge.get();
+    _nextVertex = nextVertex.get();
+    _previousVertex = dynamic_cast<Vertex*>(nextVertex->Previous.get());
+}
 SingleEdgeChain::~SingleEdgeChain()
 {
     //delete _nextVertex;
@@ -22,22 +28,22 @@ SingleEdgeChain::~SingleEdgeChain()
 
 Edge* SingleEdgeChain::PreviousEdge()
 {
-    return _oppositeEdge.get();
+    return _oppositeEdge;
 }
 
 Edge* SingleEdgeChain::NextEdge()
 {
-    return _oppositeEdge.get();
+    return _oppositeEdge;
 }
 
 Vertex* SingleEdgeChain::PreviousVertex()
 {
-    return _previousVertex.get();
+    return _previousVertex;
 }
 
 Vertex* SingleEdgeChain::NextVertex()
 {
-    return _nextVertex.get();
+    return _nextVertex;
 }
 
 Vertex* SingleEdgeChain::CurrentVertex()

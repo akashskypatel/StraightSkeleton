@@ -1,10 +1,10 @@
 #include "SplitEvent.h"
 
-SplitEvent::SplitEvent(Vector2d point, double distance, spv parent, spe oppositeEdge)
+SplitEvent::SplitEvent(spv2d point, double distance, spv parent, spe oppositeEdge)
     : SkeletonEvent(point, distance)
 {
-    Parent = parent;
-    OppositeEdge = (oppositeEdge != nullptr ? oppositeEdge : nullptr);
+    Parent = parent.get();
+    OppositeEdge = (oppositeEdge.get() != nullptr ? oppositeEdge.get() : nullptr);
 }
 
 SplitEvent::~SplitEvent()

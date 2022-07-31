@@ -1,6 +1,6 @@
 #include "VertexSplitEvent.h"
 
-VertexSplitEvent::VertexSplitEvent(Vector2d point, double distance, spv parent) :
+VertexSplitEvent::VertexSplitEvent(spv2d point, double distance, spv parent) :
     SplitEvent(point, distance, parent, nullptr)
 {
 }

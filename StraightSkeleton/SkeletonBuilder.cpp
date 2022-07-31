@@ -6,13 +6,13 @@
 ///     site of edge.
 /// </summary>
 
-inline std::shared_ptr<Vertex> SkeletonBuilder::GetEdgeInLav(CircularList& lav, Edge& oppositeEdge)
+inline Vertex* SkeletonBuilder::GetEdgeInLav(CircularList& lav, Edge& oppositeEdge)
 {
 	for (auto node : lav)
 	{
-		auto e = std::dynamic_pointer_cast<Vertex>(node);
+		auto e = dynamic_cast<Vertex*>(node);
 		auto epn = std::dynamic_pointer_cast<Edge>(e->Previous->Next);
-		if (&oppositeEdge == e->PreviousEdge.get() || &oppositeEdge == epn.get()) //probably not gonna work
+		if (&oppositeEdge == e->PreviousEdge || &oppositeEdge == epn.get()) //probably not gonna work
 			return e;
 	}
 	return nullptr;
@@ -52,14 +52,27 @@ inline Vector2d SkeletonBuilder::CalcVectorBisector(Vector2d norm1, Vector2d nor
 	return PrimitiveUtils::BisectorNormalized(norm1, norm2);
 }
 
-inline std::shared_ptr<LineParametric2d> SkeletonBuilder::CalcBisector(Vector2d p, Edge e1, Edge e2)
+inline std::shared_ptr<LineParametric2d> SkeletonBuilder::CalcBisector(Vector2d* p, Edge e1, Edge e2)
 {
 	Vector2d norm1 = *e1.Norm;
 	Vector2d norm2 = *e2.Norm;
 	Vector2d bisector = CalcVectorBisector(norm1, norm2);
 	return std::make_shared<LineParametric2d>(p, bisector);
 }
+/*
+Skeleton SkeletonBuilder::Build(std::vector<Vector2d>& polygon)
+{
+	std::vector<std::vector<Vector2d>> holes;
+	return Build(polygon, holes);
+}
 
+Skeleton SkeletonBuilder::Build(std::vector<Vector2d>& polygon, std::vector<std::vector<Vector2d>>& holes)
+{
+	InitPolygon(polygon);
+	MakeClockwise(holes);
+	
+}
+*/
 std::vector<Vector2d> SkeletonBuilder::InitPolygon(std::vector<Vector2d>& polygon)
 {
 	if (polygon.size() == 0)
@@ -88,15 +101,16 @@ std::vector<Vector2d> SkeletonBuilder::MakeCounterClockwise(std::vector<Vector2d
 {
 	return PrimitiveUtils::MakeCounterClockwise(polygon);
 }
-
+/*
 void SkeletonBuilder::InitSlav(std::vector<Vector2d>& polygon, std::unordered_set<std::shared_ptr<CircularList>, CircularList::HashFunction>& sLav, std::vector<std::shared_ptr<Edge>>& edges, std::vector<FaceQueue>& faces)
-{
+{	
+	
 	CircularList edgesList;
 	size_t size = polygon.size();
 	for (size_t i = 0; i < size; i++)
 	{
 		size_t j = (i + 1) % size;
-		edgesList.AddLast(Edge(polygon[i], polygon[j]));
+		edgesList.AddLast(std::shared_ptr<Edge>(Edge(polygon[i], polygon[j])));
 	}
 	for (auto edge : edgesList)
 	{
@@ -123,7 +137,7 @@ void SkeletonBuilder::InitSlav(std::vector<Vector2d>& polygon, std::unordered_se
 		auto next = std::dynamic_pointer_cast<Vertex>(vertex->Next);
 		auto curVertex = std::dynamic_pointer_cast<Vertex>(vertex);
 		// create face on right site of vertex
-		/*
+		
 		auto rightFace = std::shared_ptr<FaceNode>(FaceNode(curVertex));
 
 		var faceQueue = new FaceQueue();
@@ -137,6 +151,8 @@ void SkeletonBuilder::InitSlav(std::vector<Vector2d>& polygon, std::unordered_se
 		var leftFace = new FaceNode(next);
 		rightFace.AddPush(leftFace);
 		next.LeftFace = leftFace;
-		*/
+		
 	}
+	
 }
+*/

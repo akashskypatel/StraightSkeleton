@@ -1,8 +1,14 @@
 #include "SkeletonEvent.h"
-
+/*
 SkeletonEvent::SkeletonEvent(Vector2d point, double distance)
 {
     V = new Vector2d(point);
+    Distance = distance;
+}
+*/
+SkeletonEvent::SkeletonEvent(spv2d point, double distance)
+{
+    V = point.get();
     Distance = distance;
 }
 

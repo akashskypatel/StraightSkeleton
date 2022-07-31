@@ -8,12 +8,12 @@ EdgeChain::EdgeChain(std::vector<EdgeEvent>* edgeList)
 
 Edge* EdgeChain::PreviousEdge()
 {
-    return EdgeList->at(0).PreviousVertex->PreviousEdge.get();
+    return EdgeList->at(0).PreviousVertex->PreviousEdge;
 }
 
 Edge* EdgeChain::NextEdge()
 {
-    return EdgeList->at(EdgeList->size() - 1).NextVertex->NextEdge.get();
+    return EdgeList->at(EdgeList->size() - 1).NextVertex->NextEdge;
 }
 
 Vertex* EdgeChain::PreviousVertex()

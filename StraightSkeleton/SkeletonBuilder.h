@@ -115,13 +115,13 @@ private:
 		///     Take next lav vertex _AFTER_ given edge, find vertex is always on RIGHT
 		///     site of edge.
 		/// </summary>
-	static std::shared_ptr<Vertex> GetEdgeInLav(CircularList& lav, Edge& oppositeEdge);
+	static Vertex* GetEdgeInLav(CircularList& lav, Edge& oppositeEdge);
 	static void AddFaceBack(Vertex newVertex, Vertex* va, Vertex* vb);
 	static void AddFaceRight(Vertex newVertex, Vertex vb);
 	static void AddFaceLeft(Vertex newVertex, Vertex va);
 	static double CalcDistance(Vector2d intersect, Edge currentEdge);
 	static Vector2d CalcVectorBisector(Vector2d norm1, Vector2d norm2);
-	static std::shared_ptr<LineParametric2d> CalcBisector(Vector2d p, Edge e1, Edge e2);
+	static std::shared_ptr<LineParametric2d> CalcBisector(Vector2d* p, Edge e1, Edge e2);
 	template<typename T>
 	size_t hash(const std::shared_ptr<T>& ptr)
 	{
@@ -179,9 +179,9 @@ private:
 public:
 	
 	/// <summary> Creates straight skeleton for given polygon. </summary>
-	static Skeleton Build(std::vector<Vector2d> polygon);
+	static Skeleton Build(std::vector<Vector2d>& polygon);
 	/// <summary> Creates straight skeleton for given polygon with holes. </summary>
-	static Skeleton Build(std::vector<Vector2d> polygon, std::vector<std::vector<Vector2d>> holes);
+	static Skeleton Build(std::vector<Vector2d>& polygon, std::vector<std::vector<Vector2d>>& holes);
 	
 };
 

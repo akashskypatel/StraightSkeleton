@@ -12,20 +12,21 @@ class Edge : public CircularNode
 {
 private:
     using spv2d = std::shared_ptr<Vector2d>;
+    using spll2d = std::shared_ptr<LineLinear2d>;
     using spn = std::shared_ptr<CircularNode>;
 public:
     friend class CircularNode;
     Edge();
-    Edge(const Edge& val, spn nextNode = nullptr, spn prevNode = nullptr, CircularList* list = nullptr);
+    //Edge(const Edge& val, spn nextNode = nullptr, spn prevNode = nullptr, CircularList* list = nullptr);
     Edge(Vector2d begin,Vector2d end, spn nextNode = nullptr, spn prevNode = nullptr, CircularList* list = nullptr);
     Edge(spv2d begin, spv2d end);
     ~Edge() override;
-    std::shared_ptr<Vector2d> Begin = nullptr;                      // Vector2d* Begin;
-    std::shared_ptr<Vector2d> End = nullptr;                        // Vector2d* End;
-    std::shared_ptr<Vector2d> Norm = nullptr;                       // Vector2d* Norm;
-    std::shared_ptr<LineParametric2d> BisectorNext = nullptr;       // LineParametric2d* BisectorNext
-    std::shared_ptr<LineParametric2d> BisectorPrevious = nullptr;   // LineParametric2d* BisectorPrevious;
-    std::shared_ptr<LineLinear2d> lineLinear2d = nullptr;           // LineLinear2d* lineLinear2d; 
+    spv2d Begin = nullptr;                      // Vector2d* Begin;
+    spv2d End = nullptr;                        // Vector2d* End;
+    spv2d Norm = nullptr;                       // Vector2d* Norm;
+    LineParametric2d* BisectorNext = nullptr;       // LineParametric2d* BisectorNext
+    LineParametric2d* BisectorPrevious = nullptr;   // LineParametric2d* BisectorPrevious;
+    spll2d lineLinear2d = nullptr;                  // LineLinear2d* lineLinear2d; 
     std::string ToString() const override;
     Edge& operator=(const Edge& val);
 };

@@ -9,7 +9,7 @@ Edge::Edge()
 	lineLinear2d = nullptr;
 	Norm = nullptr;
 }
-
+/*
 Edge::Edge(const Edge& other, spn nextNode, spn prevNode, CircularList* list) : CircularNode(nextNode, prevNode, list)
 {
 	std::cout << "edge ref ctor " << this << "\n";
@@ -18,7 +18,7 @@ Edge::Edge(const Edge& other, spn nextNode, spn prevNode, CircularList* list) : 
 	lineLinear2d = std::make_shared<LineLinear2d>(LineLinear2d(*Begin, *End)); 		// new LineLinear2d(*Begin, *End);
 	Norm = std::make_shared<Vector2d>(Vector2d(other.Norm->X, other.Norm->Y)); 		// new Vector2d(other.Norm->X, other.Norm->Y);
 }
-
+*/
 Edge::Edge(Vector2d begin,Vector2d end, spn nextNode, spn prevNode, CircularList* list) : CircularNode(nextNode, prevNode, list)
 {
 	std::cout << "vector2d ctor " << this << "\n";

@@ -4,10 +4,12 @@
 #include "Vector2d.h"
 class EdgeResult
 {
+private:
+	using spe = std::shared_ptr<Edge>;
 public:
-	std::shared_ptr<Edge> edge;
+	Edge* edge;
 	std::vector<Vector2d>* Polygon;
-    EdgeResult(Edge edge, std::vector<Vector2d> polygon);
+    EdgeResult(spe edge, std::vector<Vector2d>* polygon);
 	~EdgeResult();
 };
 

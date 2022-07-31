@@ -1,8 +1,8 @@
 #include "PickEvent.h"
 
-PickEvent::PickEvent(Vector2d point, double distance, EdgeChain* chain) : SkeletonEvent(point, distance)
+PickEvent::PickEvent(spv2d point, double distance, spec chain) : SkeletonEvent(point, distance)
 {
-    Chain = chain;
+    Chain = chain.get();
 }
 
 bool PickEvent::IsObsolete()

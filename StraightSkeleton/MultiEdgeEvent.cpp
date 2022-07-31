@@ -1,8 +1,8 @@
 #include "MultiEdgeEvent.h"
 
-MultiEdgeEvent::MultiEdgeEvent(Vector2d point, double distance, EdgeChain* chain) : SkeletonEvent(point, distance)
+MultiEdgeEvent::MultiEdgeEvent(spv2d point, double distance, spec chain) : SkeletonEvent(point, distance)
 {
-    Chain = chain;
+    Chain = chain.get();
 }
 
 bool MultiEdgeEvent::IsObsolete()

@@ -8,18 +8,18 @@ SplitChain::SplitChain(SplitEvent* event)
 Edge* SplitChain::OppositeEdge()
 {
     if (typeid(*_splitEvent) == typeid(VertexSplitEvent))
-        return _splitEvent->OppositeEdge.get();
+        return _splitEvent->OppositeEdge;
     return nullptr;
 }
 
 Edge* SplitChain::PreviousEdge()
 {
-    return _splitEvent->Parent->PreviousEdge.get();
+    return _splitEvent->Parent->PreviousEdge;
 }
 
 Edge* SplitChain::NextEdge()
 {
-    return _splitEvent->Parent->NextEdge.get();
+    return _splitEvent->Parent->NextEdge;
 }
 
 Vertex* SplitChain::PreviousVertex()
@@ -34,7 +34,7 @@ Vertex* SplitChain::NextVertex()
 
 Vertex* SplitChain::CurrentVertex()
 {
-    return _splitEvent->Parent.get();
+    return _splitEvent->Parent;
 }
 
 EChainType SplitChain::ChainType()

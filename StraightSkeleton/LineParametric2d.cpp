@@ -11,23 +11,25 @@ LineParametric2d::LineParametric2d()
 	A = nullptr;
 	U = nullptr;
 }
-
+/*
 LineParametric2d::LineParametric2d(const LineParametric2d& other)
 {
 	A = new Vector2d(*other.A);
 	U = new Vector2d(*other.U);
 }
-
-LineParametric2d::LineParametric2d(Vector2d pA, Vector2d pU)
+*/
+LineParametric2d::LineParametric2d(Vector2d* pA, Vector2d pU)
 {
-	A = new Vector2d(pA.X, pA.Y);
-	U = new Vector2d(pU.X, pU.Y);
+	//A = new Vector2d(pA.X, pA.Y);
+	//U = new Vector2d(pU.X, pU.Y);
+	A = pA;
+	U = std::make_shared<Vector2d>(pU);
 }
 
 LineParametric2d::~LineParametric2d()
 {
-	delete A;
-	delete U;
+	//delete A;
+	//delete U;
 }
 
 LineLinear2d LineParametric2d::CreateLinearForm()

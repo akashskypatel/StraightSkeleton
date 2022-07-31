@@ -9,11 +9,11 @@ class SingleEdgeChain :
 private:
     using spv = std::shared_ptr<Vertex>;
     using spe = std::shared_ptr<Edge>;
-    spv _nextVertex = nullptr;
-    spe _oppositeEdge = nullptr;
-    spv _previousVertex = nullptr;
+    Vertex* _nextVertex = nullptr;
+    Edge* _oppositeEdge = nullptr;
+    Vertex* _previousVertex = nullptr;
 public:
-    SingleEdgeChain(Edge oppositeEdge, Vertex nextVertex);
+    //SingleEdgeChain(Edge oppositeEdge, Vertex nextVertex);
     SingleEdgeChain(spe oppositeEdge, spv nextVertex);
     ~SingleEdgeChain();
     Edge* PreviousEdge();
