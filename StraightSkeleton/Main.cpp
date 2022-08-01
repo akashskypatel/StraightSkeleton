@@ -12,8 +12,37 @@
 //#include <vector>
 //#include "LinkedList.h"
 
+class Test
+{
+	
+public:
+	Vector2d vec;
+	/*
+	Test(Vector2d v)
+	{
+		vec = v;
+	}
+	*/
+};
+
+void print(Test t)
+{
+	std::cout << t.vec.ToString() << "\n";
+}
+
+Test maketest(Vector2d v)
+{
+	return Test{ v };
+}
+
 int main()
 {	
+	Test t = maketest(Vector2d(2.48, 1.38));
+	print(t);
+
+	std::vector<Test> l;
+	l.push_back(t);
+
 	/*
 	std::unordered_set<std::shared_ptr<CircularList>, CircularList::HashFunction> lav;
 

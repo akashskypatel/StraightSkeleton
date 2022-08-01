@@ -41,20 +41,31 @@ private:
 	public:
 		double Distance;
 		Edge* OppositeEdge;
-		Vector2d* OppositePoint;
-		Vector2d* Point;
+		Vector2d OppositePoint;
+		Vector2d Point;
 
 		SplitCandidate(Vector2d point, double distance, Edge* oppositeEdge, Vector2d oppositePoint)
 		{
-			Point = new Vector2d(point);
+			Point = point;
 			Distance = distance;
 			OppositeEdge = oppositeEdge;
-			OppositePoint = new Vector2d(oppositePoint);
+			OppositePoint = oppositePoint;
 		}
-		~SplitCandidate()
+	};
+	struct SkeletonEventDistanseComparer
+	{
+	public:
+		bool operator()(SkeletonEvent& left, SkeletonEvent& right)
 		{
-			delete Point;
-			delete OppositePoint;
+			return left.Distance < right.Distance;
+		}
+	};
+	struct SplitCandidateComparer
+	{
+	public:
+		bool operator()(SplitCandidate& left, SplitCandidate& right)
+		{
+			return left.Distance < right.Distance;
 		}
 	};
 	// Error epsilon.
@@ -107,7 +118,7 @@ private:
 	static double ComputeCloserEdgeEvent(Vertex vertex, std::priority_queue<SkeletonEvent> queue);
 	static SkeletonEvent CreateEdgeEvent(Vector2d point, Vertex previousVertex, Vertex nextVertex);
 	static void ComputeEdgeEvents(Vertex previousVertex, Vertex nextVertex, std::priority_queue<SkeletonEvent> queue);
-	static std::vector<SplitCandidate> CalcOppositeEdges(Vertex vertex, std::vector<Edge> edges);
+	static std::shared_ptr<std::vector<SplitCandidate>> CalcOppositeEdges(Vertex vertex, std::vector<Edge>& edges);
 	static bool EdgeBehindBisector(LineParametric2d bisector, LineLinear2d edge);
 	static std::shared_ptr<SplitCandidate> CalcCandidatePointForSplit(Vertex* vertex, Edge* edge);
 	static std::shared_ptr<Edge> ChoseLessParallelVertexEdge(Vertex* vertex, Edge* edge);
@@ -137,14 +148,9 @@ private:
 	{
 		return left.get() == right.get();
 	}
+	
+	
 	/*
-	class SkeletonEventDistanseComparer : IComparer<SkeletonEvent>
-	{
-		public int Compare(SkeletonEvent left, SkeletonEvent right)
-		{
-			return left.Distance.CompareTo(right.Distance);
-		}
-	};
 	class ChainComparer : IComparer<IChain>
 	{
 		private readonly Vector2d _center;
@@ -172,14 +178,9 @@ private:
 			return Math.Atan2(dy, dx);
 		}
 	}
-	class SplitCandidateComparer : IComparer<SplitCandidate>
-	{
-		public int Compare(SplitCandidate left, SplitCandidate right)
-		{
-			return left.Distance.CompareTo(right.Distance);
-		}
-	}
 	*/
+	
+	
 	
 public:
 	

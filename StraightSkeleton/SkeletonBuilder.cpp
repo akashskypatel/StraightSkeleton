@@ -155,11 +155,6 @@ void SkeletonBuilder::InitSlav(std::vector<Vector2d>& polygon, std::unordered_se
 	}
 }
 
-void SkeletonBuilder::InitEvents(std::unordered_set<std::shared_ptr<CircularList>, CircularList::HashFunction>& sLav, std::priority_queue<SkeletonEvent> queue, std::vector<Edge*>& edges)
-{
-
-}
-
 bool SkeletonBuilder::EdgeBehindBisector(LineParametric2d bisector, LineLinear2d edge)
 {
 	return LineParametric2d::Collide(bisector, edge, SplitEpsilon) == Vector2d::Empty();
@@ -171,7 +166,7 @@ std::shared_ptr<SkeletonBuilder::SplitCandidate> SkeletonBuilder::CalcCandidateP
 	if (vertexEdge == nullptr)
 		return nullptr;
 
-	auto vertexEdteNormNegate = *vertexEdge->Norm.get();
+	const auto& vertexEdteNormNegate = *vertexEdge->Norm;
 	auto edgesBisector = CalcVectorBisector(vertexEdteNormNegate, *edge->Norm);
 	auto edgesCollide = vertexEdge->lineLinear2d->Collide(*edge->lineLinear2d);
 
@@ -228,3 +223,22 @@ std::shared_ptr<Edge> SkeletonBuilder::ChoseLessParallelVertexEdge(Vertex* verte
 	return vertexEdge;
 }
 
+
+std::shared_ptr<std::vector<SkeletonBuilder::SplitCandidate>> SkeletonBuilder::CalcOppositeEdges(Vertex vertex, std::vector<Edge>& edges)
+{
+	auto ret = std::make_shared<std::vector<SkeletonBuilder::SplitCandidate>>();
+	for(auto edgeEntry : edges)
+	{
+		auto edge = edgeEntry.lineLinear2d;
+		// check if edge is behind bisector
+		if (EdgeBehindBisector(*vertex.Bisector, *edge))
+			continue;
+
+		// compute the coordinates of the candidate point Bi
+		auto candidatePoint = CalcCandidatePointForSplit(&vertex, &edgeEntry);
+		if (candidatePoint != nullptr)
+			ret->push_back(*candidatePoint);
+	}
+	std::sort(ret->begin(), ret->end(), SkeletonBuilder::SplitCandidateComparer());
+	return ret;
+}
