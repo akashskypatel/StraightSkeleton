@@ -8,14 +8,15 @@ class FaceNode
 private:
 	using spv = std::shared_ptr<Vertex>;
 	using spfn = std::shared_ptr<FaceNode>;
-	Vertex* vertex = nullptr;
+	spv vertex = nullptr;
 public:	
 	spfn Next = nullptr;
 	spfn Previous = nullptr;
 	FaceQueue* List = nullptr;
-	FaceNode(Vertex* vert);
+	//FaceNode(Vertex* vert);
+	FaceNode(spv vert);
 	~FaceNode();
-	Vertex* GetVertex();
+	std::shared_ptr<Vertex> GetVertex();
 	FaceQueue* GetFaceQueue();
 	bool IsQueueUnconnected();
 	bool IsEnd();

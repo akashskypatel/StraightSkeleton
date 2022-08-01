@@ -17,7 +17,7 @@ private:
 	spn first = nullptr;
 	spn last = nullptr;
 	size_t size = 0;
-	CircularNode* GetNode(size_t index) const;
+	spn GetNode(size_t index) const;
 public:	
 	struct HashFunction
 	{
@@ -26,10 +26,10 @@ public:
 	};
 	struct Iterator 
 	{
-		CircularNode* first;
+		spn first;
 		size_t s;
 		size_t i;
-		CircularNode* operator*()
+		spn operator*()
 		{ 
 			return first;
 		}
@@ -46,7 +46,7 @@ public:
 		{ 
 			i++;
 			if (i < s)
-				first = first->Next.get();
+				first = first->Next;
 			else
 				first = nullptr;
 			return *this;
@@ -57,15 +57,15 @@ public:
 			++* this;
 			return iterator;
 		}
-		Iterator& operator = (CircularNode* rhs)
+		Iterator& operator = (spn rhs)
 		{
 			this->first = rhs;
 			return *this;
 		}
 	};
-	Iterator begin() { return Iterator{ first.get(), size }; }
+	Iterator begin() { return Iterator{ first, size }; }
 	Iterator end() { return Iterator{ nullptr, size }; }
-	Iterator cbegin() { return Iterator{ first.get(), size }; }
+	Iterator cbegin() { return Iterator{ first, size }; }
 	Iterator cend() { return Iterator{ nullptr, size }; }
 	
 	CircularList();
@@ -79,8 +79,8 @@ public:
 	void Remove(spn node);
 	void Clear();		
 	size_t Size();
-	CircularNode* First();
-	CircularNode* operator[](size_t index);
+	spn First();
+	spn operator[](size_t index);
 	bool operator==(const CircularList& other) const;
 	unsigned int GetInstanceId() const;
 };

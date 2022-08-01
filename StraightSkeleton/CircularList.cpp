@@ -116,17 +116,17 @@ size_t CircularList::Size()
 	return size;
 }
 
-CircularNode* CircularList::First()
+std::shared_ptr<CircularNode> CircularList::First()
 {
-	return first.get();
+	return first;
 }
 
-CircularNode* CircularList::operator[](size_t index)
+std::shared_ptr<CircularNode> CircularList::operator[](size_t index)
 {
 	return GetNode(index);
 }
 
-CircularNode* CircularList::GetNode(size_t index) const
+std::shared_ptr<CircularNode> CircularList::GetNode(size_t index) const
 {
 	if (size != 0 && index <= size - 1)
 	{
@@ -135,7 +135,7 @@ CircularNode* CircularList::GetNode(size_t index) const
 		{
 			if (i == index)
 			{
-				return node.get();
+				return node;
 			}
 			else if (node->Next != nullptr)
 			{

@@ -6,12 +6,12 @@ EdgeChain::EdgeChain(std::vector<EdgeEvent>* edgeList)
     _closed = PreviousVertex() == NextVertex;
 }
 
-Edge* EdgeChain::PreviousEdge()
+std::shared_ptr<Edge> EdgeChain::PreviousEdge()
 {
     return EdgeList->at(0).PreviousVertex->PreviousEdge;
 }
 
-Edge* EdgeChain::NextEdge()
+std::shared_ptr<Edge> EdgeChain::NextEdge()
 {
     return EdgeList->at(EdgeList->size() - 1).NextVertex->NextEdge;
 }

@@ -12,8 +12,8 @@ private:
 public:
     std::vector<EdgeEvent>* EdgeList = nullptr;
     EdgeChain(std::vector<EdgeEvent>* edgeList);
-    Edge* PreviousEdge();
-    Edge* NextEdge();
+    std::shared_ptr<Edge> PreviousEdge();
+    std::shared_ptr<Edge> NextEdge();
     Vertex* PreviousVertex();
     Vertex* CurrentVertex();
     EChainType ChainType();

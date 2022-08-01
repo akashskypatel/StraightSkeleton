@@ -2,7 +2,14 @@
 #include "Vertex.h"
 #include "FaceQueue.h"
 
+/*
 FaceNode::FaceNode(Vertex* vert)
+{
+	vertex = vert;
+}
+*/
+
+FaceNode::FaceNode(spv vert)
 {
 	vertex = vert;
 }
@@ -12,7 +19,7 @@ FaceNode::~FaceNode()
 	//delete vertex;
 }
 
-Vertex* FaceNode::GetVertex()
+std::shared_ptr<Vertex> FaceNode::GetVertex()
 {
 	return vertex;
 }

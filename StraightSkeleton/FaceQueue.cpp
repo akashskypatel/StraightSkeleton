@@ -1,7 +1,7 @@
 #include "FaceQueue.h"
 #include "FaceNode.h"
 
-Edge* FaceQueue::GetEdge()
+std::shared_ptr<Edge> FaceQueue::GetEdge()
 {
     return edge;
 }
@@ -100,7 +100,7 @@ std::shared_ptr<FaceNode> FaceQueue::Pop(spfn node)
     return nullptr;
 }
 
-void FaceQueue::SetEdge(Edge* val)
+void FaceQueue::SetEdge(std::shared_ptr<Edge> val)
 {
     edge = val;
 }

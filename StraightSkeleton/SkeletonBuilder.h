@@ -93,7 +93,7 @@ private:
 	static int AssertMaxNumberOfInteraction(int count);
 	static std::vector<std::vector<Vector2d>>& MakeClockwise(std::vector<std::vector<Vector2d>>& holes);
 	static std::vector<Vector2d> MakeCounterClockwise(std::vector<Vector2d>& polygon);
-	static void InitSlav(std::vector<Vector2d>& polygon, std::unordered_set<std::shared_ptr<CircularList>, CircularList::HashFunction>& sLav, std::vector<Edge*>& edges, std::vector<FaceQueue*>& faces);
+	static void InitSlav(std::vector<Vector2d>& polygon, std::unordered_set<std::shared_ptr<CircularList>, CircularList::HashFunction>& sLav, std::vector<std::shared_ptr<Edge>>& edges, std::vector<FaceQueue*>& faces);
 	static Skeleton AddFacesToOutput(std::vector<FaceQueue> faces);
 	static void InitEvents(std::unordered_set<std::shared_ptr<CircularList>, CircularList::HashFunction>& sLav, std::priority_queue<SkeletonEvent> queue, std::vector<Edge*>& edges);
 	static void ComputeSplitEvents(Vertex vertex, std::vector<Edge> edges, std::priority_queue<SkeletonEvent> queue, double distanceSquared);
@@ -110,7 +110,7 @@ private:
 	static std::vector<SplitCandidate> CalcOppositeEdges(Vertex vertex, std::vector<Edge> edges);
 	static bool EdgeBehindBisector(LineParametric2d bisector, LineLinear2d edge);
 	static std::shared_ptr<SplitCandidate> CalcCandidatePointForSplit(Vertex* vertex, Edge* edge);
-	static Edge* ChoseLessParallelVertexEdge(Vertex* vertex, Edge* edge);
+	static std::shared_ptr<Edge> ChoseLessParallelVertexEdge(Vertex* vertex, Edge* edge);
 	static Vector2d ComputeIntersectionBisectors(Vertex vertexPrevious, Vertex vertexNext);
 	static Vertex FindOppositeEdgeLav(std::unordered_set<Vertex,CircularList> sLav, Edge oppositeEdge, Vector2d center);
 	static Vertex ChooseOppositeEdgeLav(std::vector<Vertex> edgeLavs, Edge oppositeEdge, Vector2d center);
@@ -120,10 +120,10 @@ private:
 		///     Take next lav vertex _AFTER_ given edge, find vertex is always on RIGHT
 		///     site of edge.
 		/// </summary>
-	static Vertex* GetEdgeInLav(CircularList& lav, Edge& oppositeEdge);
-	static void AddFaceBack(Vertex* newVertex, Vertex* va, Vertex* vb);
-	static void AddFaceRight(Vertex* newVertex, Vertex vb);
-	static void AddFaceLeft(Vertex* newVertex, Vertex va);
+	static std::shared_ptr<Vertex> GetEdgeInLav(CircularList& lav, Edge& oppositeEdge);
+	static void AddFaceBack(std::shared_ptr<Vertex> newVertex, Vertex* va, Vertex* vb);
+	static void AddFaceRight(std::shared_ptr<Vertex> newVertex, Vertex vb);
+	static void AddFaceLeft(std::shared_ptr<Vertex> newVertex, Vertex va);
 	static double CalcDistance(Vector2d intersect, Edge currentEdge);
 	static Vector2d CalcVectorBisector(Vector2d norm1, Vector2d norm2);
 	static std::shared_ptr<LineParametric2d> CalcBisector(std::shared_ptr<Vector2d> p, Edge e1, Edge e2);

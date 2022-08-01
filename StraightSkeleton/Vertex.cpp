@@ -37,7 +37,7 @@ Vertex::Vertex(Vector2d point, double distance, LineParametric2d bisector, Edge 
     LeftFace = nullptr;
     RightFace = nullptr;
 }
-*/
+
 Vertex::Vertex(Vector2d* point, double distance, LineParametric2d* bisector, Edge* previousEdge, Edge* nextEdge)
 {
     Point = point;
@@ -49,7 +49,18 @@ Vertex::Vertex(Vector2d* point, double distance, LineParametric2d* bisector, Edg
     LeftFace = nullptr;
     RightFace = nullptr;
 }
-
+*/
+Vertex::Vertex(spv2d point, double distance, splp2d bisector, spe previousEdge, spe nextEdge)
+{
+    Point = point;
+    Bisector = bisector;
+    NextEdge = nextEdge;
+    PreviousEdge = previousEdge;
+    Distance = distance;
+    IsProcessed = false;
+    LeftFace = nullptr;
+    RightFace = nullptr;
+}
 Vertex::~Vertex()
 {
     //delete Point;

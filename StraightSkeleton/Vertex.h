@@ -20,17 +20,18 @@ private:
     double Round(double value, double precision);
 public:
     friend class CircularNode;
-    Vector2d* Point = nullptr;
+    spv2d Point = nullptr;
     double Distance;
-    LineParametric2d* Bisector = nullptr;
-    Edge* NextEdge = nullptr;
-    Edge* PreviousEdge = nullptr;
+    splp2d Bisector = nullptr;
+    spe NextEdge = nullptr;
+    spe PreviousEdge = nullptr;
     bool IsProcessed;
 
     Vertex();
     //Vertex(const Vertex& val);
     //Vertex(Vector2d point, double distance, LineParametric2d bisector, Edge previousEdge, Edge nextEdge, spn nextNode = nullptr, spn prevNode = nullptr, CircularList* list = nullptr);
-    Vertex(Vector2d* point, double distance, LineParametric2d* bisector, Edge* previousEdge, Edge* nextEdge);
+    //Vertex(Vector2d* point, double distance, LineParametric2d* bisector, Edge* previousEdge, Edge* nextEdge);
+    Vertex(spv2d point, double distance, splp2d bisector, spe previousEdge, spe nextEdge);
     ~Vertex() override;
     Vertex& operator = (const Vertex& other);
     std::string ToString() const override;

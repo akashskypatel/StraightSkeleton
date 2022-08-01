@@ -12,24 +12,24 @@ Edge* SplitChain::OppositeEdge()
     return nullptr;
 }
 
-Edge* SplitChain::PreviousEdge()
+std::shared_ptr<Edge> SplitChain::PreviousEdge()
 {
     return _splitEvent->Parent->PreviousEdge;
 }
 
-Edge* SplitChain::NextEdge()
+std::shared_ptr<Edge> SplitChain::NextEdge()
 {
     return _splitEvent->Parent->NextEdge;
 }
 
-Vertex* SplitChain::PreviousVertex()
+std::shared_ptr<Vertex> SplitChain::PreviousVertex()
 {
-    return dynamic_cast<Vertex*>(_splitEvent->Parent->Previous.get());
+    return dynamic_pointer_cast<Vertex>(_splitEvent->Parent->Previous);
 }
 
-Vertex* SplitChain::NextVertex()
+std::shared_ptr<Vertex> SplitChain::NextVertex()
 {
-    return dynamic_cast<Vertex*>(_splitEvent->Parent->Next.get());
+    return dynamic_pointer_cast<Vertex>(_splitEvent->Parent->Next);
 }
 
 Vertex* SplitChain::CurrentVertex()

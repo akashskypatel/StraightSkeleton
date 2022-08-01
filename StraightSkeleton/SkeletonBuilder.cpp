@@ -8,33 +8,33 @@ const double SkeletonBuilder::SplitEpsilon = 1E-10;
 ///     site of edge.
 /// </summary>
 
-inline Vertex* SkeletonBuilder::GetEdgeInLav(CircularList& lav, Edge& oppositeEdge)
+inline std::shared_ptr<Vertex> SkeletonBuilder::GetEdgeInLav(CircularList& lav, Edge& oppositeEdge)
 {
 	for (auto node : lav)
 	{
-		auto e = dynamic_cast<Vertex*>(node);
+		auto e = dynamic_pointer_cast<Vertex>(node);
 		auto epn = std::dynamic_pointer_cast<Edge>(e->Previous->Next);
-		if (&oppositeEdge == e->PreviousEdge || &oppositeEdge == epn.get()) //probably not gonna work
+		if (&oppositeEdge == e->PreviousEdge.get() || &oppositeEdge == epn.get()) //probably not gonna work
 			return e;
 	}
 	return nullptr;
 }
 
-inline void SkeletonBuilder::AddFaceBack(Vertex* newVertex, Vertex* va, Vertex* vb)
+inline void SkeletonBuilder::AddFaceBack(std::shared_ptr<Vertex> newVertex, Vertex* va, Vertex* vb)
 {
 	std::shared_ptr<FaceNode> fn = std::make_shared<FaceNode>(FaceNode(newVertex));
 	va->RightFace->AddPush(fn);
 	FaceQueueUtil::ConnectQueues(fn, vb->LeftFace);
 }
 
-inline void SkeletonBuilder::AddFaceRight(Vertex* newVertex, Vertex vb)
+inline void SkeletonBuilder::AddFaceRight(std::shared_ptr<Vertex> newVertex, Vertex vb)
 {
 	std::shared_ptr<FaceNode> fn = std::make_shared<FaceNode>(FaceNode(newVertex));
 	vb.RightFace->AddPush(fn);
 	newVertex->RightFace = fn;
 }
 
-inline void SkeletonBuilder::AddFaceLeft(Vertex* newVertex, Vertex va)
+inline void SkeletonBuilder::AddFaceLeft(std::shared_ptr<Vertex> newVertex, Vertex va)
 {
 	std::shared_ptr<FaceNode> fn = std::make_shared<FaceNode>(FaceNode(newVertex));
 	va.LeftFace->AddPush(fn);
@@ -104,7 +104,7 @@ std::vector<Vector2d> SkeletonBuilder::MakeCounterClockwise(std::vector<Vector2d
 	return PrimitiveUtils::MakeCounterClockwise(polygon);
 }
 
-void SkeletonBuilder::InitSlav(std::vector<Vector2d>& polygon, std::unordered_set<std::shared_ptr<CircularList>, CircularList::HashFunction>& sLav, std::vector<Edge*>& edges, std::vector<FaceQueue*>& faces)
+void SkeletonBuilder::InitSlav(std::vector<Vector2d>& polygon, std::unordered_set<std::shared_ptr<CircularList>, CircularList::HashFunction>& sLav, std::vector<std::shared_ptr<Edge>>& edges, std::vector<FaceQueue*>& faces)
 {
 	CircularList edgesList;
 	size_t size = polygon.size();
@@ -116,8 +116,8 @@ void SkeletonBuilder::InitSlav(std::vector<Vector2d>& polygon, std::unordered_se
 	for (auto edge : edgesList)
 	{
 		auto nextEdge =  std::dynamic_pointer_cast<Edge>(edge->Next);
-		auto curEdge = dynamic_cast<Edge*>(edge);
-		auto end = dynamic_cast<Edge*>(edge)->End;
+		auto curEdge = dynamic_pointer_cast<Edge>(edge);
+		auto end = dynamic_pointer_cast<Edge>(edge)->End;
 		auto bisector = CalcBisector(end, *curEdge, *nextEdge.get());
 
 		curEdge->BisectorNext = bisector;
@@ -128,15 +128,15 @@ void SkeletonBuilder::InitSlav(std::vector<Vector2d>& polygon, std::unordered_se
 	sLav.insert(lav);
 	for (auto edge : edgesList)
 	{
-		auto curEdge = dynamic_cast<Edge*>(edge);
+		auto curEdge = dynamic_pointer_cast<Edge>(edge);
 		auto nextEdge = std::dynamic_pointer_cast<Edge>(edge->Next);
-		auto vertex = std::make_shared<Vertex>(Vertex(curEdge->End.get(), 0, curEdge->BisectorNext.get(), curEdge, nextEdge.get()));
+		auto vertex = std::make_shared<Vertex>(Vertex(curEdge->End, 0, curEdge->BisectorNext, curEdge, nextEdge));
 		lav->AddLast(vertex);
 	}
 	for (auto vertex : *lav)
 	{
 		auto next = std::dynamic_pointer_cast<Vertex>(vertex->Next);
-		auto curVertex = dynamic_cast<Vertex*>(vertex);
+		auto curVertex = dynamic_pointer_cast<Vertex>(vertex);
 		// create face on right site of vertex
 		
 		auto rightFace = std::make_shared<FaceNode>(FaceNode(curVertex));
@@ -149,7 +149,7 @@ void SkeletonBuilder::InitSlav(std::vector<Vector2d>& polygon, std::unordered_se
 		curVertex->RightFace = rightFace;
 
 		// create face on left site of next vertex
-		auto leftFace = std::make_shared<FaceNode>(FaceNode(next.get()));
+		auto leftFace = std::make_shared<FaceNode>(FaceNode(next));
 		rightFace->AddPush(leftFace);
 		next->LeftFace = leftFace;
 	}
@@ -205,15 +205,15 @@ std::shared_ptr<SkeletonBuilder::SplitCandidate> SkeletonBuilder::CalcCandidateP
 	return nullptr;
 }
 
-Edge* SkeletonBuilder::ChoseLessParallelVertexEdge(Vertex* vertex, Edge* edge)
+std::shared_ptr<Edge> SkeletonBuilder::ChoseLessParallelVertexEdge(Vertex* vertex, Edge* edge)
 {
 	auto edgeA = vertex->PreviousEdge;
 	auto edgeB = vertex->NextEdge;
 
 	auto vertexEdge = edgeA;
 
-	auto edgeADot = fabs(edge->Norm->Dot(*edgeA->Norm.get()));
-	auto edgeBDot = fabs(edge->Norm->Dot(*edgeB->Norm.get()));
+	auto edgeADot = fabs(edge->Norm->Dot(*edgeA->Norm));
+	auto edgeBDot = fabs(edge->Norm->Dot(*edgeB->Norm));
 
 	// both lines are parallel to given edge
 	if (edgeADot + edgeBDot >= 2 - SplitEpsilon)

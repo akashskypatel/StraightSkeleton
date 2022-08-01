@@ -17,7 +17,7 @@ CircularNode::CircularNode(spn nextNode, spn prevNode, CircularList* list)
 
 CircularNode::~CircularNode()
 {
-	std::cout << "parent destructor\n";
+	std::cout << "circular node parent destructor\n";
 }
 
 void CircularNode::AddNext(spn node)
@@ -37,5 +37,5 @@ void CircularNode::Remove()
 
 std::string CircularNode::ToString() const
 {
-	return "virtual parent ToString() called";
+	return "circular node virtual parent ToString() called";
 }
