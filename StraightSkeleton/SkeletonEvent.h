@@ -8,6 +8,13 @@ class SkeletonEvent
 private:
     using spv2d = std::shared_ptr<Vector2d>;
 public:
+    struct SkeletonEventComparer
+    {
+        bool operator()(SkeletonEvent& left, SkeletonEvent& right)
+        {
+            return left.Distance < right.Distance;
+        }
+    };
     spv2d V = nullptr;
     double Distance;    
 

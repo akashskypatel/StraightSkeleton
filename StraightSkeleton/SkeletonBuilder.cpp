@@ -160,7 +160,7 @@ bool SkeletonBuilder::EdgeBehindBisector(LineParametric2d bisector, LineLinear2d
 	return LineParametric2d::Collide(bisector, edge, SplitEpsilon) == Vector2d::Empty();
 }
 
-std::shared_ptr<SkeletonBuilder::SplitCandidate> SkeletonBuilder::CalcCandidatePointForSplit(Vertex* vertex, Edge* edge)
+std::shared_ptr<SkeletonBuilder::SplitCandidate> SkeletonBuilder::CalcCandidatePointForSplit(std::shared_ptr<Vertex> vertex, std::shared_ptr<Edge> edge)
 {
 	auto vertexEdge = ChoseLessParallelVertexEdge(vertex, edge);
 	if (vertexEdge == nullptr)
@@ -180,27 +180,27 @@ std::shared_ptr<SkeletonBuilder::SplitCandidate> SkeletonBuilder::CalcCandidateP
 	// Compute the coordinates of the candidate point Bi as the intersection
 	// between the bisector at V and the axis of the angle between one of
 	// the edges starting at V and the tested line segment ei
-	auto candidatePoint = LineParametric2d::Collide(*vertex->Bisector, *edgesBisectorLine, SplitEpsilon);
+	auto candidatePoint = std::make_shared<Vector2d>(LineParametric2d::Collide(*vertex->Bisector, *edgesBisectorLine, SplitEpsilon));
 
-	if (candidatePoint == Vector2d::Empty())
+	if (*candidatePoint == Vector2d::Empty())
 		return nullptr;
 
-	if (edge->BisectorPrevious->IsOnRightSite(candidatePoint, SplitEpsilon)
-		&& edge->BisectorNext->IsOnLeftSite(candidatePoint, SplitEpsilon))
+	if (edge->BisectorPrevious->IsOnRightSite(*candidatePoint, SplitEpsilon)
+		&& edge->BisectorNext->IsOnLeftSite(*candidatePoint, SplitEpsilon))
 	{
-		auto distance = CalcDistance(candidatePoint, *edge);
+		auto distance = CalcDistance(*candidatePoint, *edge);
 
-		if (edge->BisectorPrevious->IsOnLeftSite(candidatePoint, SplitEpsilon))
-			return std::make_shared<SplitCandidate>(SplitCandidate(candidatePoint, distance, nullptr, *edge->Begin));
-		if (edge->BisectorNext->IsOnRightSite(candidatePoint, SplitEpsilon))
-			return std::make_shared<SplitCandidate>(SplitCandidate(candidatePoint, distance, nullptr, *edge->Begin));
+		if (edge->BisectorPrevious->IsOnLeftSite(*candidatePoint, SplitEpsilon))
+			return std::make_shared<SplitCandidate>(SplitCandidate(candidatePoint, distance, nullptr, edge->Begin));
+		if (edge->BisectorNext->IsOnRightSite(*candidatePoint, SplitEpsilon))
+			return std::make_shared<SplitCandidate>(SplitCandidate(candidatePoint, distance, nullptr, edge->Begin));
 
-		return std::make_shared<SplitCandidate>(SplitCandidate(candidatePoint, distance, edge, Vector2d::Empty()));
+		return std::make_shared<SplitCandidate>(SplitCandidate(candidatePoint, distance, edge, std::make_shared<Vector2d>(Vector2d::Empty())));
 	}
 	return nullptr;
 }
 
-std::shared_ptr<Edge> SkeletonBuilder::ChoseLessParallelVertexEdge(Vertex* vertex, Edge* edge)
+std::shared_ptr<Edge> SkeletonBuilder::ChoseLessParallelVertexEdge(std::shared_ptr<Vertex> vertex, std::shared_ptr<Edge> edge)
 {
 	auto edgeA = vertex->PreviousEdge;
 	auto edgeB = vertex->NextEdge;
@@ -224,21 +224,57 @@ std::shared_ptr<Edge> SkeletonBuilder::ChoseLessParallelVertexEdge(Vertex* verte
 }
 
 
-std::shared_ptr<std::vector<SkeletonBuilder::SplitCandidate>> SkeletonBuilder::CalcOppositeEdges(Vertex vertex, std::vector<Edge>& edges)
+std::shared_ptr<std::vector<SkeletonBuilder::SplitCandidate>> SkeletonBuilder::CalcOppositeEdges(std::shared_ptr<Vertex> vertex, std::vector<std::shared_ptr<Edge>>& edges)
 {
 	auto ret = std::make_shared<std::vector<SkeletonBuilder::SplitCandidate>>();
 	for(auto edgeEntry : edges)
 	{
-		auto edge = edgeEntry.lineLinear2d;
+		auto edge = edgeEntry->lineLinear2d;
 		// check if edge is behind bisector
-		if (EdgeBehindBisector(*vertex.Bisector, *edge))
+		if (EdgeBehindBisector(*vertex->Bisector, *edge))
 			continue;
 
 		// compute the coordinates of the candidate point Bi
-		auto candidatePoint = CalcCandidatePointForSplit(&vertex, &edgeEntry);
+		auto candidatePoint = CalcCandidatePointForSplit(vertex, edgeEntry);
 		if (candidatePoint != nullptr)
 			ret->push_back(*candidatePoint);
 	}
 	std::sort(ret->begin(), ret->end(), SkeletonBuilder::SplitCandidateComparer());
 	return ret;
+}
+
+void SkeletonBuilder::ComputeSplitEvents(std::shared_ptr<Vertex> vertex, std::vector<std::shared_ptr<Edge>>& edges, std::priority_queue<std::shared_ptr<SkeletonEvent>>& queue, double distanceSquared)
+{
+	auto source = vertex->Point;
+	auto oppositeEdges = CalcOppositeEdges(vertex, edges);
+
+	// check if it is vertex split event
+	for(auto oppositeEdge : *oppositeEdges)
+	{
+		auto point = oppositeEdge.Point;
+
+		if (fabs(distanceSquared - (-1)) > SplitEpsilon)
+		{
+			if (source->DistanceSquared(*point) > distanceSquared + SplitEpsilon)
+			{
+				// Current split event distance from source of event is
+				// greater then for edge event. Split event can be reject.
+				// Distance from source is not the same as distance for
+				// edge. Two events can have the same distance to edge but
+				// they will be in different distance form its source.
+				// Unnecessary events should be reject otherwise they cause
+				// problems for degenerate cases.
+				continue;
+			}
+		}
+
+		// check if it is vertex split event
+		if (*oppositeEdge.OppositePoint != Vector2d::Empty())
+		{
+			// some of vertex event can share the same opposite point
+			queue.push(std::make_shared<VertexSplitEvent>(VertexSplitEvent(point, oppositeEdge.Distance, vertex)));
+			continue;
+		}
+		queue.push(std::make_shared<SplitEvent>(SplitEvent(point, oppositeEdge.Distance, vertex, oppositeEdge.OppositeEdge)));
+	}
 }

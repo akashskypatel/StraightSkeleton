@@ -14,6 +14,7 @@
 #include "SplitEvent.h"
 #include "FaceQueueUtil.h"
 #include "PrimitiveUtils.h"
+#include "VertexSplitEvent.h"
 
 /// <summary> 
 ///     Straight skeleton algorithm implementation. Base on highly modified Petr
@@ -38,13 +39,16 @@ protected:
 private:
 	struct SplitCandidate
 	{
+	private:
+		using spe = std::shared_ptr<Edge>;
+		using spv2d = std::shared_ptr<Vector2d>;
 	public:
 		double Distance;
-		Edge* OppositeEdge;
-		Vector2d OppositePoint;
-		Vector2d Point;
+		spe OppositeEdge;
+		spv2d OppositePoint;
+		spv2d Point;
 
-		SplitCandidate(Vector2d point, double distance, Edge* oppositeEdge, Vector2d oppositePoint)
+		SplitCandidate(spv2d point, double distance, spe oppositeEdge, spv2d oppositePoint)
 		{
 			Point = point;
 			Distance = distance;
@@ -107,7 +111,7 @@ private:
 	static void InitSlav(std::vector<Vector2d>& polygon, std::unordered_set<std::shared_ptr<CircularList>, CircularList::HashFunction>& sLav, std::vector<std::shared_ptr<Edge>>& edges, std::vector<FaceQueue*>& faces);
 	static Skeleton AddFacesToOutput(std::vector<FaceQueue> faces);
 	static void InitEvents(std::unordered_set<std::shared_ptr<CircularList>, CircularList::HashFunction>& sLav, std::priority_queue<SkeletonEvent> queue, std::vector<Edge*>& edges);
-	static void ComputeSplitEvents(Vertex vertex, std::vector<Edge> edges, std::priority_queue<SkeletonEvent> queue, double distanceSquared);
+	static void ComputeSplitEvents(std::shared_ptr<Vertex> vertex, std::vector<std::shared_ptr<Edge>>& edges, std::priority_queue<std::shared_ptr<SkeletonEvent>>& queue, double distanceSquared);
 	static void ComputeEvents(Vertex vertex, std::priority_queue<SkeletonEvent> queue, std::vector<Edge> edges);
 	/// <summary>
 	///     Calculate two new edge events for given vertex. events are generated
@@ -118,10 +122,10 @@ private:
 	static double ComputeCloserEdgeEvent(Vertex vertex, std::priority_queue<SkeletonEvent> queue);
 	static SkeletonEvent CreateEdgeEvent(Vector2d point, Vertex previousVertex, Vertex nextVertex);
 	static void ComputeEdgeEvents(Vertex previousVertex, Vertex nextVertex, std::priority_queue<SkeletonEvent> queue);
-	static std::shared_ptr<std::vector<SplitCandidate>> CalcOppositeEdges(Vertex vertex, std::vector<Edge>& edges);
+	static std::shared_ptr<std::vector<SplitCandidate>> CalcOppositeEdges(std::shared_ptr<Vertex> vertex, std::vector<std::shared_ptr<Edge>>& edges);
 	static bool EdgeBehindBisector(LineParametric2d bisector, LineLinear2d edge);
-	static std::shared_ptr<SplitCandidate> CalcCandidatePointForSplit(Vertex* vertex, Edge* edge);
-	static std::shared_ptr<Edge> ChoseLessParallelVertexEdge(Vertex* vertex, Edge* edge);
+	static std::shared_ptr<SplitCandidate> CalcCandidatePointForSplit(std::shared_ptr<Vertex> vertex, std::shared_ptr<Edge> edge);
+	static std::shared_ptr<Edge> ChoseLessParallelVertexEdge(std::shared_ptr<Vertex> vertex, std::shared_ptr<Edge> edge);
 	static Vector2d ComputeIntersectionBisectors(Vertex vertexPrevious, Vertex vertexNext);
 	static Vertex FindOppositeEdgeLav(std::unordered_set<Vertex,CircularList> sLav, Edge oppositeEdge, Vector2d center);
 	static Vertex ChooseOppositeEdgeLav(std::vector<Vertex> edgeLavs, Edge oppositeEdge, Vector2d center);
