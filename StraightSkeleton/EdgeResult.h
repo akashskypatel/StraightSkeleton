@@ -7,7 +7,7 @@ class EdgeResult
 private:
 	using spe = std::shared_ptr<Edge>;
 public:
-	Edge* edge;
+	spe edge;
 	std::vector<Vector2d>* Polygon;
     EdgeResult(spe edge, std::vector<Vector2d>* polygon);
 	~EdgeResult();

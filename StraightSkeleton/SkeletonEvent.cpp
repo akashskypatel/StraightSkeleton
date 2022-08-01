@@ -8,13 +8,13 @@ SkeletonEvent::SkeletonEvent(Vector2d point, double distance)
 */
 SkeletonEvent::SkeletonEvent(spv2d point, double distance)
 {
-    V = point.get();
+    V = point;
     Distance = distance;
 }
 
 SkeletonEvent::~SkeletonEvent()
 {
-    delete V;
+    //delete V;
 }
 
 std::string SkeletonEvent::ToString()

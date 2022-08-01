@@ -5,12 +5,15 @@
 
 class IChain
 {
+private:
+	using spe = std::shared_ptr<Edge>;
+	using spv = std::shared_ptr<Vertex>;
 public:
-	Edge* PreviousEdge;
-	Edge* NextEdge;
-	Vertex* PreviousVertex;
-	Vertex* NextVertex;
-	Vertex* CurrentVertex;
+	spe PreviousEdge;
+	spe NextEdge;
+	spv PreviousVertex;
+	spv NextVertex;
+	spv CurrentVertex;
 	EChainType ChainType;
 };
 

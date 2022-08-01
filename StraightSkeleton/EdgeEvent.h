@@ -12,8 +12,8 @@ private:
     using spv2d = std::shared_ptr<Vector2d>;
     using spv = std::shared_ptr<Vertex>;
 public:
-    Vertex* NextVertex;
-    Vertex* PreviousVertex;
+    spv NextVertex;
+    spv PreviousVertex;
     bool IsObsolete() override;
     //EdgeEvent(Vector2d point, double distance, Vertex previousVertex, Vertex nextVertex);
     EdgeEvent(spv2d point, double distance, spv previousVertex, spv nextVertex);

@@ -14,14 +14,14 @@ EdgeEvent::EdgeEvent(Vector2d point, double distance, Vertex previousVertex, Ver
 */
 EdgeEvent::EdgeEvent(spv2d point, double distance, spv previousVertex, spv nextVertex) : SkeletonEvent(point, distance)
 {
-    PreviousVertex = previousVertex.get();
-    NextVertex = nextVertex.get();
+    PreviousVertex = previousVertex;
+    NextVertex = nextVertex;
 }
 
 EdgeEvent::~EdgeEvent()
 {
-    delete NextVertex;
-    delete PreviousVertex;
+    //delete NextVertex;
+    //delete PreviousVertex;
 }
 
 std::string EdgeEvent::ToString()

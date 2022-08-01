@@ -15,9 +15,9 @@ SingleEdgeChain::SingleEdgeChain(Edge oppositeEdge, Vertex nextVertex)
 */
 SingleEdgeChain::SingleEdgeChain(spe oppositeEdge, spv nextVertex)
 {
-    _oppositeEdge = oppositeEdge.get();
-    _nextVertex = nextVertex.get();
-    _previousVertex = dynamic_cast<Vertex*>(nextVertex->Previous.get());
+    _oppositeEdge = oppositeEdge;
+    _nextVertex = nextVertex;
+    _previousVertex = dynamic_pointer_cast<Vertex>(nextVertex->Previous);
 }
 SingleEdgeChain::~SingleEdgeChain()
 {
@@ -26,27 +26,27 @@ SingleEdgeChain::~SingleEdgeChain()
     //delete _previousVertex;
 }
 
-Edge* SingleEdgeChain::PreviousEdge()
+std::shared_ptr<Edge> SingleEdgeChain::PreviousEdge()
 {
     return _oppositeEdge;
 }
 
-Edge* SingleEdgeChain::NextEdge()
+std::shared_ptr<Edge> SingleEdgeChain::NextEdge()
 {
     return _oppositeEdge;
 }
 
-Vertex* SingleEdgeChain::PreviousVertex()
+std::shared_ptr<Vertex> SingleEdgeChain::PreviousVertex()
 {
     return _previousVertex;
 }
 
-Vertex* SingleEdgeChain::NextVertex()
+std::shared_ptr<Vertex> SingleEdgeChain::NextVertex()
 {
     return _nextVertex;
 }
 
-Vertex* SingleEdgeChain::CurrentVertex()
+std::shared_ptr<Vertex> SingleEdgeChain::CurrentVertex()
 {
     return nullptr;
 }

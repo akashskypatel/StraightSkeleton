@@ -8,14 +8,16 @@ class EdgeChain :
     public IChain
 {
 private:
+    using spe = std::shared_ptr<Edge>;
+    using spv = std::shared_ptr<Vertex>;
     bool _closed;
 public:
     std::vector<EdgeEvent>* EdgeList = nullptr;
     EdgeChain(std::vector<EdgeEvent>* edgeList);
-    std::shared_ptr<Edge> PreviousEdge();
-    std::shared_ptr<Edge> NextEdge();
-    Vertex* PreviousVertex();
-    Vertex* CurrentVertex();
+    spe PreviousEdge();
+    spe NextEdge();
+    spv PreviousVertex();
+    spv CurrentVertex();
     EChainType ChainType();
 };
 

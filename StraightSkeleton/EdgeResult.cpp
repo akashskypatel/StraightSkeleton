@@ -2,7 +2,7 @@
 
 EdgeResult::EdgeResult(spe edge, std::vector<Vector2d>* polygon)
 {
-    this->edge = edge.get();
+    this->edge = edge;
     Polygon = polygon;
 }
 

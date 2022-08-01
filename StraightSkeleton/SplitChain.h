@@ -10,15 +10,16 @@ class SplitChain :
 private:
     using spe = std::shared_ptr<Edge>;
     using spv = std::shared_ptr<Vertex>;
-    SplitEvent* _splitEvent;
+    using spse = std::shared_ptr<SplitEvent>;
+    spse _splitEvent;
 public:
-    SplitChain(SplitEvent* event);
-    Edge* OppositeEdge();
+    SplitChain(spse event);
+    spe OppositeEdge();
     std::shared_ptr<Edge> PreviousEdge();
     std::shared_ptr<Edge> NextEdge();
     std::shared_ptr<Vertex> PreviousVertex();
     std::shared_ptr<Vertex> NextVertex();
-    Vertex* CurrentVertex();
+    spv CurrentVertex();
     EChainType ChainType();
 };
 

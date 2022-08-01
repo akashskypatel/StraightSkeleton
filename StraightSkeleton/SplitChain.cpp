@@ -1,13 +1,13 @@
 #include "SplitChain.h"
 
-SplitChain::SplitChain(SplitEvent* event)
+SplitChain::SplitChain(spse event)
 {
     _splitEvent = event;
 }
 
-Edge* SplitChain::OppositeEdge()
+std::shared_ptr<Edge> SplitChain::OppositeEdge()
 {
-    if (typeid(*_splitEvent) == typeid(VertexSplitEvent))
+    if (typeid(*_splitEvent) == typeid(VertexSplitEvent)) //TODO verify
         return _splitEvent->OppositeEdge;
     return nullptr;
 }
@@ -32,7 +32,7 @@ std::shared_ptr<Vertex> SplitChain::NextVertex()
     return dynamic_pointer_cast<Vertex>(_splitEvent->Parent->Next);
 }
 
-Vertex* SplitChain::CurrentVertex()
+std::shared_ptr<Vertex> SplitChain::CurrentVertex()
 {
     return _splitEvent->Parent;
 }

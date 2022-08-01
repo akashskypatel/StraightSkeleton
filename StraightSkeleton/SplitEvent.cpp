@@ -3,8 +3,8 @@
 SplitEvent::SplitEvent(spv2d point, double distance, spv parent, spe oppositeEdge)
     : SkeletonEvent(point, distance)
 {
-    Parent = parent.get();
-    OppositeEdge = (oppositeEdge.get() != nullptr ? oppositeEdge.get() : nullptr);
+    Parent = parent;
+    OppositeEdge = (oppositeEdge != nullptr ? oppositeEdge : nullptr);
 }
 
 SplitEvent::~SplitEvent()
