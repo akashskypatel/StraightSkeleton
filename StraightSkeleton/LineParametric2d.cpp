@@ -18,12 +18,18 @@ LineParametric2d::LineParametric2d(const LineParametric2d& other)
 	U = new Vector2d(*other.U);
 }
 */
-LineParametric2d::LineParametric2d(Vector2d* pA, Vector2d pU)
+LineParametric2d::LineParametric2d(spv2d pA, spv2d pU)
 {
 	//A = new Vector2d(pA.X, pA.Y);
 	//U = new Vector2d(pU.X, pU.Y);
 	A = pA;
-	U = std::make_shared<Vector2d>(pU);
+	U = pU;
+}
+
+LineParametric2d::LineParametric2d(Vector2d pA, Vector2d pU)
+{
+	A = std::make_shared<Vector2d>(Vector2d(pA));
+	U = std::make_shared<Vector2d>(Vector2d(pU));
 }
 
 LineParametric2d::~LineParametric2d()

@@ -40,20 +40,25 @@ private:
 	{
 	public:
 		double Distance;
-		Edge OppositeEdge;
-		Vector2d OppositePoint;
-		Vector2d Point;
+		Edge* OppositeEdge;
+		Vector2d* OppositePoint;
+		Vector2d* Point;
 
-		SplitCandidate(Vector2d point, double distance, Edge oppositeEdge, Vector2d oppositePoint)
+		SplitCandidate(Vector2d point, double distance, Edge* oppositeEdge, Vector2d oppositePoint)
 		{
-			Point = point;
+			Point = new Vector2d(point);
 			Distance = distance;
 			OppositeEdge = oppositeEdge;
-			OppositePoint = oppositePoint;
+			OppositePoint = new Vector2d(oppositePoint);
+		}
+		~SplitCandidate()
+		{
+			delete Point;
+			delete OppositePoint;
 		}
 	};
 	// Error epsilon.
-	const double SplitEpsilon = 1E-10;
+	static const double SplitEpsilon;
 	static std::vector<Vector2d> InitPolygon(std::vector<Vector2d>& polygon);	
 	static void ProcessTwoNodeLavs(std::unordered_set<Vertex,CircularList> sLav);
 	static void RemoveEmptyLav(std::unordered_set<CircularList> sLav);
@@ -90,7 +95,7 @@ private:
 	static std::vector<Vector2d> MakeCounterClockwise(std::vector<Vector2d>& polygon);
 	static void InitSlav(std::vector<Vector2d>& polygon, std::unordered_set<std::shared_ptr<CircularList>, CircularList::HashFunction>& sLav, std::vector<Edge*>& edges, std::vector<FaceQueue*>& faces);
 	static Skeleton AddFacesToOutput(std::vector<FaceQueue> faces);
-	static void InitEvents(std::unordered_set<Vertex,CircularList> sLav, std::priority_queue<SkeletonEvent> queue, std::vector<Edge> edges);
+	static void InitEvents(std::unordered_set<std::shared_ptr<CircularList>, CircularList::HashFunction>& sLav, std::priority_queue<SkeletonEvent> queue, std::vector<Edge*>& edges);
 	static void ComputeSplitEvents(Vertex vertex, std::vector<Edge> edges, std::priority_queue<SkeletonEvent> queue, double distanceSquared);
 	static void ComputeEvents(Vertex vertex, std::priority_queue<SkeletonEvent> queue, std::vector<Edge> edges);
 	/// <summary>
@@ -104,8 +109,8 @@ private:
 	static void ComputeEdgeEvents(Vertex previousVertex, Vertex nextVertex, std::priority_queue<SkeletonEvent> queue);
 	static std::vector<SplitCandidate> CalcOppositeEdges(Vertex vertex, std::vector<Edge> edges);
 	static bool EdgeBehindBisector(LineParametric2d bisector, LineLinear2d edge);
-	static SplitCandidate CalcCandidatePointForSplit(Vertex vertex, Edge edge);
-	static Edge ChoseLessParallelVertexEdge(Vertex vertex, Edge edge);
+	static std::shared_ptr<SplitCandidate> CalcCandidatePointForSplit(Vertex* vertex, Edge* edge);
+	static Edge* ChoseLessParallelVertexEdge(Vertex* vertex, Edge* edge);
 	static Vector2d ComputeIntersectionBisectors(Vertex vertexPrevious, Vertex vertexNext);
 	static Vertex FindOppositeEdgeLav(std::unordered_set<Vertex,CircularList> sLav, Edge oppositeEdge, Vector2d center);
 	static Vertex ChooseOppositeEdgeLav(std::vector<Vertex> edgeLavs, Edge oppositeEdge, Vector2d center);
@@ -121,7 +126,7 @@ private:
 	static void AddFaceLeft(Vertex* newVertex, Vertex va);
 	static double CalcDistance(Vector2d intersect, Edge currentEdge);
 	static Vector2d CalcVectorBisector(Vector2d norm1, Vector2d norm2);
-	static LineParametric2d CalcBisector(Vector2d* p, Edge e1, Edge e2);
+	static std::shared_ptr<LineParametric2d> CalcBisector(std::shared_ptr<Vector2d> p, Edge e1, Edge e2);
 	template<typename T>
 	size_t hash(const std::shared_ptr<T>& ptr)
 	{

@@ -1,6 +1,8 @@
 #include "SkeletonBuilder.h"
 #include "CircularList.h"
 
+const double SkeletonBuilder::SplitEpsilon = 1E-10;
+
 /// <summary>
 ///     Take next lav vertex _AFTER_ given edge, find vertex is always on RIGHT
 ///     site of edge.
@@ -52,12 +54,12 @@ inline Vector2d SkeletonBuilder::CalcVectorBisector(Vector2d norm1, Vector2d nor
 	return PrimitiveUtils::BisectorNormalized(norm1, norm2);
 }
 
-inline LineParametric2d SkeletonBuilder::CalcBisector(Vector2d* p, Edge e1, Edge e2)
+inline std::shared_ptr<LineParametric2d> SkeletonBuilder::CalcBisector(std::shared_ptr<Vector2d> p, Edge e1, Edge e2)
 {
 	Vector2d norm1 = *e1.Norm;
 	Vector2d norm2 = *e2.Norm;
-	Vector2d bisector = CalcVectorBisector(norm1, norm2);
-	return LineParametric2d(p, bisector);
+	auto bisector = std::make_shared<Vector2d>(CalcVectorBisector(norm1, norm2));
+	return std::make_shared<LineParametric2d>(LineParametric2d(p, bisector));
 }
 /*
 Skeleton SkeletonBuilder::Build(std::vector<Vector2d>& polygon)
@@ -116,10 +118,10 @@ void SkeletonBuilder::InitSlav(std::vector<Vector2d>& polygon, std::unordered_se
 		auto nextEdge =  std::dynamic_pointer_cast<Edge>(edge->Next);
 		auto curEdge = dynamic_cast<Edge*>(edge);
 		auto end = dynamic_cast<Edge*>(edge)->End;
-		auto bisector = CalcBisector(end.get(), *curEdge, *nextEdge.get());
+		auto bisector = CalcBisector(end, *curEdge, *nextEdge.get());
 
-		curEdge->BisectorNext = std::make_shared<LineParametric2d>(LineParametric2d(bisector.A, *bisector.U));
-		nextEdge->BisectorPrevious = std::make_shared<LineParametric2d>(LineParametric2d(bisector.A, *bisector.U));
+		curEdge->BisectorNext = bisector;
+		nextEdge->BisectorPrevious = bisector;
 		edges.push_back(curEdge);
 	}
 	std::shared_ptr<CircularList> lav = std::make_shared<CircularList>();
@@ -151,5 +153,78 @@ void SkeletonBuilder::InitSlav(std::vector<Vector2d>& polygon, std::unordered_se
 		rightFace->AddPush(leftFace);
 		next->LeftFace = leftFace;
 	}
+}
+
+void SkeletonBuilder::InitEvents(std::unordered_set<std::shared_ptr<CircularList>, CircularList::HashFunction>& sLav, std::priority_queue<SkeletonEvent> queue, std::vector<Edge*>& edges)
+{
+
+}
+
+bool SkeletonBuilder::EdgeBehindBisector(LineParametric2d bisector, LineLinear2d edge)
+{
+	return LineParametric2d::Collide(bisector, edge, SplitEpsilon) == Vector2d::Empty();
+}
+
+std::shared_ptr<SkeletonBuilder::SplitCandidate> SkeletonBuilder::CalcCandidatePointForSplit(Vertex* vertex, Edge* edge)
+{
+	auto vertexEdge = ChoseLessParallelVertexEdge(vertex, edge);
+	if (vertexEdge == nullptr)
+		return nullptr;
+
+	auto vertexEdteNormNegate = *vertexEdge->Norm.get();
+	auto edgesBisector = CalcVectorBisector(vertexEdteNormNegate, *edge->Norm);
+	auto edgesCollide = vertexEdge->lineLinear2d->Collide(*edge->lineLinear2d);
+
+	// Check should be performed to exclude the case when one of the
+	// line segments starting at V is parallel to ei.
+	if (edgesCollide == Vector2d::Empty())
+		throw std::exception("Ups this should not happen");
+
+	auto edgesBisectorLine = std::make_shared<LineLinear2d>(LineParametric2d(edgesCollide, edgesBisector).CreateLinearForm());
+
+	// Compute the coordinates of the candidate point Bi as the intersection
+	// between the bisector at V and the axis of the angle between one of
+	// the edges starting at V and the tested line segment ei
+	auto candidatePoint = LineParametric2d::Collide(*vertex->Bisector, *edgesBisectorLine, SplitEpsilon);
+
+	if (candidatePoint == Vector2d::Empty())
+		return nullptr;
+
+	if (edge->BisectorPrevious->IsOnRightSite(candidatePoint, SplitEpsilon)
+		&& edge->BisectorNext->IsOnLeftSite(candidatePoint, SplitEpsilon))
+	{
+		auto distance = CalcDistance(candidatePoint, *edge);
+
+		if (edge->BisectorPrevious->IsOnLeftSite(candidatePoint, SplitEpsilon))
+			return std::make_shared<SplitCandidate>(SplitCandidate(candidatePoint, distance, nullptr, *edge->Begin));
+		if (edge->BisectorNext->IsOnRightSite(candidatePoint, SplitEpsilon))
+			return std::make_shared<SplitCandidate>(SplitCandidate(candidatePoint, distance, nullptr, *edge->Begin));
+
+		return std::make_shared<SplitCandidate>(SplitCandidate(candidatePoint, distance, edge, Vector2d::Empty()));
+	}
+	return nullptr;
+}
+
+Edge* SkeletonBuilder::ChoseLessParallelVertexEdge(Vertex* vertex, Edge* edge)
+{
+	auto edgeA = vertex->PreviousEdge;
+	auto edgeB = vertex->NextEdge;
+
+	auto vertexEdge = edgeA;
+
+	auto edgeADot = fabs(edge->Norm->Dot(*edgeA->Norm.get()));
+	auto edgeBDot = fabs(edge->Norm->Dot(*edgeB->Norm.get()));
+
+	// both lines are parallel to given edge
+	if (edgeADot + edgeBDot >= 2 - SplitEpsilon)
+		return nullptr;
+
+	// Simple check should be performed to exclude the case when one of
+	// the line segments starting at V (vertex) is parallel to e_i
+	// (edge) we always chose edge which is less parallel.
+	if (edgeADot > edgeBDot)
+		vertexEdge = edgeB;
+
+	return vertexEdge;
 }
 
