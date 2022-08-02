@@ -106,13 +106,13 @@ private:
 	static bool IsInEdgeChain(std::shared_ptr<SplitEvent> split, std::shared_ptr<EdgeChain> chain);
 	static std::shared_ptr<std::vector<std::shared_ptr<EdgeEvent>>> CreateEdgeChain(std::shared_ptr<std::vector<std::shared_ptr<EdgeEvent>>>& edgeCluster);
 	static void RemoveEventsUnderHeight(std::priority_queue<SkeletonEvent> queue, double levelHeight);
-	static std::shared_ptr<std::vector<std::shared_ptr<SkeletonEvent>>> LoadAndGroupLevelEvents(std::priority_queue<std::shared_ptr<SkeletonEvent>>& queue);
+	static std::shared_ptr<std::vector<std::shared_ptr<SkeletonEvent>>> LoadAndGroupLevelEvents(std::shared_ptr<std::priority_queue<std::shared_ptr<SkeletonEvent>>> queue);
 	static std::shared_ptr<std::vector<std::shared_ptr<SkeletonEvent>>> GroupLevelEvents(std::shared_ptr<std::vector<std::shared_ptr<SkeletonEvent>>>& levelEvents);
 	static bool IsEventInGroup(std::shared_ptr<std::unordered_set<std::shared_ptr<Vertex>, Vertex::HashFunction>>& parentGroup, std::shared_ptr<SkeletonEvent>& event);
 	static void AddEventToGroup(std::shared_ptr<std::unordered_set<std::shared_ptr<Vertex>, Vertex::HashFunction>> parentGroup, std::shared_ptr<SkeletonEvent> event);
 	static std::shared_ptr<SkeletonEvent> CreateLevelEvent(std::shared_ptr<Vector2d> eventCenter, double distance, std::shared_ptr<std::vector<std::shared_ptr<SkeletonEvent>>>& eventCluster);
 	/// <summary> Loads all not obsolete event which are on one level. As level heigh is taken epsilon. </summary>
-	static std::shared_ptr<std::vector<std::shared_ptr<SkeletonEvent>>> LoadLevelEvents(std::priority_queue<std::shared_ptr<SkeletonEvent>>& queue);
+	static std::shared_ptr<std::vector<std::shared_ptr<SkeletonEvent>>> LoadLevelEvents(std::shared_ptr<std::priority_queue<std::shared_ptr<SkeletonEvent>>> queue);
 	static int AssertMaxNumberOfInteraction(int& count);
 	static std::vector<std::vector<Vector2d>>& MakeClockwise(std::vector<std::vector<Vector2d>>& holes);
 	static std::vector<Vector2d> MakeCounterClockwise(std::vector<Vector2d>& polygon);

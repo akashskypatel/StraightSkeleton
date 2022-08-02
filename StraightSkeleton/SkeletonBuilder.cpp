@@ -191,9 +191,9 @@ std::shared_ptr<SkeletonBuilder::SplitCandidate> SkeletonBuilder::CalcCandidateP
 		auto distance = CalcDistance(*candidatePoint, *edge);
 
 		if (edge->BisectorPrevious->IsOnLeftSite(*candidatePoint, SplitEpsilon))
-			return std::make_shared<SplitCandidate>(SplitCandidate(candidatePoint, distance, nullptr, edge->Begin));
+			return std::make_shared<SplitCandidate>(candidatePoint, distance, nullptr, edge->Begin);
 		if (edge->BisectorNext->IsOnRightSite(*candidatePoint, SplitEpsilon))
-			return std::make_shared<SplitCandidate>(SplitCandidate(candidatePoint, distance, nullptr, edge->Begin));
+			return std::make_shared<SplitCandidate>(candidatePoint, distance, nullptr, edge->Begin);
 
 		return std::make_shared<SplitCandidate>(candidatePoint, distance, edge, std::make_shared<Vector2d>(Vector2d::Empty()));
 	}
@@ -366,21 +366,21 @@ void SkeletonBuilder::InitEvents(std::unordered_set<std::shared_ptr<CircularList
 	}
 }
 
-std::shared_ptr<std::vector<std::shared_ptr<SkeletonEvent>>> SkeletonBuilder::LoadLevelEvents(std::priority_queue<std::shared_ptr<SkeletonEvent>>& queue)
+std::shared_ptr<std::vector<std::shared_ptr<SkeletonEvent>>> SkeletonBuilder::LoadLevelEvents(std::shared_ptr<std::priority_queue<std::shared_ptr<SkeletonEvent>>> queue)
 {
 	auto level = std::make_shared<std::vector<std::shared_ptr<SkeletonEvent>>>();
 	std::shared_ptr<SkeletonEvent> levelStart = nullptr;
 	// skip all obsolete events in level
 	do
 	{
-		if (queue.empty())
+		if (queue->empty())
 		{
 			levelStart = nullptr;
 		} 
 		else
 		{
-			levelStart = queue.top();
-			queue.pop();
+			levelStart = queue->top();
+			queue->pop();
 		}
 		//levelStart = queue.empty() ? nullptr : queue.top();
 	} while (levelStart != nullptr && levelStart->IsObsolete());
@@ -395,11 +395,11 @@ std::shared_ptr<std::vector<std::shared_ptr<SkeletonEvent>>> SkeletonBuilder::Lo
 	level->push_back(levelStart);
 
 	std::shared_ptr<SkeletonEvent> event = nullptr;
-	while ((event = queue.top()) != nullptr &&
+	while ((event = queue->top()) != nullptr &&
 		fabs(event->Distance - levelStartHeight) < SplitEpsilon)
 	{
-		auto nextLevelEvent = queue.top();
-		queue.pop();
+		auto nextLevelEvent = queue->top();
+		queue->pop();
 		if (!nextLevelEvent->IsObsolete())
 			level->push_back(nextLevelEvent);
 	}
@@ -650,4 +650,10 @@ std::shared_ptr<std::vector<std::shared_ptr<EdgeEvent>>> SkeletonBuilder::Create
 	}
 
 	return edgeList;
+}
+
+std::shared_ptr<std::vector<std::shared_ptr<SkeletonEvent>>> SkeletonBuilder::LoadAndGroupLevelEvents(std::shared_ptr<std::priority_queue<std::shared_ptr<SkeletonEvent>>> queue)
+{
+	auto levelEvents = LoadLevelEvents(queue);
+	return GroupLevelEvents(levelEvents);
 }
