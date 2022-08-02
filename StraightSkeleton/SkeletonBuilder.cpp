@@ -104,7 +104,7 @@ std::shared_ptr<std::vector<Vector2d>> SkeletonBuilder::MakeCounterClockwise(std
 	return std::make_shared<std::vector<Vector2d>>(PrimitiveUtils::MakeCounterClockwise(*polygon));
 }
 
-void SkeletonBuilder::InitSlav(std::shared_ptr<std::vector<Vector2d>> polygon, std::unordered_set<std::shared_ptr<CircularList>, CircularList::HashFunction>& sLav, std::shared_ptr<std::vector<std::shared_ptr<Edge>>> edges, std::vector<FaceQueue*>& faces)
+void SkeletonBuilder::InitSlav(std::shared_ptr<std::vector<Vector2d>> polygon, std::shared_ptr<std::unordered_set<std::shared_ptr<CircularList>, CircularList::HashFunction>> sLav, std::shared_ptr<std::vector<std::shared_ptr<Edge>>> edges, std::vector<FaceQueue*>& faces)
 {
 	CircularList edgesList;
 	size_t size = polygon->size();
@@ -125,7 +125,7 @@ void SkeletonBuilder::InitSlav(std::shared_ptr<std::vector<Vector2d>> polygon, s
 		edges->push_back(curEdge);
 	}
 	std::shared_ptr<CircularList> lav = std::make_shared<CircularList>();
-	sLav.insert(lav);
+	sLav->insert(lav);
 	for (auto edge : edgesList)
 	{
 		auto curEdge = dynamic_pointer_cast<Edge>(edge);

@@ -116,7 +116,7 @@ private:
 	static int AssertMaxNumberOfInteraction(int& count);
 	static std::shared_ptr<std::vector<std::vector<Vector2d>>> MakeClockwise(std::shared_ptr<std::vector<std::vector<Vector2d>>> holes);
 	static std::shared_ptr<std::vector<Vector2d>> MakeCounterClockwise(std::shared_ptr<std::vector<Vector2d>> polygon);
-	static void InitSlav(std::shared_ptr<std::vector<Vector2d>> polygon, std::unordered_set<std::shared_ptr<CircularList>, CircularList::HashFunction>& sLav, std::shared_ptr<std::vector<std::shared_ptr<Edge>>> edges, std::vector<FaceQueue*>& faces);
+	static void InitSlav(std::shared_ptr<std::vector<Vector2d>> polygon, std::shared_ptr<std::unordered_set<std::shared_ptr<CircularList>, CircularList::HashFunction>> sLav, std::shared_ptr<std::vector<std::shared_ptr<Edge>>> edges, std::vector<FaceQueue*>& faces);
 	static Skeleton AddFacesToOutput(std::vector<FaceQueue> faces);
 	static void InitEvents(std::shared_ptr<std::unordered_set<std::shared_ptr<CircularList>, CircularList::HashFunction>> sLav, std::shared_ptr<std::priority_queue<std::shared_ptr<SkeletonEvent>>> queue, std::shared_ptr<std::vector<std::shared_ptr<Edge>>> edges);
 	static void ComputeSplitEvents(std::shared_ptr<Vertex> vertex, std::shared_ptr<std::vector<std::shared_ptr<Edge>>> edges, std::shared_ptr<std::priority_queue<std::shared_ptr<SkeletonEvent>>> queue, double distanceSquared);
