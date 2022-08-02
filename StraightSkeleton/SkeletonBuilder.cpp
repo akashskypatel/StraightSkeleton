@@ -22,21 +22,21 @@ inline std::shared_ptr<Vertex> SkeletonBuilder::GetEdgeInLav(CircularList& lav, 
 
 inline void SkeletonBuilder::AddFaceBack(std::shared_ptr<Vertex> newVertex, Vertex* va, Vertex* vb)
 {
-	std::shared_ptr<FaceNode> fn = std::make_shared<FaceNode>(FaceNode(newVertex));
+	std::shared_ptr<FaceNode> fn = std::make_shared<FaceNode>(newVertex);
 	va->RightFace->AddPush(fn);
 	FaceQueueUtil::ConnectQueues(fn, vb->LeftFace);
 }
 
 inline void SkeletonBuilder::AddFaceRight(std::shared_ptr<Vertex> newVertex, Vertex vb)
 {
-	std::shared_ptr<FaceNode> fn = std::make_shared<FaceNode>(FaceNode(newVertex));
+	std::shared_ptr<FaceNode> fn = std::make_shared<FaceNode>(newVertex);
 	vb.RightFace->AddPush(fn);
 	newVertex->RightFace = fn;
 }
 
 inline void SkeletonBuilder::AddFaceLeft(std::shared_ptr<Vertex> newVertex, Vertex va)
 {
-	std::shared_ptr<FaceNode> fn = std::make_shared<FaceNode>(FaceNode(newVertex));
+	std::shared_ptr<FaceNode> fn = std::make_shared<FaceNode>(newVertex);
 	va.LeftFace->AddPush(fn);
 	newVertex->LeftFace = fn;
 }
@@ -59,7 +59,7 @@ inline std::shared_ptr<LineParametric2d> SkeletonBuilder::CalcBisector(std::shar
 	Vector2d norm1 = *e1.Norm;
 	Vector2d norm2 = *e2.Norm;
 	auto bisector = std::make_shared<Vector2d>(CalcVectorBisector(norm1, norm2));
-	return std::make_shared<LineParametric2d>(LineParametric2d(p, bisector));
+	return std::make_shared<LineParametric2d>(p, bisector);
 }
 /*
 Skeleton SkeletonBuilder::Build(std::vector<Vector2d>& polygon)
@@ -111,7 +111,7 @@ void SkeletonBuilder::InitSlav(std::vector<Vector2d>& polygon, std::unordered_se
 	for (size_t i = 0; i < size; i++)
 	{
 		size_t j = (i + 1) % size;
-		edgesList.AddLast(std::make_shared<Edge>(Edge(polygon[i], polygon[j])));
+		edgesList.AddLast(std::make_shared<Edge>(polygon[i], polygon[j]));
 	}
 	for (auto edge : edgesList)
 	{
@@ -130,7 +130,7 @@ void SkeletonBuilder::InitSlav(std::vector<Vector2d>& polygon, std::unordered_se
 	{
 		auto curEdge = dynamic_pointer_cast<Edge>(edge);
 		auto nextEdge = std::dynamic_pointer_cast<Edge>(edge->Next);
-		auto vertex = std::make_shared<Vertex>(Vertex(curEdge->End, 0, curEdge->BisectorNext, curEdge, nextEdge));
+		auto vertex = std::make_shared<Vertex>(curEdge->End, 0, curEdge->BisectorNext, curEdge, nextEdge);
 		lav->AddLast(vertex);
 	}
 	for (auto vertex : *lav)
@@ -139,9 +139,9 @@ void SkeletonBuilder::InitSlav(std::vector<Vector2d>& polygon, std::unordered_se
 		auto curVertex = dynamic_pointer_cast<Vertex>(vertex);
 		// create face on right site of vertex
 		
-		auto rightFace = std::make_shared<FaceNode>(FaceNode(curVertex));
+		auto rightFace = std::make_shared<FaceNode>(curVertex);
 
-		auto faceQueue = std::make_shared<FaceQueue>(FaceQueue());
+		auto faceQueue = std::make_shared<FaceQueue>();
 		faceQueue->SetEdge(curVertex->NextEdge);
 
 		faceQueue->AddFirst(rightFace);
@@ -149,7 +149,7 @@ void SkeletonBuilder::InitSlav(std::vector<Vector2d>& polygon, std::unordered_se
 		curVertex->RightFace = rightFace;
 
 		// create face on left site of next vertex
-		auto leftFace = std::make_shared<FaceNode>(FaceNode(next));
+		auto leftFace = std::make_shared<FaceNode>(next);
 		rightFace->AddPush(leftFace);
 		next->LeftFace = leftFace;
 	}
@@ -195,7 +195,7 @@ std::shared_ptr<SkeletonBuilder::SplitCandidate> SkeletonBuilder::CalcCandidateP
 		if (edge->BisectorNext->IsOnRightSite(*candidatePoint, SplitEpsilon))
 			return std::make_shared<SplitCandidate>(SplitCandidate(candidatePoint, distance, nullptr, edge->Begin));
 
-		return std::make_shared<SplitCandidate>(SplitCandidate(candidatePoint, distance, edge, std::make_shared<Vector2d>(Vector2d::Empty())));
+		return std::make_shared<SplitCandidate>(candidatePoint, distance, edge, std::make_shared<Vector2d>(Vector2d::Empty()));
 	}
 	return nullptr;
 }
@@ -272,9 +272,382 @@ void SkeletonBuilder::ComputeSplitEvents(std::shared_ptr<Vertex> vertex, std::ve
 		if (*oppositeEdge.OppositePoint != Vector2d::Empty())
 		{
 			// some of vertex event can share the same opposite point
-			queue.push(std::make_shared<VertexSplitEvent>(VertexSplitEvent(point, oppositeEdge.Distance, vertex)));
+			queue.push(std::make_shared<VertexSplitEvent>(point, oppositeEdge.Distance, vertex));
 			continue;
 		}
-		queue.push(std::make_shared<SplitEvent>(SplitEvent(point, oppositeEdge.Distance, vertex, oppositeEdge.OppositeEdge)));
+		queue.push(std::make_shared<SplitEvent>(point, oppositeEdge.Distance, vertex, oppositeEdge.OppositeEdge));
 	}
+}
+
+Vector2d SkeletonBuilder::ComputeIntersectionBisectors(std::shared_ptr<Vertex> vertexPrevious, std::shared_ptr<Vertex> vertexNext)
+{
+	auto bisectorPrevious = vertexPrevious->Bisector;
+	auto bisectorNext = vertexNext->Bisector;
+
+	auto intersectRays2d = PrimitiveUtils::IntersectRays2D(*bisectorPrevious, *bisectorNext);
+	auto intersect = intersectRays2d.Intersect;
+
+	// skip the same points
+	if (*vertexPrevious->Point == intersect || *vertexNext->Point == intersect)
+		return Vector2d::Empty();
+
+	return intersect;
+}
+
+std::shared_ptr<SkeletonEvent> SkeletonBuilder::CreateEdgeEvent(std::shared_ptr<Vector2d> point, std::shared_ptr<Vertex> previousVertex, std::shared_ptr<Vertex> nextVertex)
+{
+	return std::make_shared<EdgeEvent>(point, CalcDistance(*point, *previousVertex->NextEdge), previousVertex, nextVertex);
+}
+
+double SkeletonBuilder::ComputeCloserEdgeEvent(std::shared_ptr<Vertex> vertex, std::priority_queue<std::shared_ptr<SkeletonEvent>>& queue)
+{
+	auto nextVertex = std::dynamic_pointer_cast<Vertex>(vertex->Next);
+	auto previousVertex = std::dynamic_pointer_cast<Vertex>(vertex->Previous);
+
+	auto point = vertex->Point;
+
+	// We need to chose closer edge event. When two evens appear in epsilon
+	// we take both. They will create single MultiEdgeEvent.
+	auto point1 = std::make_shared<Vector2d>(ComputeIntersectionBisectors(vertex, nextVertex));
+	auto point2 = std::make_shared<Vector2d>(ComputeIntersectionBisectors(previousVertex, vertex));
+
+	if (*point1 == Vector2d::Empty() && *point2 == Vector2d::Empty())
+		return -1;
+
+	auto distance1 = DBL_MAX;
+	auto distance2 = DBL_MAX;
+
+	if (*point1 != Vector2d::Empty())
+		distance1 = point->DistanceSquared(*point1);
+	if (*point2 != Vector2d::Empty())
+		distance2 = point->DistanceSquared(*point2);
+
+	if (fabs(distance1 - SplitEpsilon) < distance2)
+		queue.push(CreateEdgeEvent(point1, vertex, nextVertex));
+	if (fabs(distance2 - SplitEpsilon) < distance1)
+		queue.push(CreateEdgeEvent(point2, previousVertex, vertex));
+
+	return distance1 < distance2 ? distance1 : distance2;
+}
+
+int SkeletonBuilder::AssertMaxNumberOfInteraction(int& count)
+{
+	count++;
+	if (count > 10000)
+		throw std::exception("Too many interaction: bug?");
+	return count;
+}
+
+void SkeletonBuilder::ComputeEdgeEvents(std::shared_ptr<Vertex> previousVertex, std::shared_ptr<Vertex> nextVertex,	std::priority_queue<std::shared_ptr<SkeletonEvent>>& queue)
+{
+	auto point = std::make_shared<Vector2d>(ComputeIntersectionBisectors(previousVertex, nextVertex));
+	if (*point != Vector2d::Empty())
+		queue.push(CreateEdgeEvent(point, previousVertex, nextVertex));
+}
+
+void SkeletonBuilder::InitEvents(std::unordered_set<std::shared_ptr<CircularList>, CircularList::HashFunction>& sLav, std::priority_queue<std::shared_ptr<SkeletonEvent>>& queue, std::vector<std::shared_ptr<Edge>>& edges)
+{
+	for (auto lav : sLav)
+	{
+		for (auto vertex : *lav)
+		{
+			auto curVertex = std::dynamic_pointer_cast<Vertex>(vertex);
+			ComputeSplitEvents(curVertex, edges, queue, -1);
+		}
+	}
+	for (auto lav : sLav)
+	{
+		for (auto vertex : *lav)
+		{
+			auto curVertex = std::dynamic_pointer_cast<Vertex>(vertex);
+			auto nextVertex = std::dynamic_pointer_cast<Vertex>(vertex->Next);
+			ComputeEdgeEvents(curVertex, nextVertex, queue);
+		}
+	}
+}
+
+std::shared_ptr<std::vector<std::shared_ptr<SkeletonEvent>>> SkeletonBuilder::LoadLevelEvents(std::priority_queue<std::shared_ptr<SkeletonEvent>>& queue)
+{
+	auto level = std::make_shared<std::vector<std::shared_ptr<SkeletonEvent>>>();
+	std::shared_ptr<SkeletonEvent> levelStart = nullptr;
+	// skip all obsolete events in level
+	do
+	{
+		if (queue.empty())
+		{
+			levelStart = nullptr;
+		} 
+		else
+		{
+			levelStart = queue.top();
+			queue.pop();
+		}
+		//levelStart = queue.empty() ? nullptr : queue.top();
+	} while (levelStart != nullptr && levelStart->IsObsolete());
+
+
+	// all events obsolete
+	if (levelStart == nullptr || levelStart->IsObsolete())
+		return level;
+
+	auto levelStartHeight = levelStart->Distance;
+
+	level->push_back(levelStart);
+
+	std::shared_ptr<SkeletonEvent> event = nullptr;
+	while ((event = queue.top()) != nullptr &&
+		fabs(event->Distance - levelStartHeight) < SplitEpsilon)
+	{
+		auto nextLevelEvent = queue.top();
+		queue.pop();
+		if (!nextLevelEvent->IsObsolete())
+			level->push_back(nextLevelEvent);
+	}
+	return level;
+}
+
+void SkeletonBuilder::AddEventToGroup(std::shared_ptr<std::unordered_set<std::shared_ptr<Vertex>, Vertex::HashFunction>> parentGroup, std::shared_ptr<SkeletonEvent> event)
+{
+	
+	if (typeid(*event) == typeid(SplitEvent)) //TODO: verify
+	{
+		auto splitEvent = std::dynamic_pointer_cast<SplitEvent>(event);
+		parentGroup->insert(splitEvent->Parent);
+	}		
+	else if (typeid(*event) == typeid(EdgeEvent))//TODO: verify
+	{
+		auto edgeEvent = std::dynamic_pointer_cast<EdgeEvent>(event);
+		parentGroup->insert(edgeEvent->PreviousVertex);
+		parentGroup->insert(edgeEvent->NextVertex);
+	}
+}
+
+std::shared_ptr<std::vector<std::shared_ptr<SkeletonEvent>>> SkeletonBuilder::GroupLevelEvents(std::shared_ptr<std::vector<std::shared_ptr<SkeletonEvent>>>& levelEvents)
+{
+	auto ret = std::make_shared<std::vector<std::shared_ptr<SkeletonEvent>>>();
+
+	auto parentGroup = std::make_shared<std::unordered_set<std::shared_ptr<Vertex>, Vertex::HashFunction>>();
+
+	while (levelEvents->size() > 0)
+	{
+		parentGroup->clear();
+
+		auto event = levelEvents->at(0);
+		levelEvents->erase(levelEvents->begin() + 0);
+		auto eventCenter = event->V;
+		auto distance = event->Distance;
+
+		AddEventToGroup(parentGroup, event);
+
+		auto cluster = std::make_shared<std::vector<std::shared_ptr<SkeletonEvent>>>(); //new List<SkeletonEvent>{ @event };
+		cluster->push_back(event);
+
+		for (size_t j = 0; j < levelEvents->size(); j++)
+		{
+			auto test = levelEvents->at(j);
+
+			if (IsEventInGroup(parentGroup, test))
+			{
+				// Because of numerical errors split event and edge event
+				// can appear in slight different point. Epsilon can be
+				// apply to level but event point can move rapidly even for
+				// little changes in level. If two events for the same level
+				// share the same parent, they should be merge together.
+
+				auto item = levelEvents->at(j);
+				levelEvents->erase(levelEvents->begin() + j);
+				cluster->push_back(item);
+				AddEventToGroup(parentGroup, test);
+				j--;
+			}
+			// is near
+			else if (eventCenter->DistanceTo(*test->V) < SplitEpsilon)
+			{
+				// group all event when the result point are near each other
+				auto item = levelEvents->at(j);
+				levelEvents->erase(levelEvents->begin() + j);
+				cluster->push_back(item);
+				AddEventToGroup(parentGroup, test);
+				j--;
+			}
+		}
+
+		// More then one event share the same result point, we need to
+		// create new level event.
+		ret->push_back(CreateLevelEvent(eventCenter, distance, cluster));
+	}
+	return ret;
+}
+
+bool SkeletonBuilder::IsEventInGroup(std::shared_ptr<std::unordered_set<std::shared_ptr<Vertex>, Vertex::HashFunction>>& parentGroup, std::shared_ptr<SkeletonEvent>& event)
+{
+	if (typeid(*event) == typeid(SplitEvent))
+	{
+		auto splitEvent = std::dynamic_pointer_cast<SplitEvent>(event);
+		return parentGroup->contains(splitEvent->Parent);
+	}
+	else if (typeid(*event) == typeid(EdgeEvent))
+	{
+		auto edgeEvent = std::dynamic_pointer_cast<EdgeEvent>(event);
+		return parentGroup->contains(edgeEvent->PreviousVertex) || parentGroup->contains(edgeEvent->NextVertex);
+	}
+	return false;
+}
+
+std::shared_ptr<SkeletonEvent> SkeletonBuilder::CreateLevelEvent(std::shared_ptr<Vector2d> eventCenter, double distance, std::shared_ptr<std::vector<std::shared_ptr<SkeletonEvent>>>& eventCluster)
+{
+	auto chains = CreateChains(eventCluster);
+
+	if (chains->size() == 1)
+	{
+		auto chain = chains->at(0);
+		if (chain->ChainType == EChainType::CLOSED_EDGE)
+			return std::make_shared<PickEvent>(eventCenter, distance, std::dynamic_pointer_cast<EdgeChain>(chain));
+		if (chain->ChainType == EChainType::EDGE)
+			return std::make_shared<MultiEdgeEvent>(eventCenter, distance, std::dynamic_pointer_cast<EdgeChain>(chain));
+		if (chain->ChainType == EChainType::SPLIT)
+			return std::make_shared<MultiSplitEvent>(eventCenter, distance, chains);
+	}
+
+	if (std::any_of(chains->begin(), chains->end(), [](const std::shared_ptr<IChain> chain) {return chain->ChainType == EChainType::CLOSED_EDGE; }))
+		throw std::exception("Found closed chain of events for single point, but found more then one chain");
+	return std::make_shared<MultiSplitEvent>(eventCenter, distance, chains);
+}
+
+std::shared_ptr<std::vector<std::shared_ptr<IChain>>> SkeletonBuilder::CreateChains(std::shared_ptr<std::vector<std::shared_ptr<SkeletonEvent>>>& cluster)
+{
+	auto edgeCluster = std::make_shared<std::vector<std::shared_ptr<EdgeEvent>>>(); //new List<EdgeEvent>();
+	auto splitCluster = std::make_shared<std::vector<std::shared_ptr<SplitEvent>>>(); //new List<SplitEvent>();
+	auto vertexEventsParents = std::make_shared<std::unordered_set<std::shared_ptr<Vertex>, Vertex::HashFunction>>();  //new HashSet<Vertex>();
+
+	for(auto skeletonEvent : *cluster)
+	{
+		if (typeid(*skeletonEvent) == typeid(EdgeEvent)) //TODO: verify
+		{
+			auto e = std::dynamic_pointer_cast<EdgeEvent>(skeletonEvent);
+			edgeCluster->push_back(e);
+		}	
+		else
+		{
+			if (typeid(*skeletonEvent) == typeid(VertexSplitEvent))
+			{
+				// It will be processed in next loop to find unique split
+				// events for one parent.
+			}
+			else if (typeid(*skeletonEvent) == typeid(SplitEvent))
+			{
+				auto splitEvent = std::dynamic_pointer_cast<SplitEvent>(skeletonEvent);
+				// If vertex and split event exist for the same parent
+				// vertex and at the same level always prefer split.
+				vertexEventsParents->insert(splitEvent->Parent);
+				splitCluster->push_back(splitEvent);
+			}
+		}
+	}
+
+	for(auto skeletonEvent : *cluster)
+	{
+		if (typeid(*skeletonEvent) == typeid(VertexSplitEvent))
+		{
+			auto vertexEvent = std::dynamic_pointer_cast<VertexSplitEvent>(skeletonEvent);
+			if (!vertexEventsParents->contains(vertexEvent->Parent))
+			{
+				// It can be created multiple vertex events for one parent.
+				// Its is caused because two edges share one vertex and new
+				//event will be added to both of them. When processing we
+				// need always group them into one per vertex. Always prefer
+				// split events over vertex events.
+				vertexEventsParents->insert(vertexEvent->Parent);
+				splitCluster->push_back(vertexEvent);
+			}
+		}
+	}
+
+	auto edgeChains = std::make_shared<std::vector<std::shared_ptr<EdgeChain>>>(); //new List<EdgeChain>();
+
+	// We need to find all connected edge events, and create chains from
+	// them. Two event are assumed as connected if next parent of one
+	// event is equal to previous parent of second event.
+	while (edgeCluster->size() > 0)
+		edgeChains->push_back(std::make_shared<EdgeChain>(CreateEdgeChain(edgeCluster)));
+
+	auto chains = std::make_shared<std::vector<std::shared_ptr<IChain>>>();  //new List<IChain>(edgeChains.Count);
+	for(auto edgeChain : *edgeChains)		
+		chains->push_back(edgeChain);
+
+splitEventLoop:
+	while (!splitCluster->empty())
+	{
+		auto split = splitCluster->at(0);
+		splitCluster->erase(splitCluster->begin() + 0);
+
+		for(auto chain : *edgeChains)
+		{
+			// check if chain is split type
+			if (IsInEdgeChain(split, chain))
+				goto splitEventLoop;
+		}
+
+
+		// split event is not part of any edge chain, it should be added as
+		// new single element chain;
+		chains->push_back(std::make_shared<SplitChain>(split));
+	}
+
+	// Return list of chains with type. Possible types are edge chain,
+	// closed edge chain, split chain. Closed edge chain will produce pick
+	//event. Always it can exist only one closed edge chain for point
+	// cluster.
+	return chains;
+}
+
+bool SkeletonBuilder::IsInEdgeChain(std::shared_ptr<SplitEvent> split, std::shared_ptr<EdgeChain> chain)
+{
+	auto splitParent = split->Parent;
+	auto edgeList = chain->EdgeList;
+	return std::any_of(edgeList->begin(), edgeList->end(), 
+		[splitParent]
+	(const std::shared_ptr<EdgeEvent> edgeEvent) 
+		{ 
+			return edgeEvent->PreviousVertex == splitParent || edgeEvent->NextVertex == splitParent; 
+		});
+}
+
+std::shared_ptr<std::vector<std::shared_ptr<EdgeEvent>>> SkeletonBuilder::CreateEdgeChain(std::shared_ptr<std::vector<std::shared_ptr<EdgeEvent>>>& edgeCluster)
+{
+	auto edgeList = std::make_shared<std::vector<std::shared_ptr<EdgeEvent>>>();
+
+	edgeList->push_back(edgeCluster->at(0));
+	edgeCluster->erase(edgeCluster->begin() + 0);
+
+	// find all successors of edge event
+	// find all predecessors of edge event
+	loop:
+	for (;;)
+	{
+		auto beginVertex = edgeList->at(0)->PreviousVertex;
+		auto endVertex = edgeList->at(edgeList->size() - 1)->NextVertex;
+
+		for (size_t i = 0; i < edgeCluster->size(); i++)
+		{
+			auto edge = edgeCluster->at(i);
+			if (edge->PreviousVertex == endVertex)
+			{
+				// edge should be added as last in chain
+				edgeCluster->erase(edgeCluster->begin() + i);
+				edgeList->push_back(edge);
+				goto loop;
+			}
+			if (edge->NextVertex == beginVertex)
+			{
+				// edge should be added as first in chain
+				edgeCluster->erase(edgeCluster->begin() + i);
+				edgeList->insert(edgeList->begin(), edge);
+				goto loop;
+			}
+		}
+		break;
+	}
+
+	return edgeList;
 }

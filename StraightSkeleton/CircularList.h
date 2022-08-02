@@ -21,8 +21,8 @@ private:
 public:	
 	struct HashFunction
 	{
-		size_t operator()(const CircularList& list) const;
-		size_t operator()(const std::shared_ptr<CircularList> list) const;
+		size_t operator()(const CircularList& val) const;
+		size_t operator()(const std::shared_ptr<CircularList> val) const;
 	};
 	struct Iterator 
 	{

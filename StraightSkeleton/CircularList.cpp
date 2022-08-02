@@ -154,12 +154,12 @@ unsigned int CircularList::GetInstanceId() const
 	return _id;
 }
 
-size_t CircularList::HashFunction::operator()(const CircularList& list) const
+size_t CircularList::HashFunction::operator()(const CircularList& val) const
 {
-	return list.GetInstanceId();
+	return val.GetInstanceId();
 }
 
-size_t CircularList::HashFunction::operator()(const std::shared_ptr<CircularList> list) const
+size_t CircularList::HashFunction::operator()(const std::shared_ptr<CircularList> val) const
 {
-	return list->GetInstanceId();
+	return val->GetInstanceId();
 }

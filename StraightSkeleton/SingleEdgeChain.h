@@ -15,7 +15,7 @@ private:
 public:
     //SingleEdgeChain(Edge oppositeEdge, Vertex nextVertex);
     SingleEdgeChain(spe oppositeEdge, spv nextVertex);
-    ~SingleEdgeChain();
+    ~SingleEdgeChain() override;
     spe PreviousEdge();
     spe NextEdge();
     spv PreviousVertex();

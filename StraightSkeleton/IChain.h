@@ -15,5 +15,6 @@ public:
 	spv NextVertex;
 	spv CurrentVertex;
 	EChainType ChainType;
+	virtual ~IChain() {};
 };
 

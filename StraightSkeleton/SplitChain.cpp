@@ -5,6 +5,10 @@ SplitChain::SplitChain(spse event)
     _splitEvent = event;
 }
 
+SplitChain::~SplitChain()
+{
+}
+
 std::shared_ptr<Edge> SplitChain::OppositeEdge()
 {
     if (typeid(*_splitEvent) == typeid(VertexSplitEvent)) //TODO verify

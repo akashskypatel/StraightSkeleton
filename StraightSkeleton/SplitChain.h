@@ -14,11 +14,12 @@ private:
     spse _splitEvent;
 public:
     SplitChain(spse event);
+    ~SplitChain() override;
     spe OppositeEdge();
-    std::shared_ptr<Edge> PreviousEdge();
-    std::shared_ptr<Edge> NextEdge();
-    std::shared_ptr<Vertex> PreviousVertex();
-    std::shared_ptr<Vertex> NextVertex();
+    spe PreviousEdge();
+    spe NextEdge();
+    spv PreviousVertex();
+    spv NextVertex();
     spv CurrentVertex();
     EChainType ChainType();
 };
