@@ -95,9 +95,9 @@ Skeleton SkeletonBuilder::Build(std::vector<Vector2d>& polygon, std::shared_ptr<
 				continue;
 
 			if (typeid(event) == typeid(EdgeEvent))
-				throw std::exception("All edge@events should be converted to MultiEdgeEvents for given level");
+				throw std::runtime_error("All edge@events should be converted to MultiEdgeEvents for given level");
 			if (typeid(event) == typeid(SplitEvent))
-				throw std::exception("All split events should be converted to MultiSplitEvents for given level");
+				throw std::runtime_error("All split events should be converted to MultiSplitEvents for given level");
 			if (typeid(event) == typeid(MultiSplitEvent))
 				EmitMultiSplitEvent(std::dynamic_pointer_cast<MultiSplitEvent>(event), sLav, queue, edges);
 			else if (typeid(event) == typeid(PickEvent))
@@ -105,7 +105,7 @@ Skeleton SkeletonBuilder::Build(std::vector<Vector2d>& polygon, std::shared_ptr<
 			else if (typeid(event) == typeid(MultiEdgeEvent))
 				EmitMultiEdgeEvent(std::dynamic_pointer_cast<MultiEdgeEvent>(event), queue, edges);
 			else
-				throw std::exception("Unknown event type");
+				throw std::runtime_error(std::string("Unknown event type: ") + std::string(typeid(event).name()));
 			
 		}
 
@@ -121,9 +121,9 @@ Skeleton SkeletonBuilder::Build(std::vector<Vector2d>& polygon, std::shared_ptr<
 std::shared_ptr<std::vector<Vector2d>> SkeletonBuilder::InitPolygon(std::vector<Vector2d>& polygon)
 {
 	if (polygon.size() == 0)
-		throw std::exception("polygon can't be null");
+		throw std::runtime_error("polygon can't be null");
 	if(polygon.at(0).Equals(polygon.at(polygon.size() - 1)))
-		throw std::exception("polygon can't start and end with the same point");
+		throw std::runtime_error("polygon can't start and end with the same point");
 
 	return MakeCounterClockwise(polygon);
 }
@@ -216,7 +216,7 @@ std::shared_ptr<SkeletonBuilder::SplitCandidate> SkeletonBuilder::CalcCandidateP
 	// Check should be performed to exclude the case when one of the
 	// line segments starting at V is parallel to ei.
 	if (edgesCollide == Vector2d::Empty())
-		throw std::exception("Ups this should not happen");
+		throw std::runtime_error("Ups this should not happen");
 
 	auto edgesBisectorLine = std::make_shared<LineLinear2d>(LineParametric2d(edgesCollide, edgesBisector).CreateLinearForm());
 
@@ -377,7 +377,7 @@ int SkeletonBuilder::AssertMaxNumberOfInteraction(int& count)
 {
 	count++;
 	if (count > 10000)
-		throw std::exception("Too many interaction: bug?");
+		throw std::runtime_error("Too many interaction: bug?");
 	return count;
 }
 
@@ -553,7 +553,7 @@ std::shared_ptr<SkeletonEvent> SkeletonBuilder::CreateLevelEvent(std::shared_ptr
 	}
 
 	if (std::any_of(chains->begin(), chains->end(), [](const std::shared_ptr<IChain> chain) {return chain->ChainType == EChainType::CLOSED_EDGE; }))
-		throw std::exception("Found closed chain of events for single point, but found more then one chain");
+		throw std::runtime_error("Found closed chain of events for single point, but found more then one chain");
 	return std::make_shared<MultiSplitEvent>(eventCenter, distance, chains);
 }
 
@@ -898,7 +898,7 @@ void SkeletonBuilder::CorrectBisectorDirection(std::shared_ptr<LineParametric2d>
 	auto endEdge2 = endPreviousVertex->NextEdge;
 
 	if (beginEdge != beginEdge2 || endEdge != endEdge2)
-		throw std::exception("InvalidOperationException");
+		throw std::runtime_error("InvalidOperationException");
 
 	// Check if edges are parallel and in opposite direction to each other.
 	if (beginEdge->Norm->Dot(*endEdge->Norm) < -0.97)
@@ -936,7 +936,7 @@ std::shared_ptr<FaceNode> SkeletonBuilder::AddSplitFaces(std::shared_ptr<FaceNod
 		{
 			// face queue exist simply assign it to new node
 			if (newVertex->RightFace != nullptr)
-				throw std::exception("newVertex.RightFace should be null");
+				throw std::runtime_error("newVertex.RightFace should be null");
 
 			newVertex->RightFace = lastFaceNode;
 			lastFaceNode = nullptr;
@@ -967,7 +967,7 @@ std::shared_ptr<FaceNode> SkeletonBuilder::AddSplitFaces(std::shared_ptr<FaceNod
 		{
 			// face queue exist simply assign it to new node
 			if (newVertex->LeftFace != nullptr)
-				throw std::exception("newVertex.LeftFace should be null.");
+				throw std::runtime_error("newVertex.LeftFace should be null.");
 			newVertex->LeftFace = lastFaceNode;
 
 			lastFaceNode = nullptr;
@@ -1074,7 +1074,7 @@ std::shared_ptr<Vertex> SkeletonBuilder::ChooseOppositeEdgeLav(std::shared_ptr<s
 		if (PrimitiveUtils::IsPointInsidePolygon(*center, points))
 			return end;
 	}
-	throw std::exception("Could not find lav for opposite edge, it could be correct but need some test data to check.");
+	throw std::runtime_error("Could not find lav for opposite edge, it could be correct but need some test data to check.");
 }
 
 void SkeletonBuilder::ProcessTwoNodeLavs(std::shared_ptr<std::unordered_set<std::shared_ptr<CircularList>, CircularList::HashFunction>> sLav)

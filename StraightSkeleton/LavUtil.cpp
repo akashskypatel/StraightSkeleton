@@ -43,7 +43,7 @@ std::shared_ptr<std::vector<std::shared_ptr<Vertex>>> LavUtil::CutLavPart(std::s
             return ret;
     }
 
-    throw std::exception("End vertex can't be found in start vertex lav");
+    throw std::runtime_error("End vertex can't be found in start vertex lav");
 }
 
 /// <summary>

@@ -12,15 +12,15 @@ void FaceQueueUtil::ConnectQueues(spfn firstFace, spfn secondFace)
 		if (firstFace->List == secondFace->List)
 		{
 			if (!firstFace->IsEnd() || !secondFace->IsEnd())
-				throw std::exception("try to connect the same list not on end nodes");
+				throw std::runtime_error("try to connect the same list not on end nodes");
 			if (firstFace->IsQueueUnconnected() || secondFace->IsQueueUnconnected())
-				throw std::exception("can't close node queue not conected with edges");
+				throw std::runtime_error("can't close node queue not conected with edges");
 
 			firstFace->QueueClose();
 			return;
 		}
 		if (!firstFace->IsQueueUnconnected() && !secondFace->IsQueueUnconnected())
-			throw std::exception("can't connect two diffrent queues if each of them is connected to edge");
+			throw std::runtime_error("can't connect two diffrent queues if each of them is connected to edge");
 
 		if (!firstFace->IsQueueUnconnected())
 		{
