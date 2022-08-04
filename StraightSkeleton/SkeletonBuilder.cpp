@@ -66,7 +66,7 @@ Skeleton SkeletonBuilder::Build(std::vector<Vector2d>& polygon, std::shared_ptr<
 	InitPolygon(polygon);
 	MakeClockwise(holes);
 
-	auto queue = std::make_shared<std::priority_queue<std::shared_ptr<SkeletonEvent>,std::vector<std::shared_ptr<SkeletonEvent>>, SkeletonBuilder::SkeletonEventDistanseComparer()>>(3, SkeletonBuilder::SkeletonEventDistanseComparer()); //new PriorityQueue<SkeletonEvent>(3, new SkeletonEventDistanseComparer());	
+	auto queue = std::make_shared<queueSkeletonEvent>(); //new PriorityQueue<SkeletonEvent>(3, new SkeletonEventDistanseComparer());	
 	auto sLav = std::make_shared<std::unordered_set<std::shared_ptr<CircularList>, CircularList::HashFunction>>();// new HashSet<CircularList<Vertex>>();
 	auto faces = std::make_shared<std::vector<std::shared_ptr<FaceQueue>>>();// new List<FaceQueue>();
 	auto edges = std::make_shared<std::vector<std::shared_ptr<Edge>>>();// new List<Edge>();
@@ -286,7 +286,7 @@ std::shared_ptr<std::vector<SkeletonBuilder::SplitCandidate>> SkeletonBuilder::C
 	return ret;
 }
 
-void SkeletonBuilder::ComputeSplitEvents(std::shared_ptr<Vertex> vertex, std::shared_ptr<std::vector<std::shared_ptr<Edge>>> edges, std::shared_ptr<std::priority_queue<std::shared_ptr<SkeletonEvent>>> queue, double distanceSquared)
+void SkeletonBuilder::ComputeSplitEvents(std::shared_ptr<Vertex> vertex, std::shared_ptr<std::vector<std::shared_ptr<Edge>>> edges, std::shared_ptr<queueSkeletonEvent> queue, double distanceSquared)
 {
 	auto source = vertex->Point;
 	auto oppositeEdges = CalcOppositeEdges(vertex, edges);
@@ -342,7 +342,7 @@ std::shared_ptr<SkeletonEvent> SkeletonBuilder::CreateEdgeEvent(std::shared_ptr<
 	return std::make_shared<EdgeEvent>(point, CalcDistance(*point, *previousVertex->NextEdge), previousVertex, nextVertex);
 }
 
-double SkeletonBuilder::ComputeCloserEdgeEvent(std::shared_ptr<Vertex> vertex, std::shared_ptr<std::priority_queue<std::shared_ptr<SkeletonEvent>>> queue)
+double SkeletonBuilder::ComputeCloserEdgeEvent(std::shared_ptr<Vertex> vertex, std::shared_ptr<queueSkeletonEvent> queue)
 {
 	auto nextVertex = std::dynamic_pointer_cast<Vertex>(vertex->Next);
 	auto previousVertex = std::dynamic_pointer_cast<Vertex>(vertex->Previous);
@@ -381,14 +381,14 @@ int SkeletonBuilder::AssertMaxNumberOfInteraction(int& count)
 	return count;
 }
 
-void SkeletonBuilder::ComputeEdgeEvents(std::shared_ptr<Vertex> previousVertex, std::shared_ptr<Vertex> nextVertex, std::shared_ptr<std::priority_queue<std::shared_ptr<SkeletonEvent>>> queue)
+void SkeletonBuilder::ComputeEdgeEvents(std::shared_ptr<Vertex> previousVertex, std::shared_ptr<Vertex> nextVertex, std::shared_ptr<queueSkeletonEvent> queue)
 {
 	auto point = std::make_shared<Vector2d>(ComputeIntersectionBisectors(previousVertex, nextVertex));
 	if (*point != Vector2d::Empty())
 		queue->push(CreateEdgeEvent(point, previousVertex, nextVertex));
 }
 
-void SkeletonBuilder::InitEvents(std::shared_ptr<std::unordered_set<std::shared_ptr<CircularList>, CircularList::HashFunction>> sLav, std::shared_ptr<std::priority_queue<std::shared_ptr<SkeletonEvent>>> queue, std::shared_ptr<std::vector<std::shared_ptr<Edge>>> edges)
+void SkeletonBuilder::InitEvents(std::shared_ptr<std::unordered_set<std::shared_ptr<CircularList>, CircularList::HashFunction>> sLav, std::shared_ptr<queueSkeletonEvent> queue, std::shared_ptr<std::vector<std::shared_ptr<Edge>>> edges)
 {
 	for (auto lav : *sLav)
 	{
@@ -409,7 +409,7 @@ void SkeletonBuilder::InitEvents(std::shared_ptr<std::unordered_set<std::shared_
 	}
 }
 
-std::shared_ptr<std::vector<std::shared_ptr<SkeletonEvent>>> SkeletonBuilder::LoadLevelEvents(std::shared_ptr<std::priority_queue<std::shared_ptr<SkeletonEvent>>> queue)
+std::shared_ptr<std::vector<std::shared_ptr<SkeletonEvent>>> SkeletonBuilder::LoadLevelEvents(std::shared_ptr<queueSkeletonEvent> queue)
 {
 	auto level = std::make_shared<std::vector<std::shared_ptr<SkeletonEvent>>>();
 	std::shared_ptr<SkeletonEvent> levelStart = nullptr;
@@ -695,14 +695,14 @@ std::shared_ptr<std::vector<std::shared_ptr<EdgeEvent>>> SkeletonBuilder::Create
 	return edgeList;
 }
 
-std::shared_ptr<std::vector<std::shared_ptr<SkeletonEvent>>> SkeletonBuilder::LoadAndGroupLevelEvents(std::shared_ptr<std::priority_queue<std::shared_ptr<SkeletonEvent>>> queue)
+std::shared_ptr<std::vector<std::shared_ptr<SkeletonEvent>>> SkeletonBuilder::LoadAndGroupLevelEvents(std::shared_ptr<queueSkeletonEvent> queue)
 {
 	auto levelEvents = LoadLevelEvents(queue);
 	return GroupLevelEvents(levelEvents);
 }
 
 //Renamed due to conflict with class name
-void SkeletonBuilder::EmitMultiEdgeEvent(std::shared_ptr<MultiEdgeEvent> event, std::shared_ptr<std::priority_queue<std::shared_ptr<SkeletonEvent>>> queue, std::shared_ptr<std::vector<std::shared_ptr<Edge>>> edges)
+void SkeletonBuilder::EmitMultiEdgeEvent(std::shared_ptr<MultiEdgeEvent> event, std::shared_ptr<queueSkeletonEvent> queue, std::shared_ptr<std::vector<std::shared_ptr<Edge>>> edges)
 {
 	auto center = event->V;
 	auto edgeList = event->Chain->EdgeList;
@@ -736,12 +736,12 @@ void SkeletonBuilder::EmitPickEvent(std::shared_ptr<PickEvent> event)
 	auto edgeList = event->Chain->EdgeList;
 
 	// lav will be removed so it is final vertex.
-	auto newVertex = std::make_shared<Vertex>(center, event->Distance, LineParametric2d::Empty(), nullptr, nullptr);
+	auto newVertex = std::make_shared<Vertex>(center, event->Distance, std::make_shared<LineParametric2d>(LineParametric2d::Empty()), nullptr, nullptr);
 	newVertex->IsProcessed = true;
 	AddMultiBackFaces(edgeList, newVertex);
 }
 //Renamed due to conflict with class name
-void SkeletonBuilder::EmitMultiSplitEvent(std::shared_ptr<MultiSplitEvent> event, std::shared_ptr<std::unordered_set<std::shared_ptr<CircularList>, CircularList::HashFunction>> sLav, std::shared_ptr<std::priority_queue<std::shared_ptr<SkeletonEvent>>> queue, std::shared_ptr<std::vector<std::shared_ptr<Edge>>> edges)
+void SkeletonBuilder::EmitMultiSplitEvent(std::shared_ptr<MultiSplitEvent> event, std::shared_ptr<std::unordered_set<std::shared_ptr<CircularList>, CircularList::HashFunction>> sLav, std::shared_ptr<queueSkeletonEvent> queue, std::shared_ptr<std::vector<std::shared_ptr<Edge>>> edges)
 {
 	auto chains = event->Chains;
 	auto center = event->V;
@@ -824,7 +824,7 @@ void SkeletonBuilder::AddMultiBackFaces(std::shared_ptr<std::vector<std::shared_
 	}
 }
 
-void SkeletonBuilder::ComputeEvents(std::shared_ptr<Vertex> vertex, std::shared_ptr<std::priority_queue<std::shared_ptr<SkeletonEvent>>> queue, std::shared_ptr<std::vector<std::shared_ptr<Edge>>> edges)
+void SkeletonBuilder::ComputeEvents(std::shared_ptr<Vertex> vertex, std::shared_ptr<queueSkeletonEvent> queue, std::shared_ptr<std::vector<std::shared_ptr<Edge>>> edges)
 {
 	auto distanceSquared = ComputeCloserEdgeEvent(vertex, queue);
 	ComputeSplitEvents(vertex, edges, queue, distanceSquared);
@@ -1098,7 +1098,7 @@ void SkeletonBuilder::ProcessTwoNodeLavs(std::shared_ptr<std::unordered_set<std:
 	}
 }
 
-void SkeletonBuilder::RemoveEventsUnderHeight(std::shared_ptr<std::priority_queue<std::shared_ptr<SkeletonEvent>>> queue, double levelHeight)
+void SkeletonBuilder::RemoveEventsUnderHeight(std::shared_ptr<queueSkeletonEvent> queue, double levelHeight)
 {
 	while (!queue->empty())
 	{

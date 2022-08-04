@@ -1,6 +1,8 @@
 #pragma once
+#include <memory>
 #include "FaceNode.h"
 #include "FaceQueue.h"
+#include "Vertex.h"
 
 class FaceQueueUtil
 {

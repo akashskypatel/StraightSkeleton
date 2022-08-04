@@ -1,6 +1,11 @@
 #include "FaceQueueUtil.h"
 
-inline void FaceQueueUtil::ConnectQueues(spfn firstFace, spfn secondFace)
+void FaceQueueUtil::MoveNodes(spfn firstFace, spfn secondFace)
+{
+	firstFace->AddQueue(secondFace);
+}
+
+void FaceQueueUtil::ConnectQueues(spfn firstFace, spfn secondFace)
 {
 	if (firstFace != nullptr && secondFace != nullptr)
 	{
@@ -30,9 +35,4 @@ inline void FaceQueueUtil::ConnectQueues(spfn firstFace, spfn secondFace)
 			qRight->Close();
 		}
 	}
-}
-
-inline void FaceQueueUtil::MoveNodes(spfn firstFace, spfn secondFace)
-{
-	firstFace->AddQueue(secondFace);
 }
