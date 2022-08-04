@@ -26,7 +26,7 @@ public:
     static double Dot(Vector2d u, Vector2d v);
     static double Perp(Vector2d u, Vector2d v);
     static IntersectPoints IntersectRays2D(LineParametric2d r1, LineParametric2d r2);
-    static bool IsPointInsidePolygon(Vector2d point, std::vector<Vector2d> points);
+    static bool IsPointInsidePolygon(Vector2d point, std::shared_ptr<std::vector<std::shared_ptr<Vector2d>>> points);
     static double Area(std::vector<Vector2d> polygon);
     static bool IsClockwisePolygon(std::vector<Vector2d> polygon);
     static std::vector<Vector2d> MakeCounterClockwise(std::vector<Vector2d>& polygon);

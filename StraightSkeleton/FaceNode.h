@@ -1,5 +1,5 @@
 #pragma once
-#include "FaceQueue.h"
+#include <memory>
 
 class Vertex;
 class FaceQueue;
@@ -9,7 +9,8 @@ private:
 	using spv = std::shared_ptr<Vertex>;
 	using spfn = std::shared_ptr<FaceNode>;
 	spv vertex = nullptr;
-public:	
+public:
+	friend class FaceQueue;
 	spfn Next = nullptr;
 	spfn Previous = nullptr;
 	FaceQueue* List = nullptr;

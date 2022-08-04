@@ -73,7 +73,6 @@ public:
 	void AddNext(spn node, spn newNode);
 	void AddPrevious(spn node, spn newNode);
 	void AddLast(spn node);
-	//void AddLast(spn data);
 	void AddLast(Edge edge);
 	void AddLast(Vertex vertex);
 	void Remove(spn node);

@@ -120,3 +120,13 @@ size_t Vector2d::HashFunction::operator()(const Vector2d& vector) const
 {
 	return (std::hash<double>()(vector.X) * 397) ^ std::hash<double>()(vector.Y);
 }
+
+size_t Vector2d::hash() const
+{
+	return (std::hash<double>()(X) * 397) ^ std::hash<double>()(Y);
+}
+
+bool Vector2d::operator < (const Vector2d& right) const
+{
+	return this->hash() < right.hash();
+}

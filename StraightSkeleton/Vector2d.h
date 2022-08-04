@@ -30,8 +30,10 @@ public:
 	Vector2d& operator *= (Vector2d right);
 	Vector2d& operator *= (double right);
 	Vector2d& operator = (const Vector2d& right);
+	bool operator < (const Vector2d& right) const;
 	bool Equals(Vector2d val) const;
 	std::string ToString() const;
 	static Vector2d Empty();
+	size_t hash() const;
 };
 

@@ -15,7 +15,14 @@ private:
     using spll2d = std::shared_ptr<LineLinear2d>;
     using splp2d = std::shared_ptr<LineParametric2d>;
     using spn = std::shared_ptr<CircularNode>;
+    unsigned int _id;
+    static unsigned int _idCounter;
 public:
+    struct HashFunction
+    {
+        size_t operator()(const Edge& val) const;
+        size_t operator()(const std::shared_ptr<Edge> val) const;
+    };
     friend class CircularNode;
     Edge();
     //Edge(const Edge& val, spn nextNode = nullptr, spn prevNode = nullptr, CircularList* list = nullptr);
@@ -30,5 +37,6 @@ public:
     spll2d lineLinear2d = nullptr;                  // LineLinear2d* lineLinear2d; 
     std::string ToString() const override;
     Edge& operator=(const Edge& val);
+    unsigned int GetInstanceId() const;
 };
 

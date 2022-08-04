@@ -1,5 +1,4 @@
 #include "FaceQueue.h"
-#include "FaceNode.h"
 
 std::shared_ptr<Edge> FaceQueue::GetEdge()
 {
@@ -16,7 +15,7 @@ bool FaceQueue::IsUnconnected()
     return edge == nullptr;
 }
 
-void FaceQueue::AddPush(spfn node, spfn newNode)
+void FaceQueue::AddPush(std::shared_ptr<FaceNode> node, std::shared_ptr<FaceNode> newNode)
 {
     if (!Closed())
     {
@@ -43,7 +42,7 @@ void FaceQueue::AddPush(spfn node, spfn newNode)
     }
 }
 
-void FaceQueue::AddFirst(spfn node)
+void FaceQueue::AddFirst(std::shared_ptr<FaceNode> node)
 {
     if (node->List == nullptr)
     {
@@ -60,7 +59,7 @@ void FaceQueue::AddFirst(spfn node)
     }
 }
 
-std::shared_ptr<FaceNode> FaceQueue::Pop(spfn node)
+std::shared_ptr<FaceNode> FaceQueue::Pop(std::shared_ptr<FaceNode> node)
 {
     if (node->List == this && size > 0 && node->IsEnd())
     {

@@ -244,29 +244,29 @@ PrimitiveUtils::IntersectPoints PrimitiveUtils::IntersectRays2D(LineParametric2d
 ///     <see href="http://paulbourke.net/geometry/insidepoly/" />
 /// </summary>
 
-bool PrimitiveUtils::IsPointInsidePolygon(Vector2d point, std::vector<Vector2d> points)
+bool PrimitiveUtils::IsPointInsidePolygon(Vector2d point, std::shared_ptr<std::vector<std::shared_ptr<Vector2d>>> points)
 {
-    size_t numpoints = points.size();
+    size_t numpoints = points->size();
 
     if (numpoints < 3)
         return false;
 
     size_t it = 0;
-    Vector2d first = points[it];
+    std::shared_ptr<Vector2d> first = points->at(it);
     bool oddNodes = false;
 
     for (size_t i = 0; i < numpoints; i++)
     {
-        Vector2d node1 = points[it];
+        std::shared_ptr<Vector2d> node1 = points->at(it);
         it++;
-        Vector2d node2 = i == numpoints - 1 ? first : points[it];
+        std::shared_ptr<Vector2d> node2 = i == numpoints - 1 ? first : points->at(it);
 
         double x = point.X;
         double y = point.Y;
 
-        if (node1.Y < y && node2.Y >= y || node2.Y < y && node1.Y >= y)
+        if (node1->Y < y && node2->Y >= y || node2->Y < y && node1->Y >= y)
         {
-            if (node1.X + (y - node1.Y) / (node2.Y - node1.Y) * (node2.X - node1.X) < x)
+            if (node1->X + (y - node1->Y) / (node2->Y - node1->Y) * (node2->X - node1->X) < x)
                 oddNodes = !oddNodes;
         }
     }

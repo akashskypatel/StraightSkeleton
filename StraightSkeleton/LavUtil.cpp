@@ -10,7 +10,7 @@ bool LavUtil::IsSameLav(Vertex v1, Vertex v2)
     return v1.List == v2.List;
 }
 
-void LavUtil::RemoveFromLav(Vertex* vertex)
+void LavUtil::RemoveFromLav(std::shared_ptr<Vertex> vertex)
 {
     // if removed or not in list, skip
     if (vertex == nullptr || vertex->List == nullptr)
@@ -26,15 +26,16 @@ void LavUtil::RemoveFromLav(Vertex* vertex)
 /// <param name="endVertex">End vertex.</param>
 /// <returns> List of vertex in the middle between start and end vertex. </returns>
 
-std::vector<Vertex*>* LavUtil::CutLavPart(Vertex* startVertex, Vertex* endVertex, std::vector<Vertex*>* ret)
+std::shared_ptr<std::vector<std::shared_ptr<Vertex>>> LavUtil::CutLavPart(std::shared_ptr<Vertex> startVertex, std::shared_ptr<Vertex> endVertex)
 {
-    size_t size = startVertex->List->Size();
-    Vertex* next = startVertex;
+    auto ret = std::make_shared<std::vector<std::shared_ptr<Vertex>>>();
+    auto size = startVertex->List->Size();
+    auto next = startVertex;
 
     for (size_t i = 0; i < size; i++)
     {
-        Vertex* current = next;
-        next = dynamic_cast<Vertex*>(current->Next.get());
+        auto current = next;
+        next = dynamic_pointer_cast<Vertex>(current->Next);
         current->Remove();
         ret->push_back(current);
 
@@ -52,15 +53,15 @@ std::vector<Vertex*>* LavUtil::CutLavPart(Vertex* startVertex, Vertex* endVertex
 /// <param name="base">Vertex from lav where vertex will be added.</param>
 /// <param name="merged">Vertex from lav where vertex will be removed.</param>
 
-void LavUtil::MergeBeforeBaseVertex(Vertex* base, Vertex* merged)
+void LavUtil::MergeBeforeBaseVertex(std::shared_ptr<Vertex> base, std::shared_ptr<Vertex> merged)
 {
     size_t size = merged->List->Size();
     for (size_t i = 0; i < size; i++)
     {
-        Vertex* nextMerged = dynamic_cast<Vertex*>(merged->Next.get());
+        auto nextMerged = dynamic_pointer_cast<Vertex>(merged->Next);
         nextMerged->Remove();
 
-        base->AddPrevious(std::make_shared<Vertex>(*nextMerged)); //TODO verify
+        base->AddPrevious(nextMerged); //TODO verify
     }
 }
 

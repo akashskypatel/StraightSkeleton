@@ -1,6 +1,6 @@
 #include "Skeleton.h"
 
-Skeleton::Skeleton(std::vector<EdgeResult>* edges, std::map<Vector2d, double>* distances)
+Skeleton::Skeleton(spver edges, spmv2d distances)
 {
 	Edges = edges;
 	Distances = distances;

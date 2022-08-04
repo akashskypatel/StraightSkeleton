@@ -6,10 +6,13 @@
 
 class Skeleton
 {
+private:
+	using spver = std::shared_ptr<std::vector<std::shared_ptr<EdgeResult>>>;
+	using spmv2d = std::shared_ptr<std::map<Vector2d, double>>;
 public:
-	std::vector<EdgeResult>* Edges;
-	std::map<Vector2d, double>* Distances;
-	Skeleton(std::vector<EdgeResult>* edges, std::map<Vector2d, double>* distances);
+	spver Edges;
+	spmv2d Distances;
+	Skeleton(spver edges, spmv2d distances);
 	~Skeleton();
 };
 
