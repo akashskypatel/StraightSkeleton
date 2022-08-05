@@ -28,7 +28,6 @@ public:
     //Edge(const Edge& val, spn nextNode = nullptr, spn prevNode = nullptr, CircularList* list = nullptr);
     Edge(Vector2d begin,Vector2d end, spn nextNode = nullptr, spn prevNode = nullptr, CircularList* list = nullptr);
     Edge(spv2d begin, spv2d end);
-    ~Edge() override;
     spv2d Begin = nullptr;                      // Vector2d* Begin;
     spv2d End = nullptr;                        // Vector2d* End;
     spv2d Norm = nullptr;                       // Vector2d* Norm;

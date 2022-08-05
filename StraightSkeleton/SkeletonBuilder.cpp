@@ -12,8 +12,8 @@ std::shared_ptr<Vertex> SkeletonBuilder::GetEdgeInLav(std::shared_ptr<CircularLi
 {
 	for (auto node : *lav)
 	{
-		auto e = dynamic_pointer_cast<Vertex>(node);
-		auto epn = std::dynamic_pointer_cast<Edge>(e->Previous->Next);
+		auto e = static_pointer_cast<Vertex>(node);
+		auto epn = std::static_pointer_cast<Edge>(e->Previous->Next);
 		if (oppositeEdge == e->PreviousEdge || oppositeEdge == epn) //probably not gonna work
 			return e;
 	}
@@ -57,7 +57,7 @@ std::shared_ptr<LineParametric2d> SkeletonBuilder::CalcBisector(std::shared_ptr<
 
 Skeleton SkeletonBuilder::Build(std::vector<Vector2d>& polygon)
 {
-	std::shared_ptr<std::vector<std::vector<Vector2d>>> holes = std::shared_ptr<std::vector<std::vector<Vector2d>>>();
+	std::shared_ptr<std::vector<std::vector<Vector2d>>> holes = std::make_shared<std::vector<std::vector<Vector2d>>>();
 	return Build(polygon, holes);
 }
 
@@ -73,7 +73,7 @@ Skeleton SkeletonBuilder::Build(std::vector<Vector2d>& polygon, std::shared_ptr<
 
 	InitSlav(polygon, sLav, edges, faces);
 
-	if (holes != nullptr)
+	if (!holes->empty())
 	{
 		for(auto inner : *holes)
 			InitSlav(inner, sLav, edges, faces);
@@ -93,19 +93,19 @@ Skeleton SkeletonBuilder::Build(std::vector<Vector2d>& polygon, std::shared_ptr<
 			// event is outdated some of parent vertex was processed before
 			if (event->IsObsolete())
 				continue;
-
-			if (typeid(event) == typeid(EdgeEvent))
+			
+			if (typeid(*event) == typeid(EdgeEvent))
 				throw std::runtime_error("All edge@events should be converted to MultiEdgeEvents for given level");
-			if (typeid(event) == typeid(SplitEvent))
+			if (typeid(*event) == typeid(SplitEvent))
 				throw std::runtime_error("All split events should be converted to MultiSplitEvents for given level");
-			if (typeid(event) == typeid(MultiSplitEvent))
+			if (typeid(*event) == typeid(MultiSplitEvent))
 				EmitMultiSplitEvent(std::dynamic_pointer_cast<MultiSplitEvent>(event), sLav, queue, edges);
-			else if (typeid(event) == typeid(PickEvent))
+			else if (typeid(*event) == typeid(PickEvent))
 				EmitPickEvent(std::dynamic_pointer_cast<PickEvent>(event));
-			else if (typeid(event) == typeid(MultiEdgeEvent))
+			else if (typeid(*event) == typeid(MultiEdgeEvent))
 				EmitMultiEdgeEvent(std::dynamic_pointer_cast<MultiEdgeEvent>(event), queue, edges);
 			else
-				throw std::runtime_error(std::string("Unknown event type: ") + std::string(typeid(event).name()));
+				throw std::runtime_error(std::string("Unknown event type: ") + std::string(typeid(*event).name()));
 			
 		}
 
@@ -130,7 +130,7 @@ std::shared_ptr<std::vector<Vector2d>> SkeletonBuilder::InitPolygon(std::vector<
 
 std::shared_ptr<std::vector<std::vector<Vector2d>>> SkeletonBuilder::MakeClockwise(std::shared_ptr<std::vector<std::vector<Vector2d>>>& holes)
 {
-	if (holes->size() == 0)
+	if (holes->empty())
 		return holes;
 	for (auto hole : *holes)
 	{
@@ -158,9 +158,9 @@ void SkeletonBuilder::InitSlav(std::vector<Vector2d>& polygon, std::shared_ptr<s
 	}
 	for (auto edge : edgesList)
 	{
-		auto nextEdge =  std::dynamic_pointer_cast<Edge>(edge->Next);
-		auto curEdge = dynamic_pointer_cast<Edge>(edge);
-		auto end = dynamic_pointer_cast<Edge>(edge)->End;
+		auto nextEdge =  std::static_pointer_cast<Edge>(edge->Next);
+		auto curEdge = static_pointer_cast<Edge>(edge);
+		auto end = static_pointer_cast<Edge>(edge)->End;
 		auto bisector = CalcBisector(end, *curEdge, *nextEdge);
 
 		curEdge->BisectorNext = bisector;
@@ -171,15 +171,15 @@ void SkeletonBuilder::InitSlav(std::vector<Vector2d>& polygon, std::shared_ptr<s
 	sLav->insert(lav);
 	for (auto edge : edgesList)
 	{
-		auto curEdge = dynamic_pointer_cast<Edge>(edge);
-		auto nextEdge = std::dynamic_pointer_cast<Edge>(edge->Next);
+		auto curEdge = static_pointer_cast<Edge>(edge);
+		auto nextEdge = std::static_pointer_cast<Edge>(edge->Next);
 		auto vertex = std::make_shared<Vertex>(curEdge->End, 0, curEdge->BisectorNext, curEdge, nextEdge);
 		lav->AddLast(vertex);
 	}
 	for (auto vertex : *lav)
 	{
-		auto next = std::dynamic_pointer_cast<Vertex>(vertex->Next);
-		auto curVertex = dynamic_pointer_cast<Vertex>(vertex);
+		auto next = std::static_pointer_cast<Vertex>(vertex->Next);
+		auto curVertex = static_pointer_cast<Vertex>(vertex);
 		// create face on right site of vertex
 		
 		auto rightFace = std::make_shared<FaceNode>(curVertex);
@@ -344,8 +344,8 @@ std::shared_ptr<SkeletonEvent> SkeletonBuilder::CreateEdgeEvent(std::shared_ptr<
 
 double SkeletonBuilder::ComputeCloserEdgeEvent(std::shared_ptr<Vertex> vertex, std::shared_ptr<queueSkeletonEvent> queue)
 {
-	auto nextVertex = std::dynamic_pointer_cast<Vertex>(vertex->Next);
-	auto previousVertex = std::dynamic_pointer_cast<Vertex>(vertex->Previous);
+	auto nextVertex = std::static_pointer_cast<Vertex>(vertex->Next);
+	auto previousVertex = std::static_pointer_cast<Vertex>(vertex->Previous);
 
 	auto point = vertex->Point;
 
@@ -394,7 +394,7 @@ void SkeletonBuilder::InitEvents(std::shared_ptr<std::unordered_set<std::shared_
 	{
 		for (auto vertex : *lav)
 		{
-			auto curVertex = std::dynamic_pointer_cast<Vertex>(vertex);
+			auto curVertex = std::static_pointer_cast<Vertex>(vertex);
 			ComputeSplitEvents(curVertex, edges, queue, -1);
 		}
 	}
@@ -402,8 +402,8 @@ void SkeletonBuilder::InitEvents(std::shared_ptr<std::unordered_set<std::shared_
 	{
 		for (auto vertex : *lav)
 		{
-			auto curVertex = std::dynamic_pointer_cast<Vertex>(vertex);
-			auto nextVertex = std::dynamic_pointer_cast<Vertex>(vertex->Next);
+			auto curVertex = std::static_pointer_cast<Vertex>(vertex);
+			auto nextVertex = std::static_pointer_cast<Vertex>(vertex->Next);
 			ComputeEdgeEvents(curVertex, nextVertex, queue);
 		}
 	}
@@ -438,7 +438,7 @@ std::shared_ptr<std::vector<std::shared_ptr<SkeletonEvent>>> SkeletonBuilder::Lo
 	level->push_back(levelStart);
 
 	std::shared_ptr<SkeletonEvent> event = nullptr;
-	while ((event = queue->top()) != nullptr &&
+	while (!queue->empty() && (event = queue->top()) != nullptr &&
 		fabs(event->Distance - levelStartHeight) < SplitEpsilon)
 	{
 		auto nextLevelEvent = queue->top();
@@ -544,15 +544,17 @@ std::shared_ptr<SkeletonEvent> SkeletonBuilder::CreateLevelEvent(std::shared_ptr
 	if (chains->size() == 1)
 	{
 		auto chain = chains->at(0);
-		if (chain->ChainType == EChainType::CLOSED_EDGE)
+		if (chain->ChainType() == EChainType::INVALID)
+			throw std::runtime_error("Something went wrong. Invalid chain type.");
+		if (chain->ChainType() == EChainType::CLOSED_EDGE)
 			return std::make_shared<PickEvent>(eventCenter, distance, std::dynamic_pointer_cast<EdgeChain>(chain));
-		if (chain->ChainType == EChainType::EDGE)
+		if (chain->ChainType() == EChainType::EDGE)
 			return std::make_shared<MultiEdgeEvent>(eventCenter, distance, std::dynamic_pointer_cast<EdgeChain>(chain));
-		if (chain->ChainType == EChainType::SPLIT)
+		if (chain->ChainType() == EChainType::SPLIT)
 			return std::make_shared<MultiSplitEvent>(eventCenter, distance, chains);
 	}
 
-	if (std::any_of(chains->begin(), chains->end(), [](const std::shared_ptr<IChain> chain) {return chain->ChainType == EChainType::CLOSED_EDGE; }))
+	if (std::any_of(chains->begin(), chains->end(), [](const std::shared_ptr<IChain> chain) {return chain->ChainType() == EChainType::CLOSED_EDGE; }))
 		throw std::runtime_error("Found closed chain of events for single point, but found more then one chain");
 	return std::make_shared<MultiSplitEvent>(eventCenter, distance, chains);
 }
@@ -710,7 +712,7 @@ void SkeletonBuilder::EmitMultiEdgeEvent(std::shared_ptr<MultiEdgeEvent> event, 
 	auto previousVertex = event->Chain->PreviousVertex();
 	previousVertex->IsProcessed = true;
 
-	auto nextVertex = event->Chain->NextVertex;
+	auto nextVertex = event->Chain->NextVertex();
 	nextVertex->IsProcessed = true;
 
 	auto bisector = CalcBisector(center, *previousVertex->PreviousEdge, *nextVertex->NextEdge);
@@ -718,7 +720,6 @@ void SkeletonBuilder::EmitMultiEdgeEvent(std::shared_ptr<MultiEdgeEvent> event, 
 
 	// left face
 	AddFaceLeft(edgeVertex, previousVertex);
-
 	// right face
 	AddFaceRight(edgeVertex, nextVertex);
 
@@ -761,12 +762,12 @@ void SkeletonBuilder::EmitMultiSplitEvent(std::shared_ptr<MultiSplitEvent> event
 		auto chainBegin = chains->at(i);
 		auto chainEnd = chains->at((i + 1) % edgeListSize);
 
-		auto newVertex = CreateMultiSplitVertex(chainBegin->NextEdge, chainEnd->PreviousEdge, center, event->Distance);
+		auto newVertex = CreateMultiSplitVertex(chainBegin->NextEdge(), chainEnd->PreviousEdge(), center, event->Distance);
 
-		auto beginNextVertex = chainBegin->NextVertex;
-		auto endPreviousVertex = chainEnd->PreviousVertex;
+		auto beginNextVertex = chainBegin->NextVertex();
+		auto endPreviousVertex = chainEnd->PreviousVertex();
 
-		CorrectBisectorDirection(newVertex->Bisector, beginNextVertex, endPreviousVertex, chainBegin->NextEdge, chainEnd->PreviousEdge);
+		CorrectBisectorDirection(newVertex->Bisector, beginNextVertex, endPreviousVertex, chainBegin->NextEdge(), chainEnd->PreviousEdge());
 
 		if (LavUtil::IsSameLav(*beginNextVertex, *endPreviousVertex))
 		{
@@ -798,13 +799,13 @@ void SkeletonBuilder::EmitMultiSplitEvent(std::shared_ptr<MultiSplitEvent> event
 		auto chainBegin = chains->at(i);
 		auto chainEnd = chains->at((i + 1) % edgeListSize);
 
-		LavUtil::RemoveFromLav(chainBegin->CurrentVertex);
-		LavUtil::RemoveFromLav(chainEnd->CurrentVertex);
+		LavUtil::RemoveFromLav(chainBegin->CurrentVertex());
+		LavUtil::RemoveFromLav(chainEnd->CurrentVertex());
 
-		if (chainBegin->CurrentVertex != nullptr)
-			chainBegin->CurrentVertex->IsProcessed = true;
-		if (chainEnd->CurrentVertex != nullptr)
-			chainEnd->CurrentVertex->IsProcessed = true;
+		if (chainBegin->CurrentVertex() != nullptr)
+			chainBegin->CurrentVertex()->IsProcessed = true;
+		if (chainEnd->CurrentVertex() != nullptr)
+			chainEnd->CurrentVertex()->IsProcessed = true;
 	}
 }
 
@@ -812,15 +813,13 @@ void SkeletonBuilder::AddMultiBackFaces(std::shared_ptr<std::vector<std::shared_
 {
 	for(auto edgeEvent : *edgeList)
 	{
-		auto leftVertex = edgeEvent->PreviousVertex;
-		leftVertex->IsProcessed = true;
-		LavUtil::RemoveFromLav(leftVertex);
+		edgeEvent->PreviousVertex->IsProcessed = true;
+		LavUtil::RemoveFromLav(edgeEvent->PreviousVertex);
 
-		auto rightVertex = edgeEvent->NextVertex;
-		rightVertex->IsProcessed = true;
-		LavUtil::RemoveFromLav(rightVertex);
+		edgeEvent->NextVertex->IsProcessed = true;
+		LavUtil::RemoveFromLav(edgeEvent->NextVertex);
 
-		AddFaceBack(edgeVertex, leftVertex, rightVertex);
+		AddFaceBack(edgeVertex, edgeEvent->PreviousVertex, edgeEvent->NextVertex);
 	}
 }
 
@@ -843,7 +842,7 @@ void SkeletonBuilder::CreateOppositeEdgeChains(std::shared_ptr<std::unordered_se
 	for(auto chain : *chains)
 	{
 		// add opposite edges as chain parts
-		if (typeid(chain) == typeid(SplitChain)) //TODO: verify
+		if (typeid(*chain) == typeid(SplitChain)) //TODO: verify
 		{
 			auto splitChain = std::dynamic_pointer_cast<SplitChain>(chain);
 			auto oppositeEdge = splitChain->OppositeEdge();
@@ -884,6 +883,7 @@ void SkeletonBuilder::CreateOppositeEdgeChains(std::shared_ptr<std::unordered_se
 std::shared_ptr<Vertex> SkeletonBuilder::CreateMultiSplitVertex(std::shared_ptr<Edge> nextEdge, std::shared_ptr<Edge> previousEdge, std::shared_ptr<Vector2d> center, double distance)
 {
 	auto bisector = CalcBisector(center, *previousEdge, *nextEdge);
+	std::cout << bisector->ToString() << "\n";
 	// edges are mirrored for@event
 	return std::make_shared<Vertex>(center, distance, bisector, previousEdge, nextEdge);
 }
@@ -896,7 +896,6 @@ void SkeletonBuilder::CorrectBisectorDirection(std::shared_ptr<LineParametric2d>
 	// corrected using location of vertex.
 	auto beginEdge2 = beginNextVertex->PreviousEdge;
 	auto endEdge2 = endPreviousVertex->NextEdge;
-
 	if (beginEdge != beginEdge2 || endEdge != endEdge2)
 		throw std::runtime_error("InvalidOperationException");
 
@@ -915,7 +914,7 @@ void SkeletonBuilder::CorrectBisectorDirection(std::shared_ptr<LineParametric2d>
 
 std::shared_ptr<FaceNode> SkeletonBuilder::AddSplitFaces(std::shared_ptr<FaceNode> lastFaceNode, std::shared_ptr<IChain> chainBegin, std::shared_ptr<IChain> chainEnd, std::shared_ptr<Vertex> newVertex)
 {
-	if (typeid(chainBegin) == typeid(SingleEdgeChain))
+	if (typeid(*chainBegin) == typeid(SingleEdgeChain))
 	{
 		// When chain is generated by opposite edge we need to share face
 		// between two chains. Number of that chains shares is always odd.
@@ -944,12 +943,12 @@ std::shared_ptr<FaceNode> SkeletonBuilder::AddSplitFaces(std::shared_ptr<FaceNod
 	}
 	else
 	{
-		auto beginVertex = chainBegin->CurrentVertex;
+		auto beginVertex = chainBegin->CurrentVertex();
 		// right face
 		AddFaceRight(newVertex, beginVertex);
 	}
 
-	if (typeid(chainEnd) == typeid(SingleEdgeChain))
+	if (typeid(*chainEnd) == typeid(SingleEdgeChain))
 	{
 		// left face
 		if (lastFaceNode == nullptr)
@@ -975,7 +974,7 @@ std::shared_ptr<FaceNode> SkeletonBuilder::AddSplitFaces(std::shared_ptr<FaceNod
 	}
 	else
 	{
-		auto endVertex = chainEnd->CurrentVertex;
+		auto endVertex = chainEnd->CurrentVertex();
 		// left face
 		AddFaceLeft(newVertex, endVertex);
 	}
@@ -1043,7 +1042,7 @@ std::shared_ptr<Vertex> SkeletonBuilder::ChooseOppositeEdgeLav(std::shared_ptr<s
 	auto centerDot = edgeNorm->Dot(centerVector);
 	for(auto end : *edgeLavs)
 	{
-		auto begin = std::dynamic_pointer_cast<Vertex>(end->Previous);
+		auto begin = std::static_pointer_cast<Vertex>(end->Previous);
 		
 		auto beginVector = *begin->Point - *edgeStart;
 		auto endVector = *end->Point - *edgeStart;
@@ -1069,7 +1068,7 @@ std::shared_ptr<Vertex> SkeletonBuilder::ChooseOppositeEdgeLav(std::shared_ptr<s
 		for (size_t i = 0; i < size; i++)
 		{
 			points->push_back(next->Point);
-			next = std::dynamic_pointer_cast<Vertex>(next->Next);
+			next = std::static_pointer_cast<Vertex>(next->Next);
 		}
 		if (PrimitiveUtils::IsPointInsidePolygon(*center, points))
 			return end;
@@ -1083,8 +1082,8 @@ void SkeletonBuilder::ProcessTwoNodeLavs(std::shared_ptr<std::unordered_set<std:
 	{
 		if (lav->Size() == 2)
 		{
-			auto first = std::dynamic_pointer_cast<Vertex>(lav->First());
-			auto last = std::dynamic_pointer_cast<Vertex>(first->Next);
+			auto first = std::static_pointer_cast<Vertex>(lav->First());
+			auto last = std::static_pointer_cast<Vertex>(first->Next);
 
 			FaceQueueUtil::ConnectQueues(first->LeftFace, last->RightFace);
 			FaceQueueUtil::ConnectQueues(first->RightFace, last->LeftFace);
@@ -1110,10 +1109,14 @@ void SkeletonBuilder::RemoveEventsUnderHeight(std::shared_ptr<queueSkeletonEvent
 
 void SkeletonBuilder::RemoveEmptyLav(std::shared_ptr<std::unordered_set<std::shared_ptr<CircularList>, CircularList::HashFunction>> sLav)
 {	
-	for (auto list : *sLav)
+	reset:
+	for (auto list : *sLav) //FIXME: loop keeps going after removing element.
 	{
 		if (list->Size() == 0)
+		{
 			sLav->erase(list);
+			goto reset;
+		}
 	}
 	//std::remove_if(*sLav->begin(), *sLav->end(), [](std::shared_ptr<CircularList> list) {return list->Size() == 0; });
 }
@@ -1130,6 +1133,7 @@ Skeleton SkeletonBuilder::AddFacesToOutput(std::shared_ptr<std::vector<std::shar
 			for(auto fn : *face)
 			{
 				auto point = fn->GetVertex()->Point;
+				std::cout << point->ToString() << "\n";
 				faceList->push_back(point);
 				if (!distances->contains(*point))
 					distances->insert(std::pair<Vector2d,double>(*point, fn->GetVertex()->Distance));
@@ -1147,6 +1151,6 @@ std::shared_ptr<Edge> SkeletonBuilder::VertexOpositeEdge(std::shared_ptr<Vector2
 		return edge;
 
 	if (PrimitiveUtils::IsPointOnRay(*point, *edge->BisectorPrevious, SplitEpsilon))
-		return std::dynamic_pointer_cast<Edge>(edge->Previous);
+		return std::static_pointer_cast<Edge>(edge->Previous);
 	return nullptr;
 }

@@ -28,7 +28,7 @@ public:
     ///     added at the end of lav. The lav end is determined by first added vertex
     ///     to lav.
     /// </summary>
-    static void MoveAllVertexToLavEnd(Vertex* vertex, CircularList* newLaw);
+    static void MoveAllVertexToLavEnd(std::shared_ptr<Vertex> vertex, CircularList& newLaw);
 
 };
 

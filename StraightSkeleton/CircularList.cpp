@@ -17,53 +17,58 @@ CircularList::~CircularList()
 
 void CircularList::AddNext(spn node, spn newNode)
 {
-	if (newNode->List == nullptr) {
+	if (newNode->List != nullptr)
+		throw std::runtime_error("Node is already assigned to different list!");
+	
 
-		newNode->List = this;
+	newNode->List = this;
 
-		newNode->Previous = node;
-		newNode->Next = node->Next;
+	newNode->Previous = node;
+	newNode->Next = node->Next;
 
-		node->Next->Previous = newNode;
-		node->Next = newNode;
+	node->Next->Previous = newNode;
+	node->Next = newNode;
 
-		size++;
-	}
+	size++;
+
 }
 
 void CircularList::AddPrevious(spn node, spn newNode)
 {
-	if (newNode->List == nullptr) {
+	if (newNode->List != nullptr)
+		throw std::runtime_error("Node is already assigned to different list!");
 
-		newNode->List = this;
+	newNode->List = this;
 
-		newNode->Previous = node->Previous;
-		newNode->Next = node;
+	newNode->Previous = node->Previous;
+	newNode->Next = node;
 
-		node->Previous->Next = newNode;
-		node->Previous = newNode;
+	node->Previous->Next = newNode;
+	node->Previous = newNode;
 
-		size++;
-	}
+	size++;
+
 }
 
 void CircularList::AddLast(spn node)
 {
-	if (node->List == nullptr) {
-		if (first == nullptr)
-		{
-			first = node;
-			node->List = this;
-			node->Next = node;
-			node->Previous = node;
-			last = node;
-			size++;
-		}
-		else
-		{
-			AddPrevious(first, node);
-		}
+	if (node->List != nullptr)
+		throw std::runtime_error("Node is already assigned to different list!");
+
+	if (first == nullptr)
+	{
+		first = node;
+		node->List = this;
+		node->Next = node;
+		node->Previous = node;
+		last = node;
+		size++;
 	}
+	else
+	{
+		AddPrevious(first, node);
+	}
+
 
 }
 
@@ -81,26 +86,59 @@ void CircularList::AddLast(Vertex vertex)
 
 void CircularList::Remove(spn node)
 {
-	if (node->List == this && size > 0) {
-		std::cout << "list destructor node: " << node << "\n";
-		node->List = nullptr;
+	if (node->List != this)
+		throw std::runtime_error("Node is not assigned to this list!");
+	if(size <= 0)
+		throw std::runtime_error("List is empty can't remove!");
 
-		if (size == 1)
-		{
-			first = nullptr;
-		}
-		else
-		{
-			if (first == node)
-				first = first->Next;
-			node->Previous->Next = node->Next;
-			node->Next->Previous = node->Previous;
-		}
-		node->Previous = nullptr;
-		node->Next = nullptr;
-		//delete node;
-		size--;
+
+	node->List = nullptr;
+
+	if (size == 1)
+	{
+		first = nullptr;
 	}
+	else
+	{
+		if (first == node)
+			first = first->Next;
+
+		node->Previous->Next = node->Next;
+		node->Next->Previous = node->Previous;
+	}
+	node->Previous = nullptr;
+	node->Next = nullptr;
+
+	size--;
+	
+}
+
+void CircularList::Remove(CircularNode* node)
+{
+	if (node->List != this)
+		throw std::runtime_error("Node is not assigned to this list!");
+	if (size <= 0)
+		throw std::runtime_error("List is empty can't remove!");
+
+
+	node->List = nullptr;
+
+	if (size == 1)
+	{
+		first = nullptr;
+	}
+	else
+	{
+		if (first.get() == node)
+			first = first->Next;
+
+		node->Previous->Next = node->Next;
+		node->Next->Previous = node->Previous;
+	}
+	node->Previous = nullptr;
+	node->Next = nullptr;
+
+	size--;
 }
 
 void CircularList::Clear()

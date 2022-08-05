@@ -16,11 +16,11 @@ public:
     SplitChain(spse event);
     ~SplitChain() override;
     spe OppositeEdge();
-    spe PreviousEdge();
-    spe NextEdge();
-    spv PreviousVertex();
-    spv NextVertex();
-    spv CurrentVertex();
-    EChainType ChainType();
+    spe PreviousEdge() override;
+    spe NextEdge() override;
+    spv PreviousVertex() override;
+    spv NextVertex() override;
+    spv CurrentVertex() override;
+    EChainType ChainType() override;
 };
 

@@ -6,7 +6,7 @@ unsigned int Edge::_idCounter = 0;
 Edge::Edge()
 {
 	_id = ++_idCounter;
-	std::cout << "default ctor " << this << "\n";
+	//std::cout << "default ctor " << this << "\n";
 	Begin = nullptr;
 	End = nullptr;
 	lineLinear2d = nullptr;
@@ -25,7 +25,7 @@ Edge::Edge(const Edge& other, spn nextNode, spn prevNode, CircularList* list) : 
 Edge::Edge(Vector2d begin,Vector2d end, spn nextNode, spn prevNode, CircularList* list) : CircularNode(nextNode, prevNode, list)
 {
 	_id = ++_idCounter;
-	std::cout << "vector2d ctor " << this << "\n";
+	//std::cout << "vector2d ctor " << this << "\n";
 	Begin = std::make_shared<Vector2d>(Vector2d(begin)); 					 // new Vector2d(begin);
 	End = std::make_shared<Vector2d>(Vector2d(end)); 						 // new Vector2d(end);
 	lineLinear2d = std::make_shared<LineLinear2d>(LineLinear2d(begin, end)); // new LineLinear2d(begin, end);
@@ -39,15 +39,6 @@ Edge::Edge(spv2d begin, spv2d end)
 	End = end;
 	lineLinear2d = std::make_shared<LineLinear2d>(LineLinear2d(*begin.get(), *end.get()));
 	Norm = std::make_shared<Vector2d>(Vector2d((*end.get() - *begin.get()).Normalized()));
-}
-
-Edge::~Edge()
-{
-	std::cout << "child destructor " << this << "\n";
-	//delete Begin;
-	//delete End;
-	//delete lineLinear2d;
-	//delete Norm;
 }
 
 std::string Edge::ToString() const

@@ -65,13 +65,6 @@ Vertex::Vertex(spv2d point, double distance, splp2d bisector, spe previousEdge, 
     LeftFace = nullptr;
     RightFace = nullptr;
 }
-Vertex::~Vertex()
-{
-    //delete Point;
-    //delete Bisector;
-    //delete PreviousEdge;
-    //delete NextEdge;
-}
 
 Vertex& Vertex::operator = (const Vertex& other)
 {

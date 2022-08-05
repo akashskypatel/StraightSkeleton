@@ -17,22 +17,22 @@ CircularNode::CircularNode(spn nextNode, spn prevNode, CircularList* list)
 
 CircularNode::~CircularNode()
 {
-	std::cout << "circular node parent destructor\n";
+
 }
 
 void CircularNode::AddNext(spn node)
 {
-	List->AddNext(std::make_shared<CircularNode>(*this), node);
+	List->AddNext(spn(this), node);
 }
 
 void CircularNode::AddPrevious(spn node)
 {
-	List->AddPrevious(std::make_shared<CircularNode>(*this), node);
+	List->AddPrevious(spn(this), node);
 }
 
 void CircularNode::Remove()
 {
-	List->Remove(std::make_shared<CircularNode>(*this));
+	List->Remove(this);
 }
 
 std::string CircularNode::ToString() const

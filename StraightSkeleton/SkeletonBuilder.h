@@ -73,8 +73,8 @@ private:
 			if (x == y)
 				return true; //0;
 
-			auto angle1 = Angle(_center, *x->PreviousEdge->Begin);
-			auto angle2 = Angle(_center, *y->PreviousEdge->Begin);
+			auto angle1 = Angle(_center, *x->PreviousEdge()->Begin);
+			auto angle2 = Angle(_center, *y->PreviousEdge()->Begin);
 
 			return angle1 > angle2;
 			//return angle1 > angle2 ? 1 : -1;

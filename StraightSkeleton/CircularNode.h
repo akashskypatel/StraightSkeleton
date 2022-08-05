@@ -18,6 +18,6 @@ public:
 	void AddNext(spn node);
 	void AddPrevious(spn node);
 	void Remove();
-	virtual std::string ToString() const;
+	virtual std::string ToString() const;	
 };
 

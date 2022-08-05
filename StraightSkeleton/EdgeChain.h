@@ -16,10 +16,11 @@ public:
     spvee EdgeList = nullptr;
     EdgeChain(spvee edgeList);
     ~EdgeChain() override;
-    spe PreviousEdge();
-    spe NextEdge();
-    spv PreviousVertex();
-    spv CurrentVertex();
+    spe PreviousEdge() override;
+    spe NextEdge() override;
+    spv PreviousVertex() override;
+    spv NextVertex() override;
+    spv CurrentVertex() override;
     EChainType ChainType();
 };
 

@@ -17,86 +17,98 @@ bool FaceQueue::IsUnconnected()
 
 void FaceQueue::AddPush(std::shared_ptr<FaceNode> node, std::shared_ptr<FaceNode> newNode)
 {
-    if (!Closed())
+    if (Closed())
+        throw std::runtime_error("Can't add node to closed FaceQueue");
+    
+    if (newNode->List != nullptr)
+        throw std::runtime_error("Node is already assigned to different list!");
+
+    if (node->Previous != nullptr && node->Next != nullptr)
+        throw std::runtime_error("Can't push new node. Node is inside a Queue. New node can by added only at the end of queue.");
+    
+    newNode->List = this;
+    size++;
+
+    if (node->Next == nullptr)
     {
-        if (newNode->List == nullptr && newNode->Previous == nullptr)
-        {
-            newNode->List = this;
-            size++;
+        newNode->Previous = node;
+        newNode->Next = nullptr;
 
-            if (node->Next == nullptr)
-            {
-                newNode->Previous = node;
-                newNode->Next = nullptr;
+        node->Next = newNode;
+    }
+    else
+    {
+        newNode->Previous = nullptr;
+        newNode->Next = node;
 
-                node->Next = newNode;
-            }
-            else
-            {
-                newNode->Previous = nullptr;
-                newNode->Next = node;
-
-                node->Previous = newNode;
-            }
-        }
+        node->Previous = newNode;
     }
 }
 
 void FaceQueue::AddFirst(std::shared_ptr<FaceNode> node)
 {
-    if (node->List == nullptr)
+    if (node->List != nullptr)
+        throw std::runtime_error("Node is already assigned to different list!");
+
+    if (first == nullptr)
     {
-        if (first == nullptr)
-        {
-            first = node;
+        first = node;
 
-            node->List = this;
-            node->Next = nullptr;
-            node->Previous = nullptr;
+        node->List = this;
+        node->Next = nullptr;
+        node->Previous = nullptr;
 
-            size++;
-        }
+        size++;
     }
+    else
+        throw std::runtime_error("First element already exist!");
+    
 }
 
 std::shared_ptr<FaceNode> FaceQueue::Pop(std::shared_ptr<FaceNode> node)
 {
-    if (node->List == this && size > 0 && node->IsEnd())
+    if (node->List != this)
+        throw std::runtime_error("Node is not assigned to this list!");
+    if (size <= 0)
+        throw std::runtime_error("List is empty can't remove!");
+    if(!node->IsEnd())
+        throw std::runtime_error("Can pop only from end of queue!");
+
+
+    node->List = nullptr;
+
+    spfn previous = nullptr;
+
+    if (size == 1)
+        first = nullptr;
+    else
     {
-        node->List = nullptr;
-
-        spfn previous = nullptr;
-
-        if (size == 1)
-            first = nullptr;
-        else
+        if (first == node)
         {
-            if (first == node)
-            {
-                if (node->Next != nullptr)
-                    first = node->Next;
-                else if (node->Previous != nullptr)
-                    first = node->Previous;
-            }
             if (node->Next != nullptr)
-            {
-                node->Next->Previous = nullptr;
-                previous = node->Next;
-            }
+                first = node->Next;
             else if (node->Previous != nullptr)
-            {
-                node->Previous->Next = nullptr;
-                previous = node->Previous;
-            }
+                first = node->Previous;
+            else
+                throw std::runtime_error("Ups ?");
         }
-
-        node->Previous = nullptr;
-        node->Next = nullptr;
-
-        size--;
-        return previous;
+        if (node->Next != nullptr)
+        {
+            node->Next->Previous = nullptr;
+            previous = node->Next;
+        }
+        else if (node->Previous != nullptr)
+        {
+            node->Previous->Next = nullptr;
+            previous = node->Previous;
+        }
     }
-    return nullptr;
+
+    node->Previous = nullptr;
+    node->Next = nullptr;
+
+    size--;
+    return previous;
 }
 
 void FaceQueue::SetEdge(std::shared_ptr<Edge> val)

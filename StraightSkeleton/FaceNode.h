@@ -25,6 +25,6 @@ public:
 	spfn Pop();
 	spfn FindEnd();
 	spfn AddQueue(spfn queue);
-	void QueueClose();	
+	void QueueClose();
 };
 

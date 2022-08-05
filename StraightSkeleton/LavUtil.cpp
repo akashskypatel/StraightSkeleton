@@ -35,7 +35,7 @@ std::shared_ptr<std::vector<std::shared_ptr<Vertex>>> LavUtil::CutLavPart(std::s
     for (size_t i = 0; i < size; i++)
     {
         auto current = next;
-        next = dynamic_pointer_cast<Vertex>(current->Next);
+        next = static_pointer_cast<Vertex>(current->Next);
         current->Remove();
         ret->push_back(current);
 
@@ -71,14 +71,14 @@ void LavUtil::MergeBeforeBaseVertex(std::shared_ptr<Vertex> base, std::shared_pt
 ///     to lav.
 /// </summary>
 
-void LavUtil::MoveAllVertexToLavEnd(Vertex* vertex, CircularList* newLaw)
+void LavUtil::MoveAllVertexToLavEnd(std::shared_ptr<Vertex> vertex, CircularList& newLaw)
 {
     size_t size = vertex->List->Size();
     for (size_t i = 0; i < size; i++)
     {
-        Vertex* ver = vertex;
-        vertex = dynamic_cast<Vertex*>(vertex->Next.get());
+        auto ver = vertex;
+        vertex = static_pointer_cast<Vertex>(vertex->Next);
         ver->Remove();
-        newLaw->AddLast(std::make_shared<Vertex>(*ver)); //TODO: verify
+        newLaw.AddLast(ver); //TODO: verify
     }
 }

@@ -1,8 +1,9 @@
 #pragma once
 enum class EChainType
 {
-	EDGE,
-	CLOSED_EDGE,
-	SPLIT
+	INVALID = -1,
+	EDGE = 0,
+	CLOSED_EDGE = 1,
+	SPLIT = 2
 };
 

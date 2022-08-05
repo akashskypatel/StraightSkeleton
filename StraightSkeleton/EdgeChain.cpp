@@ -3,7 +3,7 @@
 EdgeChain::EdgeChain(spvee edgeList)
 {
     EdgeList = edgeList;
-    _closed = PreviousVertex() == NextVertex;
+    _closed = PreviousVertex() == NextVertex();
 }
 
 EdgeChain::~EdgeChain()
@@ -23,6 +23,11 @@ std::shared_ptr<Edge> EdgeChain::NextEdge()
 std::shared_ptr<Vertex> EdgeChain::PreviousVertex()
 {
     return EdgeList->at(0)->PreviousVertex;
+}
+
+std::shared_ptr<Vertex> EdgeChain::NextVertex()
+{
+    return EdgeList->at(EdgeList->size() - 1)->NextVertex;
 }
 
 std::shared_ptr<Vertex> EdgeChain::CurrentVertex()

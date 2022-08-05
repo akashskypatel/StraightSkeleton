@@ -153,9 +153,6 @@
     <ClCompile Include="IChain.cpp" />
     <ClCompile Include="CircularNode.cpp" />
     <ClCompile Include="LavUtil.cpp" />
-    <ClCompile Include="leaker.cpp">
-      <LanguageStandard Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">stdcpp20</LanguageStandard>
-    </ClCompile>
     <ClCompile Include="LineLinear2d.cpp" />
     <ClCompile Include="LineParametric2d.cpp" />
     <ClCompile Include="Main.cpp" />
@@ -189,7 +186,6 @@
     <ClInclude Include="IChain.h" />
     <ClInclude Include="CircularNode.h" />
     <ClInclude Include="LavUtil.h" />
-    <ClInclude Include="leaker.h" />
     <ClInclude Include="LineLinear2d.h" />
     <ClInclude Include="LineParametric2d.h" />
     <ClInclude Include="MultiEdgeEvent.h" />

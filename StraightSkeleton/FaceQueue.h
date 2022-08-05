@@ -50,10 +50,36 @@ public:
 			return *this;
 		}
 	};
-	Iterator begin() { return Iterator{ first, size }; }
-	Iterator end() { return Iterator{ nullptr, size }; }
-	Iterator cbegin() { return Iterator{ first, size }; }
-	Iterator cend() { return Iterator{ nullptr, size }; }
+	Iterator begin()
+	{ 
+		if(first->IsEnd())
+			return Iterator{ first, size };
+
+		auto current = first;
+		while(current->Previous != nullptr)
+			current = current->Previous;
+			
+		return Iterator{ current, size };
+	}
+	Iterator end() 
+	{ 
+		return Iterator{ nullptr, size }; 
+	}
+	Iterator cbegin() 
+	{ 
+		if (first->IsEnd())
+			return Iterator{ first, size };
+
+		auto current = first;
+		while (current->Previous != nullptr)
+			current = current->Previous;
+
+		return Iterator{ current, size };
+	}
+	Iterator cend() 
+	{ 
+		return Iterator{ nullptr, size }; 
+	}
     std::shared_ptr<Edge> GetEdge();
     bool Closed();
     bool IsUnconnected();

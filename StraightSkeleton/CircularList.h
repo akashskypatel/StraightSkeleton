@@ -6,7 +6,6 @@
 #include "Edge.h"
 #include "Vertex.h"
 #include "CircularNode.h"
-#include "leaker.h" //remove
 
 class CircularList
 {
@@ -76,6 +75,7 @@ public:
 	void AddLast(Edge edge);
 	void AddLast(Vertex vertex);
 	void Remove(spn node);
+	void Remove(CircularNode* node);
 	void Clear();		
 	size_t Size();
 	spn First();

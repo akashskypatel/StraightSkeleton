@@ -135,9 +135,6 @@
     <ClCompile Include="PriorityQueue.cpp">
       <Filter>Source Files\Primitives</Filter>
     </ClCompile>
-    <ClCompile Include="leaker.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="CircularNode.cpp">
       <Filter>Source Files\Circular</Filter>
     </ClCompile>
@@ -229,9 +226,6 @@
     </ClInclude>
     <ClInclude Include="FaceQueueUtil.h">
       <Filter>Header Files\Path</Filter>
-    </ClInclude>
-    <ClInclude Include="leaker.h">
-      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="CircularNode.h">
       <Filter>Header Files\Circular</Filter>
