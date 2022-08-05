@@ -20,19 +20,27 @@ CircularNode::~CircularNode()
 
 }
 
-void CircularNode::AddNext(spn node)
+void CircularNode::AddNext(spn node, spn newNode)
 {
-	List->AddNext(spn(this), node);
+	//throw std::runtime_error("DO NOT USE");
+	List->AddNext(node, newNode);
 }
 
-void CircularNode::AddPrevious(spn node)
+void CircularNode::AddPrevious(spn node, spn newNode)
 {
-	List->AddPrevious(spn(this), node);
+	//throw std::runtime_error("DO NOT USE");
+	List->AddPrevious(node, newNode);
 }
 
 void CircularNode::Remove()
 {
-	List->Remove(this);
+	throw std::runtime_error("DO NOT USE");
+	//List->Remove(this);
+}
+
+void CircularNode::Remove(spn node)
+{
+	List->Remove(node);
 }
 
 std::string CircularNode::ToString() const

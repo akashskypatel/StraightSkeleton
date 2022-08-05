@@ -15,9 +15,10 @@ public:
 	CircularNode();
 	CircularNode(spn nextNode, spn prevNode, CircularList* list);
 	virtual ~CircularNode();
-	void AddNext(spn node);
-	void AddPrevious(spn node);
+	void AddNext(spn node, spn newNode);
+	void AddPrevious(spn node, spn newNode);
 	void Remove();
+	void Remove(spn node);
 	virtual std::string ToString() const;	
 };
 

@@ -15,7 +15,7 @@ void LavUtil::RemoveFromLav(std::shared_ptr<Vertex> vertex)
     // if removed or not in list, skip
     if (vertex == nullptr || vertex->List == nullptr)
         return;
-    vertex->Remove();
+    vertex->Remove(vertex);
 }
 
 /// <summary>
@@ -36,7 +36,7 @@ std::shared_ptr<std::vector<std::shared_ptr<Vertex>>> LavUtil::CutLavPart(std::s
     {
         auto current = next;
         next = static_pointer_cast<Vertex>(current->Next);
-        current->Remove();
+        current->Remove(current);
         ret->push_back(current);
 
         if (current == endVertex)
@@ -59,9 +59,10 @@ void LavUtil::MergeBeforeBaseVertex(std::shared_ptr<Vertex> base, std::shared_pt
     for (size_t i = 0; i < size; i++)
     {
         auto nextMerged = dynamic_pointer_cast<Vertex>(merged->Next);
-        nextMerged->Remove();
+        nextMerged->Remove(nextMerged);
 
-        base->AddPrevious(nextMerged); //TODO verify
+        base->AddPrevious(base, nextMerged); //TODO verify
+       // base->List->AddPrevious(base, nextMerged);
     }
 }
 
@@ -78,7 +79,7 @@ void LavUtil::MoveAllVertexToLavEnd(std::shared_ptr<Vertex> vertex, CircularList
     {
         auto ver = vertex;
         vertex = static_pointer_cast<Vertex>(vertex->Next);
-        ver->Remove();
+        ver->Remove(ver);
         newLaw.AddLast(ver); //TODO: verify
     }
 }

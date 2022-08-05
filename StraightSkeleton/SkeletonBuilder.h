@@ -5,6 +5,7 @@
 #include <memory>
 #include <algorithm>
 #include <limits>
+#include <map>
 #include "Skeleton.h"
 #include "Vertex.h"
 #include "Edge.h"
@@ -23,7 +24,6 @@
 #include "MultiSplitEvent.h"
 #include "LavUtil.h"
 #include "SingleEdgeChain.h"
-#include <map>
 
 class SkeletonEventDistanseComparer
 {
@@ -113,23 +113,43 @@ private:
 		{
 			return left.Distance < right.Distance;
 		}
-	};		
-	using queueSkeletonEvent = std::priority_queue<std::shared_ptr<SkeletonEvent>, std::vector<std::shared_ptr<SkeletonEvent>>, SkeletonEventDistanseComparer>;
-	static std::shared_ptr<std::vector<Vector2d>> InitPolygon(std::vector<Vector2d>& polygon);
-	static void ProcessTwoNodeLavs(std::shared_ptr<std::unordered_set<std::shared_ptr<CircularList>, CircularList::HashFunction>> sLav);
-	static void RemoveEmptyLav(std::shared_ptr<std::unordered_set<std::shared_ptr<CircularList>, CircularList::HashFunction>> sLav);
-	static void AddMultiBackFaces(std::shared_ptr<std::vector<std::shared_ptr<EdgeEvent>>> edgeList, std::shared_ptr<Vertex> edgeVertex);
+	};
+	template<typename T>
+	using sp = std::shared_ptr<T>;
+	template<typename T>
+	using wp = std::weak_ptr<T>;
+	using queueSkeletonEvent = std::priority_queue<sp<SkeletonEvent>, std::vector<sp<SkeletonEvent>>, SkeletonEventDistanseComparer>;
+	using listVector2d = std::vector<Vector2d>;
+	using nestedlistVector2d = std::vector<std::vector<Vector2d>>;
+	using hashsetCircularList = std::unordered_set<sp<CircularList>, CircularList::HashFunction>;
+	using listEdgeEvent = std::vector<sp<EdgeEvent>>;
+	using listEdge = std::vector<sp<Edge>>;
+	using listIChain = std::vector<sp<IChain>>;
+	using listSkeletonEvent = std::vector<sp<SkeletonEvent>>;
+	using hashsetVertex = std::unordered_set<sp<Vertex>, Vertex::HashFunction>;
+	using listFaceQueue = std::vector<sp<FaceQueue>>;
+	using listVertex = std::vector<sp<Vertex>>;
+	
+	//hashsetCircularList sLav;
+	//queueSkeletonEvent queue;
+	//listFaceQueue faces;
+	//listEdge edges;
+
+	static listVector2d InitPolygon(listVector2d& polygon);
+	static void ProcessTwoNodeLavs(sp<hashsetCircularList> sLav);
+	static void RemoveEmptyLav(sp<hashsetCircularList> sLav);
+	static void AddMultiBackFaces(sp<listEdgeEvent> edgeList, sp<Vertex> edgeVertex);
 	//Renamed due to conflict with class name
-	static void EmitMultiEdgeEvent(std::shared_ptr<MultiEdgeEvent> event, std::shared_ptr<queueSkeletonEvent> queue, std::shared_ptr<std::vector<std::shared_ptr<Edge>>> edges);
+	static void EmitMultiEdgeEvent(sp<MultiEdgeEvent> event, sp<queueSkeletonEvent> queue, sp<listEdge> edges);
 	//Renamed due to conflict with class name
-	static void EmitPickEvent(std::shared_ptr<PickEvent> event);
+	static void EmitPickEvent(sp<PickEvent> event);
 	//Renamed due to conflict with class name
-	static void EmitMultiSplitEvent(std::shared_ptr<MultiSplitEvent> event, std::shared_ptr<std::unordered_set<std::shared_ptr<CircularList>, CircularList::HashFunction>> sLav, std::shared_ptr<queueSkeletonEvent> queue, std::shared_ptr<std::vector<std::shared_ptr<Edge>>> edges);
-	static void CorrectBisectorDirection(std::shared_ptr<LineParametric2d> bisector, std::shared_ptr<Vertex> beginNextVertex, std::shared_ptr<Vertex> endPreviousVertex, std::shared_ptr<Edge> beginEdge, std::shared_ptr<Edge> endEdge);
-	static std::shared_ptr<FaceNode> AddSplitFaces(std::shared_ptr<FaceNode> lastFaceNode, std::shared_ptr<IChain> chainBegin, std::shared_ptr<IChain> chainEnd, std::shared_ptr<Vertex> newVertex);
-	static std::shared_ptr<Vertex> CreateOppositeEdgeVertex(std::shared_ptr<Vertex> newVertex);
-	static void CreateOppositeEdgeChains(std::shared_ptr<std::unordered_set<std::shared_ptr<CircularList>, CircularList::HashFunction>> sLav, std::shared_ptr<std::vector<std::shared_ptr<IChain>>> chains, std::shared_ptr<Vector2d> center);
-	static std::shared_ptr<Vertex> CreateMultiSplitVertex(std::shared_ptr<Edge> nextEdge, std::shared_ptr<Edge> previousEdge, std::shared_ptr<Vector2d> center, double distance);
+	static void EmitMultiSplitEvent(sp<MultiSplitEvent> event, sp<hashsetCircularList> sLav, sp<queueSkeletonEvent> queue, sp<listEdge> edges);
+	static void CorrectBisectorDirection(sp<LineParametric2d> bisector, sp<Vertex> beginNextVertex, sp<Vertex> endPreviousVertex, sp<Edge> beginEdge, sp<Edge> endEdge);
+	static std::shared_ptr<FaceNode> AddSplitFaces(sp<FaceNode> lastFaceNode, sp<IChain> chainBegin, sp<IChain> chainEnd, sp<Vertex> newVertex);
+	static std::shared_ptr<Vertex> CreateOppositeEdgeVertex(sp<Vertex> newVertex);
+	static void CreateOppositeEdgeChains(sp<hashsetCircularList> sLav, sp<listIChain> chains, sp<Vector2d> center);
+	static std::shared_ptr<Vertex> CreateMultiSplitVertex(sp<Edge> nextEdge, sp<Edge> previousEdge, sp<Vector2d> center, double distance);
 	/// <summary>
 	///     Create chains of events from cluster. Cluster is set of events which meet
 	///     in the same result point. Try to connect all event which share the same
@@ -138,54 +158,54 @@ private:
 	/// </summary>
 	/// <param name="cluster">Set of event which meet in the same result point</param>
 	/// <returns>chains of events</returns>
-	static std::shared_ptr<std::vector<std::shared_ptr<IChain>>> CreateChains(std::shared_ptr<std::vector<std::shared_ptr<SkeletonEvent>>> cluster);
-	static bool IsInEdgeChain(std::shared_ptr<SplitEvent> split, std::shared_ptr<EdgeChain> chain);
-	static std::shared_ptr<std::vector<std::shared_ptr<EdgeEvent>>> CreateEdgeChain(std::shared_ptr<std::vector<std::shared_ptr<EdgeEvent>>> edgeCluster);
-	static void RemoveEventsUnderHeight(std::shared_ptr<queueSkeletonEvent> queue, double levelHeight);
-	static std::shared_ptr<std::vector<std::shared_ptr<SkeletonEvent>>> LoadAndGroupLevelEvents(std::shared_ptr<queueSkeletonEvent> queue);
-	static std::shared_ptr<std::vector<std::shared_ptr<SkeletonEvent>>> GroupLevelEvents(std::shared_ptr<std::vector<std::shared_ptr<SkeletonEvent>>> levelEvents);
-	static bool IsEventInGroup(std::shared_ptr<std::unordered_set<std::shared_ptr<Vertex>, Vertex::HashFunction>> parentGroup, std::shared_ptr<SkeletonEvent> event);
-	static void AddEventToGroup(std::shared_ptr<std::unordered_set<std::shared_ptr<Vertex>, Vertex::HashFunction>> parentGroup, std::shared_ptr<SkeletonEvent> event);
-	static std::shared_ptr<SkeletonEvent> CreateLevelEvent(std::shared_ptr<Vector2d> eventCenter, double distance, std::shared_ptr<std::vector<std::shared_ptr<SkeletonEvent>>> eventCluster);
+	static sp<listIChain> CreateChains(sp<listSkeletonEvent> cluster);
+	static bool IsInEdgeChain(sp<SplitEvent> split, sp<EdgeChain> chain);
+	static sp<listEdgeEvent> CreateEdgeChain(sp<listEdgeEvent> edgeCluster);
+	static void RemoveEventsUnderHeight(sp<queueSkeletonEvent> queue, double levelHeight);
+	static sp<listSkeletonEvent> LoadAndGroupLevelEvents(sp<queueSkeletonEvent> queue);
+	static sp<listSkeletonEvent> GroupLevelEvents(sp<listSkeletonEvent> levelEvents);
+	static bool IsEventInGroup(sp<hashsetVertex> parentGroup, sp<SkeletonEvent> event);
+	static void AddEventToGroup(sp<hashsetVertex> parentGroup, sp<SkeletonEvent> event);
+	static std::shared_ptr<SkeletonEvent> CreateLevelEvent(sp<Vector2d> eventCenter, double distance, sp<listSkeletonEvent> eventCluster);
 	/// <summary> Loads all not obsolete event which are on one level. As level heigh is taken epsilon. </summary>
-	static std::shared_ptr<std::vector<std::shared_ptr<SkeletonEvent>>> LoadLevelEvents(std::shared_ptr<queueSkeletonEvent> queue);
+	static sp<listSkeletonEvent> LoadLevelEvents(sp<queueSkeletonEvent> queue);
 	static int AssertMaxNumberOfInteraction(int& count);
-	static std::shared_ptr<std::vector<std::vector<Vector2d>>> MakeClockwise(std::shared_ptr<std::vector<std::vector<Vector2d>>>& holes);
-	static std::shared_ptr<std::vector<Vector2d>> MakeCounterClockwise(std::vector<Vector2d>& polygon);
-	static void InitSlav(std::vector<Vector2d>& polygon, std::shared_ptr<std::unordered_set<std::shared_ptr<CircularList>, CircularList::HashFunction>> sLav, std::shared_ptr<std::vector<std::shared_ptr<Edge>>> edges, std::shared_ptr<std::vector<std::shared_ptr<FaceQueue>>> faces);
-	static Skeleton AddFacesToOutput(std::shared_ptr<std::vector<std::shared_ptr<FaceQueue>>> faces);
-	static void InitEvents(std::shared_ptr<std::unordered_set<std::shared_ptr<CircularList>, CircularList::HashFunction>> sLav, std::shared_ptr<queueSkeletonEvent> queue, std::shared_ptr<std::vector<std::shared_ptr<Edge>>> edges);
-	static void ComputeSplitEvents(std::shared_ptr<Vertex> vertex, std::shared_ptr<std::vector<std::shared_ptr<Edge>>> edges, std::shared_ptr<queueSkeletonEvent> queue, double distanceSquared);
-	static void ComputeEvents(std::shared_ptr<Vertex> vertex, std::shared_ptr<queueSkeletonEvent> queue, std::shared_ptr<std::vector<std::shared_ptr<Edge>>> edges);
+	static sp<nestedlistVector2d> MakeClockwise(sp<nestedlistVector2d> holes);
+	static listVector2d MakeCounterClockwise(listVector2d& polygon);
+	static void InitSlav(listVector2d& polygon, sp<hashsetCircularList> sLav, sp<listEdge> edges, sp<listFaceQueue> faces);
+	static Skeleton AddFacesToOutput(sp<listFaceQueue> faces);
+	static void InitEvents(sp<hashsetCircularList> sLav, sp<queueSkeletonEvent> queue, sp<listEdge> edges);
+	static void ComputeSplitEvents(sp<Vertex> vertex, sp<listEdge> edges, sp<queueSkeletonEvent> queue, double distanceSquared);
+	static void ComputeEvents(sp<Vertex> vertex, sp<queueSkeletonEvent> queue, sp<listEdge> edges);
 	/// <summary>
 	///     Calculate two new edge events for given vertex. events are generated
 	///     using current, previous and next vertex in current lav. When two edge
 	///     events are generated distance from source is check. To queue is added
 	///     only closer event or both if they have the same distance.
 	/// </summary>
-	static double ComputeCloserEdgeEvent(std::shared_ptr<Vertex> vertex, std::shared_ptr<queueSkeletonEvent> queue);
-	static std::shared_ptr<SkeletonEvent> CreateEdgeEvent(std::shared_ptr<Vector2d> point, std::shared_ptr<Vertex> previousVertex, std::shared_ptr<Vertex> nextVertex);
-	static void ComputeEdgeEvents(std::shared_ptr<Vertex> previousVertex, std::shared_ptr<Vertex> nextVertex, std::shared_ptr<queueSkeletonEvent> queue);
-	static std::shared_ptr<std::vector<SplitCandidate>> CalcOppositeEdges(std::shared_ptr<Vertex> vertex, std::shared_ptr<std::vector<std::shared_ptr<Edge>>> edges);
+	static double ComputeCloserEdgeEvent(sp<Vertex> vertex, sp<queueSkeletonEvent> queue);
+	static std::shared_ptr<SkeletonEvent> CreateEdgeEvent(sp<Vector2d> point, sp<Vertex> previousVertex, sp<Vertex> nextVertex);
+	static void ComputeEdgeEvents(sp<Vertex> previousVertex, sp<Vertex> nextVertex, sp<queueSkeletonEvent> queue);
+	static std::shared_ptr<std::vector<SplitCandidate>> CalcOppositeEdges(sp<Vertex> vertex, sp<listEdge> edges);
 	static bool EdgeBehindBisector(LineParametric2d bisector, LineLinear2d edge);
-	static std::shared_ptr<SplitCandidate> CalcCandidatePointForSplit(std::shared_ptr<Vertex> vertex, std::shared_ptr<Edge> edge);
-	static std::shared_ptr<Edge> ChoseLessParallelVertexEdge(std::shared_ptr<Vertex> vertex, std::shared_ptr<Edge> edge);
-	static Vector2d ComputeIntersectionBisectors(std::shared_ptr<Vertex> vertexPrevious, std::shared_ptr<Vertex> vertexNext);
-	static std::shared_ptr<Vertex> FindOppositeEdgeLav(std::shared_ptr<std::unordered_set<std::shared_ptr<CircularList>, CircularList::HashFunction>> sLav, std::shared_ptr<Edge> oppositeEdge, std::shared_ptr<Vector2d>center);
-	static std::shared_ptr<Vertex> ChooseOppositeEdgeLav(std::shared_ptr<std::vector<std::shared_ptr<Vertex>>> edgeLavs, std::shared_ptr<Edge> oppositeEdge, std::shared_ptr<Vector2d> center);
-	static std::shared_ptr<std::vector<std::shared_ptr<Vertex>>> FindEdgeLavs(std::shared_ptr<std::unordered_set<std::shared_ptr<CircularList>, CircularList::HashFunction>> sLav, std::shared_ptr<Edge> oppositeEdge, std::shared_ptr<CircularList> skippedLav);
+	static std::shared_ptr<SplitCandidate> CalcCandidatePointForSplit(sp<Vertex> vertex, sp<Edge> edge);
+	static std::shared_ptr<Edge> ChoseLessParallelVertexEdge(sp<Vertex> vertex, sp<Edge> edge);
+	static Vector2d ComputeIntersectionBisectors(sp<Vertex> vertexPrevious, sp<Vertex> vertexNext);
+	static std::shared_ptr<Vertex> FindOppositeEdgeLav(sp<hashsetCircularList> sLav, sp<Edge> oppositeEdge, sp<Vector2d>center);
+	static std::shared_ptr<Vertex> ChooseOppositeEdgeLav(sp<listVertex> edgeLavs, sp<Edge> oppositeEdge, sp<Vector2d> center);
+	static sp<listVertex> FindEdgeLavs(sp<hashsetCircularList> sLav, sp<Edge> oppositeEdge, sp<CircularList> skippedLav);
 	
 	/// <summary>
 		///     Take next lav vertex _AFTER_ given edge, find vertex is always on RIGHT
 		///     site of edge.
 		/// </summary>
-	static std::shared_ptr<Vertex> GetEdgeInLav(std::shared_ptr<CircularList> lav, std::shared_ptr<Edge> oppositeEdge);
-	static void AddFaceBack(std::shared_ptr<Vertex> newVertex, std::shared_ptr<Vertex> va, std::shared_ptr<Vertex> vb);
-	static void AddFaceRight(std::shared_ptr<Vertex> newVertex, std::shared_ptr<Vertex> vb);
-	static void AddFaceLeft(std::shared_ptr<Vertex> newVertex, std::shared_ptr<Vertex> va);
+	static std::shared_ptr<Vertex> GetEdgeInLav(sp<CircularList> lav, sp<Edge> oppositeEdge);
+	static void AddFaceBack(sp<Vertex> newVertex, sp<Vertex> va, sp<Vertex> vb);
+	static void AddFaceRight(sp<Vertex> newVertex, sp<Vertex> vb);
+	static void AddFaceLeft(sp<Vertex> newVertex, sp<Vertex> va);
 	static double CalcDistance(Vector2d intersect, Edge currentEdge);
 	static Vector2d CalcVectorBisector(Vector2d norm1, Vector2d norm2);
-	static std::shared_ptr<LineParametric2d> CalcBisector(std::shared_ptr<Vector2d> p, Edge e1, Edge e2);
+	static sp<LineParametric2d> CalcBisector(sp<Vector2d> p, Edge e1, Edge e2);
 	template<typename T>
 	size_t hash(const std::shared_ptr<T>& ptr)
 	{
@@ -198,9 +218,11 @@ private:
 	}
 
 public:
+	//std::vector<Vector2d> Polygon;
+	//std::vector<std::vector<Vector2d>> Holes;
 	/// <summary> Creates straight skeleton for given polygon. </summary>
-	static Skeleton Build(std::vector<Vector2d>& polygon);
+	static Skeleton Build(listVector2d& polygon);
 	/// <summary> Creates straight skeleton for given polygon with holes. </summary>
-	static Skeleton Build(std::vector<Vector2d>& polygon, std::shared_ptr<std::vector<std::vector<Vector2d>>>& holes);	
+	static Skeleton Build(listVector2d& polygon, sp<nestedlistVector2d> holes);
 };
 
