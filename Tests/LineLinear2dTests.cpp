@@ -3,8 +3,7 @@
 #include <limits>
 #include "pch.h"
 #include "CppUnitTest.h"
-#include "../StraightSkeleton/LineLinear2d.h"
-#include "../StraightSkeleton/LineLinear2d.cpp"
+#include "../StraightSkeleton/SkeletonBuilder.h"
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 

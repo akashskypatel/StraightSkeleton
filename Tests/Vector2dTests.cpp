@@ -2,8 +2,7 @@
 #include <iostream>
 #include "pch.h"
 #include "CppUnitTest.h"
-#include "../StraightSkeleton/Vector2d.h"
-#include "../StraightSkeleton/Vector2d.cpp"
+#include "../StraightSkeleton/SkeletonBuilder.h"
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 

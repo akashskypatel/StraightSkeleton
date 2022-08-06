@@ -24,18 +24,15 @@
     <ClCompile Include="LineLinear2dTests.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="SkeletonTestUtil.cpp">
+    <ClCompile Include="SkeletonLevelEventsTest.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="SkeletonLevelEventsTest.cpp">
+    <ClCompile Include="SkeletonTest.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="SkeletonTestUtil.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

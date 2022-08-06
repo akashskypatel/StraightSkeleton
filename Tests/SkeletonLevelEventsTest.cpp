@@ -1,12 +1,16 @@
 #pragma once
 #include <iostream>
 #include <string>
+#include <vector>
+#include <unordered_set>
+#include <queue>
+#include <memory>
+#include <algorithm>
+#include <limits>
+#include <map>
 #include "pch.h"
 #include "CppUnitTest.h"
-#include "../StraightSkeleton/Vector2d.h"
-#include "../StraightSkeleton/Vector2d.cpp"
 #include "../StraightSkeleton/SkeletonBuilder.h"
-#include "../StraightSkeleton/SkeletonBuilder.cpp"
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 

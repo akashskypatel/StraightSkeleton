@@ -101,6 +101,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <AdditionalLibraryDirectories>$(VCInstallDir)UnitTest\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>..\StraightSkeleton\Debug\*.obj;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -166,14 +167,13 @@
       <LanguageStandard Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">stdcpp20</LanguageStandard>
     </ClCompile>
     <ClCompile Include="SkeletonLevelEventsTest.cpp" />
-    <ClCompile Include="SkeletonTestUtil.cpp" />
+    <ClCompile Include="SkeletonTest.cpp" />
     <ClCompile Include="Vector2dTests.cpp">
       <LanguageStandard Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">stdcpp20</LanguageStandard>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
-    <ClInclude Include="SkeletonTestUtil.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\StraightSkeleton\StraightSkeleton.vcxproj">
