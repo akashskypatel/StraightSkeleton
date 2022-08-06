@@ -38,7 +38,6 @@ Skeleton SkeletonBuilder::Build(listVector2d& polygon, nestedlistVector2d& holes
 		// start processing skeleton level
 		count = AssertMaxNumberOfInteraction(count);
 		auto levelHeight = queue->top()->Distance;
-		std::cout << levelHeight << "\n";
 		auto eventQueue = LoadAndGroupLevelEvents(queue);
 		for (auto event : *eventQueue)
 		{
@@ -803,7 +802,6 @@ Skeleton SkeletonBuilder::AddFacesToOutput(sp<listFaceQueue> faces)
 			for (auto fn : *face)
 			{
 				auto point = fn->GetVertex()->Point;
-				std::cout << point->ToString() << "\n";
 				faceList->push_back(point);
 				if (!distances->contains(*point))
 					distances->insert(std::pair<Vector2d, double>(*point, fn->GetVertex()->Distance));
