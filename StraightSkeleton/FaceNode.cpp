@@ -37,44 +37,45 @@ bool FaceNode::IsEnd()
 {
 	return Next == nullptr || Previous == nullptr;
 }
-void FaceNode::AddPush(spfn node)
+void FaceNode::AddPush(spfn node, spfn newNode)
 {
-	List->AddPush(spfn(this), node);
+	List->AddPush(node, newNode);
 }
-std::shared_ptr<FaceNode> FaceNode::Pop()
+std::shared_ptr<FaceNode> FaceNode::Pop(spfn node)
 {
-	return List->Pop(spfn(this));
+	return List->Pop(node);
 }
-std::shared_ptr<FaceNode> FaceNode::FindEnd()
+//not used
+std::shared_ptr<FaceNode> FaceNode::FindEnd() 
 {
 	if (IsEnd())
-		return spfn(this);
+		return spfn(this); //not gonna work
 
-	spfn current(this);
+	spfn current(this); //not gonna work
 	while (current->Previous != nullptr)
 		current = current->Previous;
 
 	return current;
 }
-std::shared_ptr<FaceNode> FaceNode::AddQueue(spfn queue)
+std::shared_ptr<FaceNode> FaceNode::AddQueue(spfn thisQueue, spfn queue)
 {
 	if (List == queue->List)
 		return nullptr;
 
-	spfn currentQueue(this);
+	//spfn currentQueue(this); //not gonna work
 
 	spfn current(queue);
 
 	while (current != nullptr)
 	{
-		spfn next(current->Pop());
-		currentQueue->AddPush(current);
-		currentQueue = current;
+		spfn next(current->Pop(current));
+		thisQueue->AddPush(thisQueue, current);
+		thisQueue = current;
 
 		current = next;
 	}
 
-	return currentQueue;
+	return thisQueue;
 }
 
 void FaceNode::QueueClose()

@@ -17,7 +17,6 @@ public:
 	virtual ~CircularNode();
 	void AddNext(spn node, spn newNode);
 	void AddPrevious(spn node, spn newNode);
-	void Remove();
 	void Remove(spn node);
 	virtual std::string ToString() const;	
 };

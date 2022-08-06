@@ -1,3 +1,6 @@
+#ifndef MULTISPLITEVENT_H_
+#define MULTISPLITEVENT_H_
+
 #pragma once
 #include <vector>
 #include "SkeletonEvent.h"
@@ -15,3 +18,4 @@ public:
     bool IsObsolete() override;
 };
 
+#endif // !MULTISPLITEVENT_H_

@@ -2,7 +2,7 @@
 
 void FaceQueueUtil::MoveNodes(spfn firstFace, spfn secondFace)
 {
-	firstFace->AddQueue(secondFace);
+	firstFace->AddQueue(firstFace, secondFace);
 }
 
 void FaceQueueUtil::ConnectQueues(spfn firstFace, spfn secondFace)

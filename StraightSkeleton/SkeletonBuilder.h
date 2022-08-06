@@ -1,3 +1,6 @@
+#ifndef SKELETONBUILDER_H_
+#define SKELETONBUILDER_H_
+
 #pragma once
 #include <vector>
 #include <unordered_set>
@@ -30,7 +33,7 @@ class SkeletonEventDistanseComparer
 public:
 	bool operator()(std::shared_ptr<SkeletonEvent> const& left, std::shared_ptr<SkeletonEvent> const& right) const
 	{
-		return left->Distance < right->Distance;
+		return left->Distance > right->Distance;
 	}
 };
 
@@ -66,12 +69,13 @@ private:
 		ChainComparer(Vector2d center)
 		{
 			_center = center;
+			std::cout << _center.ToString() << "\n";
 		}
 
 		bool operator()(std::shared_ptr<IChain> x, std::shared_ptr<IChain> y)
 		{
 			if (x == y)
-				return true; //0;
+				return false; //0;
 
 			auto angle1 = Angle(_center, *x->PreviousEdge()->Begin);
 			auto angle2 = Angle(_center, *y->PreviousEdge()->Begin);
@@ -170,7 +174,7 @@ private:
 	/// <summary> Loads all not obsolete event which are on one level. As level heigh is taken epsilon. </summary>
 	static sp<listSkeletonEvent> LoadLevelEvents(sp<queueSkeletonEvent> queue);
 	static int AssertMaxNumberOfInteraction(int& count);
-	static sp<nestedlistVector2d> MakeClockwise(sp<nestedlistVector2d> holes);
+	static nestedlistVector2d MakeClockwise(nestedlistVector2d holes);
 	static listVector2d MakeCounterClockwise(listVector2d& polygon);
 	static void InitSlav(listVector2d& polygon, sp<hashsetCircularList> sLav, sp<listEdge> edges, sp<listFaceQueue> faces);
 	static Skeleton AddFacesToOutput(sp<listFaceQueue> faces);
@@ -223,6 +227,7 @@ public:
 	/// <summary> Creates straight skeleton for given polygon. </summary>
 	static Skeleton Build(listVector2d& polygon);
 	/// <summary> Creates straight skeleton for given polygon with holes. </summary>
-	static Skeleton Build(listVector2d& polygon, sp<nestedlistVector2d> holes);
+	static Skeleton Build(listVector2d& polygon, nestedlistVector2d& holes);
 };
 
+#endif /* SKELETONBUILDER_H_ */

@@ -21,10 +21,10 @@ public:
 	FaceQueue* GetFaceQueue();
 	bool IsQueueUnconnected();
 	bool IsEnd();
-	void AddPush(spfn node);
-	spfn Pop();
+	void AddPush(spfn node, spfn newNode);
+	spfn Pop(spfn node);
 	spfn FindEnd();
-	spfn AddQueue(spfn queue);
+	spfn AddQueue(spfn thisQueue, spfn queue);
 	void QueueClose();
 };
 

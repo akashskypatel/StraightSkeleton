@@ -13,22 +13,32 @@
 
 int main()
 {	
-	auto polygon = std::make_shared<std::vector<Vector2d>>();
-	polygon->push_back(Vector2d(50, 50));
-	polygon->push_back(Vector2d(150, 50));
-	polygon->push_back(Vector2d(150, 100));
-	polygon->push_back(Vector2d(50, 100));
+	std::vector<Vector2d> polygon = {
+		Vector2d(-2, -2),
+		Vector2d(2, -2),
+		Vector2d(2, 2),
+		Vector2d(-2, 2)
+	};
+
+	std::vector<Vector2d> hole = {
+		Vector2d(-1, 1),
+		Vector2d(1, 1),
+		Vector2d(1, -1),
+		Vector2d(-1, -1)
+	};
+
+	std::vector<std::vector<Vector2d>> holes = { hole };
 
 	//auto expected = new List<Vector2d>{ new Vector2d(75.000000, 75.000000) };
 	//expected.AddRange(polygon);
-
-	for (auto p : *polygon)
+	std::cout << "inital polygon: " << "\n";
+	for (auto p : polygon)
 	{
 		std::cout << p.ToString() << "\n";
 	}
-
-	auto sk = SkeletonBuilder::Build(*polygon);
-	std::cout << sk.Edges->size() << "\n";
+	std::cout << "build: " << "\n";
+	auto sk = SkeletonBuilder::Build(polygon, holes);
+	std::cout << "output: " << "\n";
 	for (auto e : *sk.Distances)
 	{
 		std::cout << e.first.ToString() << "\n";

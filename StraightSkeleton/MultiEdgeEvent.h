@@ -1,3 +1,6 @@
+#ifndef MULTIEDGEEVENT_H_
+#define MULTIEDGEEVENT_H_
+
 #pragma once
 #include "SkeletonEvent.h"
 #include "EdgeChain.h"
@@ -14,3 +17,4 @@ public:
     bool IsObsolete() override;
 };
 
+#endif // !MULTIEDGEEVENT_H_

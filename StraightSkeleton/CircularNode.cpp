@@ -22,20 +22,12 @@ CircularNode::~CircularNode()
 
 void CircularNode::AddNext(spn node, spn newNode)
 {
-	//throw std::runtime_error("DO NOT USE");
 	List->AddNext(node, newNode);
 }
 
 void CircularNode::AddPrevious(spn node, spn newNode)
 {
-	//throw std::runtime_error("DO NOT USE");
 	List->AddPrevious(node, newNode);
-}
-
-void CircularNode::Remove()
-{
-	throw std::runtime_error("DO NOT USE");
-	//List->Remove(this);
 }
 
 void CircularNode::Remove(spn node)

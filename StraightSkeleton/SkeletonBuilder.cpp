@@ -1,15 +1,18 @@
+#ifndef _SKELETONBUILDER_H_
+#define _SKELETONBUILDER_H_
+
 #include "SkeletonBuilder.h"
 #include "CircularList.h"
 
 const double SkeletonBuilder::SplitEpsilon = 1E-10;
 
-Skeleton SkeletonBuilder::Build(std::vector<Vector2d>& polygon)
+Skeleton SkeletonBuilder::Build(listVector2d& polygon)
 {
-	std::shared_ptr<std::vector<std::vector<Vector2d>>> holes = std::make_shared<std::vector<std::vector<Vector2d>>>();
+	std::vector<std::vector<Vector2d>> holes = std::vector<std::vector<Vector2d>>();
 	return Build(polygon, holes);
 }
 
-Skeleton SkeletonBuilder::Build(std::vector<Vector2d>& polygon, sp<std::vector<std::vector<Vector2d>>> holes)
+Skeleton SkeletonBuilder::Build(listVector2d& polygon, nestedlistVector2d& holes)
 {
 	InitPolygon(polygon);
 	MakeClockwise(holes);
@@ -21,9 +24,9 @@ Skeleton SkeletonBuilder::Build(std::vector<Vector2d>& polygon, sp<std::vector<s
 
 	InitSlav(polygon, sLav, edges, faces);
 
-	if (!holes->empty())
+	if (!holes.empty())
 	{
-		for (auto inner : *holes)
+		for (auto inner : holes)
 			InitSlav(inner, sLav, edges, faces);
 	}
 
@@ -35,6 +38,7 @@ Skeleton SkeletonBuilder::Build(std::vector<Vector2d>& polygon, sp<std::vector<s
 		// start processing skeleton level
 		count = AssertMaxNumberOfInteraction(count);
 		auto levelHeight = queue->top()->Distance;
+		std::cout << levelHeight << "\n";
 		auto eventQueue = LoadAndGroupLevelEvents(queue);
 		for (auto event : *eventQueue)
 		{
@@ -110,7 +114,6 @@ reset:
 	}
 }
 
-//Renamed due to conflict with class name
 void SkeletonBuilder::EmitMultiEdgeEvent(sp<MultiEdgeEvent> event, sp<queueSkeletonEvent> queue, sp<listEdge> edges)
 {
 	auto center = event->V;
@@ -153,7 +156,6 @@ void SkeletonBuilder::AddMultiBackFaces(sp<listEdgeEvent> edgeList, sp<Vertex> e
 	}
 }
 
-//Renamed due to conflict with class name
 void SkeletonBuilder::EmitPickEvent(sp<PickEvent> event)
 {
 	auto center = event->V;
@@ -165,7 +167,6 @@ void SkeletonBuilder::EmitPickEvent(sp<PickEvent> event)
 	AddMultiBackFaces(edgeList, newVertex);
 }
 
-//Renamed due to conflict with class name
 void SkeletonBuilder::EmitMultiSplitEvent(sp<MultiSplitEvent> event, sp<hashsetCircularList> sLav, sp<queueSkeletonEvent> queue, sp<listEdge> edges)
 {
 	auto chains = event->Chains;
@@ -719,11 +720,11 @@ int SkeletonBuilder::AssertMaxNumberOfInteraction(int& count)
 	return count;
 }
 
-std::shared_ptr<std::vector<std::vector<Vector2d>>> SkeletonBuilder::MakeClockwise(sp<nestedlistVector2d> holes)
+std::vector<std::vector<Vector2d>> SkeletonBuilder::MakeClockwise(nestedlistVector2d holes)
 {
-	if (holes->empty())
+	if (holes.empty())
 		return holes;
-	for (auto hole : *holes)
+	for (auto hole : holes)
 	{
 		if (!PrimitiveUtils::IsClockwisePolygon(hole))
 		{
@@ -785,7 +786,7 @@ void SkeletonBuilder::InitSlav(listVector2d& polygon, sp<hashsetCircularList> sL
 
 		// create face on left site of next vertex
 		auto leftFace = std::make_shared<FaceNode>(next);
-		rightFace->AddPush(leftFace);
+		rightFace->AddPush(rightFace, leftFace);
 		next->LeftFace = leftFace;
 	}
 }
@@ -802,6 +803,7 @@ Skeleton SkeletonBuilder::AddFacesToOutput(sp<listFaceQueue> faces)
 			for (auto fn : *face)
 			{
 				auto point = fn->GetVertex()->Point;
+				std::cout << point->ToString() << "\n";
 				faceList->push_back(point);
 				if (!distances->contains(*point))
 					distances->insert(std::pair<Vector2d, double>(*point, fn->GetVertex()->Distance));
@@ -1043,7 +1045,7 @@ std::shared_ptr<Vertex> SkeletonBuilder::ChooseOppositeEdgeLav(sp<listVertex> ed
 		return nullptr;
 
 	if (edgeLavs->size() == 1)
-		return edgeLavs->front();
+		return edgeLavs->at(0);
 
 	auto edgeStart = oppositeEdge->Begin;
 	auto edgeNorm = oppositeEdge->Norm;
@@ -1072,7 +1074,7 @@ std::shared_ptr<Vertex> SkeletonBuilder::ChooseOppositeEdgeLav(sp<listVertex> ed
 	for (auto end : *edgeLavs)
 	{
 		auto size = end->List->Size();
-		auto points = std::make_shared<std::vector<std::shared_ptr<Vector2d>>>(size);
+		auto points = std::make_shared<std::vector<std::shared_ptr<Vector2d>>>(); //CHANGED
 		auto next = end;
 		for (size_t i = 0; i < size; i++)
 		{
@@ -1115,21 +1117,21 @@ std::shared_ptr<Vertex> SkeletonBuilder::GetEdgeInLav(sp<CircularList> lav, sp<E
 void SkeletonBuilder::AddFaceBack(sp<Vertex> newVertex, sp<Vertex> va, sp<Vertex> vb)
 {
 	auto fn = std::make_shared<FaceNode>(newVertex);
-	va->RightFace->AddPush(fn);
+	va->RightFace->AddPush(va->RightFace, fn);
 	FaceQueueUtil::ConnectQueues(fn, vb->LeftFace);
 }
 
 void SkeletonBuilder::AddFaceRight(sp<Vertex> newVertex, sp<Vertex> vb)
 {
 	std::shared_ptr<FaceNode> fn = std::make_shared<FaceNode>(newVertex);
-	vb->RightFace->AddPush(fn);
+	vb->RightFace->AddPush(vb->RightFace, fn);
 	newVertex->RightFace = fn;
 }
 
 void SkeletonBuilder::AddFaceLeft(sp<Vertex> newVertex, sp<Vertex> va)
 {
 	std::shared_ptr<FaceNode> fn = std::make_shared<FaceNode>(newVertex);
-	va->LeftFace->AddPush(fn);
+	va->LeftFace->AddPush(va->LeftFace, fn);
 	newVertex->LeftFace = fn;
 }
 
@@ -1154,3 +1156,4 @@ Vector2d SkeletonBuilder::CalcVectorBisector(Vector2d norm1, Vector2d norm2)
 	return PrimitiveUtils::BisectorNormalized(norm1, norm2);
 }
 
+#endif // !_SKELETONBUILDER_H_
