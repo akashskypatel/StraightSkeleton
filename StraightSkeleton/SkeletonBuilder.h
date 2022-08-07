@@ -9,6 +9,7 @@
 #include <algorithm>
 #include <limits>
 #include <map>
+#include <list>
 #include "Skeleton.h"
 #include "Vertex.h"
 #include "Edge.h"
@@ -69,17 +70,17 @@ private:
 		ChainComparer(Vector2d center)
 		{
 			_center = center;
-			std::cout << _center.ToString() << "\n";
+			//std::cout << _center.ToString() << "\n";
 		}
 
 		bool operator()(std::shared_ptr<IChain> x, std::shared_ptr<IChain> y)
 		{
 			if (x == y)
-				return false; //0;
+				return true; //0;
 
-			auto angle1 = Angle(_center, *x->PreviousEdge()->Begin);
-			auto angle2 = Angle(_center, *y->PreviousEdge()->Begin);
-
+			auto angle1 = Angle(_center, *y->PreviousEdge()->Begin);
+			auto angle2 = Angle(_center, *x->PreviousEdge()->Begin);
+			//std::cout << std::format("center: {0} : {1} , {2} , {3}\n", _center.ToString(), angle1, angle2, angle1 > angle2);
 			return angle1 > angle2;
 			//return angle1 > angle2 ? 1 : -1;
 		}
@@ -127,7 +128,7 @@ private:
 	using nestedlistVector2d = std::vector<std::vector<Vector2d>>;
 	using hashsetCircularList = std::unordered_set<sp<CircularList>, CircularList::HashFunction>;
 	using listEdgeEvent = std::vector<sp<EdgeEvent>>;
-	using listEdge = std::vector<sp<Edge>>;
+	using listEdge = std::list<sp<Edge>>;
 	using listIChain = std::vector<sp<IChain>>;
 	using listSkeletonEvent = std::vector<sp<SkeletonEvent>>;
 	using hashsetVertex = std::unordered_set<sp<Vertex>, Vertex::HashFunction>;
@@ -174,7 +175,7 @@ private:
 	/// <summary> Loads all not obsolete event which are on one level. As level heigh is taken epsilon. </summary>
 	static sp<listSkeletonEvent> LoadLevelEvents(sp<queueSkeletonEvent> queue);
 	static int AssertMaxNumberOfInteraction(int& count);
-	static nestedlistVector2d MakeClockwise(nestedlistVector2d holes);
+	static nestedlistVector2d MakeClockwise(nestedlistVector2d& holes);
 	static listVector2d MakeCounterClockwise(listVector2d& polygon);
 	static void InitSlav(listVector2d& polygon, sp<hashsetCircularList> sLav, sp<listEdge> edges, sp<listFaceQueue> faces);
 	static Skeleton AddFacesToOutput(sp<listFaceQueue> faces);

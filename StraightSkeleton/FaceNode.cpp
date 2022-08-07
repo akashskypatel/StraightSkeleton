@@ -26,7 +26,7 @@ std::shared_ptr<Vertex> FaceNode::GetVertex()
 
 bool FaceNode::IsQueueUnconnected()
 {
-	return false;
+	return List->GetEdge() == nullptr;
 }
 bool FaceNode::IsEnd()
 {

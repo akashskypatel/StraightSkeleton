@@ -24,18 +24,18 @@ void FaceQueueUtil::ConnectQueues(spfn firstFace, spfn secondFace)
 		firstFace->QueueClose();
 		return;
 	}
-	if (!firstFace->IsQueueUnconnected() && !secondFace->IsQueueUnconnected())
+	if (!firstFace->IsQueueUnconnected() && !secondFace->IsQueueUnconnected()) //ERROR HERE
 		throw std::runtime_error("can't connect two diffrent queues if each of them is connected to edge");
 
 	if (!firstFace->IsQueueUnconnected())
 	{
-		FaceQueue* qLeft = secondFace->List;
+		std::shared_ptr<FaceQueue> qLeft = secondFace->List;
 		MoveNodes(firstFace, secondFace);
 		qLeft->Close();
 	}
 	else
 	{
-		FaceQueue* qRight = firstFace->List;
+		std::shared_ptr<FaceQueue> qRight = firstFace->List;
 		MoveNodes(secondFace, firstFace);
 		qRight->Close();
 	}

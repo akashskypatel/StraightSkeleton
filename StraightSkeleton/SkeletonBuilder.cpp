@@ -20,7 +20,7 @@ Skeleton SkeletonBuilder::Build(listVector2d& polygon, nestedlistVector2d& holes
 	auto queue = std::make_shared<queueSkeletonEvent>(); //new PriorityQueue<SkeletonEvent>(3, new SkeletonEventDistanseComparer());	
 	auto sLav = std::make_shared<std::unordered_set<std::shared_ptr<CircularList>, CircularList::HashFunction>>();// new HashSet<CircularList<Vertex>>();
 	auto faces = std::make_shared<std::vector<std::shared_ptr<FaceQueue>>>();// new List<FaceQueue>();
-	auto edges = std::make_shared<std::vector<std::shared_ptr<Edge>>>();// new List<Edge>();
+	auto edges = std::make_shared<std::list<std::shared_ptr<Edge>>>();// new List<Edge>();
 
 	InitSlav(polygon, sLav, edges, faces);
 
@@ -38,6 +38,7 @@ Skeleton SkeletonBuilder::Build(listVector2d& polygon, nestedlistVector2d& holes
 		// start processing skeleton level
 		count = AssertMaxNumberOfInteraction(count);
 		auto levelHeight = queue->top()->Distance;
+		//std::cout << levelHeight << "\n";
 		auto eventQueue = LoadAndGroupLevelEvents(queue);
 		for (auto event : *eventQueue)
 		{
@@ -161,7 +162,7 @@ void SkeletonBuilder::EmitPickEvent(sp<PickEvent> event)
 	auto edgeList = event->Chain->EdgeList;
 
 	// lav will be removed so it is final vertex.
-	auto newVertex = std::make_shared<Vertex>(center, event->Distance, std::make_shared<LineParametric2d>(LineParametric2d::Empty()), nullptr, nullptr);
+	auto newVertex = std::make_shared<Vertex>(center, event->Distance, std::make_shared<LineParametric2d>(), nullptr, nullptr);
 	newVertex->IsProcessed = true;
 	AddMultiBackFaces(edgeList, newVertex);
 }
@@ -170,10 +171,9 @@ void SkeletonBuilder::EmitMultiSplitEvent(sp<MultiSplitEvent> event, sp<hashsetC
 {
 	auto chains = event->Chains;
 	auto center = event->V;
-
+	//std::cout << center->ToString() << "\n";
 	CreateOppositeEdgeChains(sLav, chains, center);
-
-	//chains.Sort(new ChainComparer(center));
+	
 	std::sort(chains->begin(), chains->end(), SkeletonBuilder::ChainComparer(*center));
 
 	// face node for split@event is shared between two chains
@@ -342,9 +342,9 @@ std::shared_ptr<Vertex> SkeletonBuilder::CreateOppositeEdgeVertex(sp<Vertex> new
 	vertex->RightFace = fn;
 
 	// add one node for queue to present opposite site of edge split@event
-	auto rightFace = std::make_shared<FaceQueue>();
+	auto rightFace = FaceQueue::Create();
 	rightFace->AddFirst(fn);
-
+	//std::cout << vertex->RightFace << " : " << vertex->RightFace->List << " : " << vertex->Point->ToString() << "\n";
 	return vertex;
 }
 
@@ -719,11 +719,11 @@ int SkeletonBuilder::AssertMaxNumberOfInteraction(int& count)
 	return count;
 }
 
-std::vector<std::vector<Vector2d>> SkeletonBuilder::MakeClockwise(nestedlistVector2d holes)
+std::vector<std::vector<Vector2d>> SkeletonBuilder::MakeClockwise(nestedlistVector2d& holes)
 {
 	if (holes.empty())
 		return holes;
-	for (auto hole : holes)
+	for (auto& hole : holes)
 	{
 		if (!PrimitiveUtils::IsClockwisePolygon(hole))
 		{
@@ -745,7 +745,9 @@ void SkeletonBuilder::InitSlav(listVector2d& polygon, sp<hashsetCircularList> sL
 	for (size_t i = 0; i < size; i++)
 	{
 		size_t j = (i + 1) % size;
-		edgesList.AddLast(std::make_shared<Edge>(polygon.at(i), polygon.at(j)));
+		auto newEdge = std::make_shared<Edge>(polygon.at(i), polygon.at(j));
+		//std::cout << std::format("curEdge: {0} , {1}\n", polygon.at(i).ToString(), polygon.at(j).ToString());
+		edgesList.AddLast(newEdge);
 	}
 	for (auto edge : edgesList)
 	{
@@ -753,7 +755,7 @@ void SkeletonBuilder::InitSlav(listVector2d& polygon, sp<hashsetCircularList> sL
 		auto curEdge = static_pointer_cast<Edge>(edge);
 		auto end = static_pointer_cast<Edge>(edge)->End;
 		auto bisector = CalcBisector(end, *curEdge, *nextEdge);
-
+		
 		curEdge->BisectorNext = bisector;
 		nextEdge->BisectorPrevious = bisector;
 		edges->push_back(curEdge);
@@ -769,14 +771,15 @@ void SkeletonBuilder::InitSlav(listVector2d& polygon, sp<hashsetCircularList> sL
 	}
 	for (auto vertex : *lav)
 	{
-		auto next = std::static_pointer_cast<Vertex>(vertex->Next);
 		auto curVertex = static_pointer_cast<Vertex>(vertex);
-
+		auto next = std::static_pointer_cast<Vertex>(vertex->Next);
+		
+		//std::cout << curVertex->Point->ToString() << "\n";
 		// create face on right site of vertex
 
 		auto rightFace = std::make_shared<FaceNode>(curVertex);
 
-		auto faceQueue = std::make_shared<FaceQueue>();
+		auto faceQueue = FaceQueue::Create();
 		faceQueue->SetEdge(curVertex->NextEdge);
 
 		faceQueue->AddFirst(rightFace);
@@ -787,6 +790,7 @@ void SkeletonBuilder::InitSlav(listVector2d& polygon, sp<hashsetCircularList> sL
 		auto leftFace = std::make_shared<FaceNode>(next);
 		rightFace->AddPush(rightFace, leftFace);
 		next->LeftFace = leftFace;
+		//std::cout << curVertex->RightFace->List << "\n";
 	}
 }
 
@@ -837,13 +841,14 @@ void SkeletonBuilder::InitEvents(sp<hashsetCircularList> sLav, sp<queueSkeletonE
 void SkeletonBuilder::ComputeSplitEvents(sp<Vertex> vertex, sp<listEdge> edges, sp<queueSkeletonEvent> queue, double distanceSquared)
 {
 	auto source = vertex->Point;
+	//std::cout << source->ToString() << "\n";
 	auto oppositeEdges = CalcOppositeEdges(vertex, edges);
 
 	// check if it is vertex split event
 	for (auto oppositeEdge : *oppositeEdges)
 	{
 		auto point = oppositeEdge.Point;
-
+		//std::cout << std::format("point: {0}", point->ToString()) << "\n";
 		if (fabs(distanceSquared - (-1)) > SplitEpsilon)
 		{
 			if (source->DistanceSquared(*point) > distanceSquared + SplitEpsilon)
@@ -860,12 +865,14 @@ void SkeletonBuilder::ComputeSplitEvents(sp<Vertex> vertex, sp<listEdge> edges, 
 		}
 
 		// check if it is vertex split event
-		if (*oppositeEdge.OppositePoint != Vector2d::Empty())
+		if (!oppositeEdge.OppositePoint->IsEmpty())
 		{
+			//std::cout << std::format("opposite: {0} : {1}",point->ToString(), oppositeEdge.Distance) << "\n";
 			// some of vertex event can share the same opposite point
 			queue->push(std::make_shared<VertexSplitEvent>(point, oppositeEdge.Distance, vertex));
 			continue;
 		}
+		//std::cout << std::format("point: {0} : {1}", point->ToString(), oppositeEdge.Distance) << "\n";
 		queue->push(std::make_shared<SplitEvent>(point, oppositeEdge.Distance, vertex, oppositeEdge.OppositeEdge));
 	}
 }
@@ -888,15 +895,15 @@ double SkeletonBuilder::ComputeCloserEdgeEvent(sp<Vertex> vertex, sp<queueSkelet
 	auto point1 = std::make_shared<Vector2d>(ComputeIntersectionBisectors(vertex, nextVertex));
 	auto point2 = std::make_shared<Vector2d>(ComputeIntersectionBisectors(previousVertex, vertex));
 
-	if (*point1 == Vector2d::Empty() && *point2 == Vector2d::Empty())
+	if (point1->IsEmpty() && point2->IsEmpty())
 		return -1;
 
 	auto distance1 = DBL_MAX;
 	auto distance2 = DBL_MAX;
 
-	if (*point1 != Vector2d::Empty())
+	if (!point1->IsEmpty())
 		distance1 = point->DistanceSquared(*point1);
-	if (*point2 != Vector2d::Empty())
+	if (!point2->IsEmpty())
 		distance2 = point->DistanceSquared(*point2);
 
 	if (fabs(distance1 - SplitEpsilon) < distance2)
@@ -915,7 +922,7 @@ std::shared_ptr<SkeletonEvent> SkeletonBuilder::CreateEdgeEvent(sp<Vector2d> poi
 void SkeletonBuilder::ComputeEdgeEvents(sp<Vertex> previousVertex, sp<Vertex> nextVertex, sp<queueSkeletonEvent> queue)
 {
 	auto point = std::make_shared<Vector2d>(ComputeIntersectionBisectors(previousVertex, nextVertex));
-	if (*point != Vector2d::Empty())
+	if (!point->IsEmpty())
 		queue->push(CreateEdgeEvent(point, previousVertex, nextVertex));
 }
 
@@ -929,11 +936,12 @@ std::shared_ptr<Edge> SkeletonBuilder::VertexOpositeEdge(sp<Vector2d> point, sp<
 	return nullptr;
 }
 
-std::shared_ptr<std::vector<SkeletonBuilder::SplitCandidate>> SkeletonBuilder::CalcOppositeEdges(sp<Vertex> vertex, sp<std::vector<sp<Edge>>> edges)
+std::shared_ptr<std::vector<SkeletonBuilder::SplitCandidate>> SkeletonBuilder::CalcOppositeEdges(sp<Vertex> vertex, sp<listEdge> edges)
 {
 	auto ret = std::make_shared<std::vector<SkeletonBuilder::SplitCandidate>>();
 	for (auto edgeEntry : *edges)
 	{
+		//std::cout << edgeEntry->ToString() << "\n";
 		auto edge = edgeEntry->lineLinear2d;
 		// check if edge is behind bisector
 		if (EdgeBehindBisector(*vertex->Bisector, *edge))
@@ -942,7 +950,10 @@ std::shared_ptr<std::vector<SkeletonBuilder::SplitCandidate>> SkeletonBuilder::C
 		// compute the coordinates of the candidate point Bi
 		auto candidatePoint = CalcCandidatePointForSplit(vertex, edgeEntry);
 		if (candidatePoint != nullptr)
+		{
+			//std::cout << candidatePoint->Point->ToString() << "\n";
 			ret->push_back(*candidatePoint);
+		}
 	}
 	std::sort(ret->begin(), ret->end(), SkeletonBuilder::SplitCandidateComparer());
 	return ret;
@@ -950,7 +961,12 @@ std::shared_ptr<std::vector<SkeletonBuilder::SplitCandidate>> SkeletonBuilder::C
 
 bool SkeletonBuilder::EdgeBehindBisector(LineParametric2d bisector, LineLinear2d edge)
 {
-	return LineParametric2d::Collide(bisector, edge, SplitEpsilon) == Vector2d::Empty();
+	// Simple intersection test between the bisector starting at V and the
+	// whole line containing the currently tested line segment ei rejects
+	// the line segments laying "behind" the vertex V
+	auto collide = LineParametric2d::Collide(bisector, edge, SplitEpsilon);
+	//std::cout << std::format("collide: {0} : {1}\n", collide.IsEmpty(), edge.ToString());
+	return collide.IsEmpty();
 }
 
 std::shared_ptr<SkeletonBuilder::SplitCandidate> SkeletonBuilder::CalcCandidatePointForSplit(sp<Vertex> vertex, sp<Edge> edge)
@@ -960,12 +976,13 @@ std::shared_ptr<SkeletonBuilder::SplitCandidate> SkeletonBuilder::CalcCandidateP
 		return nullptr;
 
 	const auto& vertexEdteNormNegate = *vertexEdge->Norm;
+	//std::cout << std::format("{0} | {1}", vertexEdteNormNegate.ToString(), edge->Norm->ToString()) << "\n";
 	auto edgesBisector = CalcVectorBisector(vertexEdteNormNegate, *edge->Norm);
 	auto edgesCollide = vertexEdge->lineLinear2d->Collide(*edge->lineLinear2d);
 
 	// Check should be performed to exclude the case when one of the
 	// line segments starting at V is parallel to ei.
-	if (edgesCollide == Vector2d::Empty())
+	if (edgesCollide.IsEmpty())
 		throw std::runtime_error("Ups this should not happen");
 
 	auto edgesBisectorLine = std::make_shared<LineLinear2d>(LineParametric2d(edgesCollide, edgesBisector).CreateLinearForm());
@@ -975,7 +992,7 @@ std::shared_ptr<SkeletonBuilder::SplitCandidate> SkeletonBuilder::CalcCandidateP
 	// the edges starting at V and the tested line segment ei
 	auto candidatePoint = std::make_shared<Vector2d>(LineParametric2d::Collide(*vertex->Bisector, *edgesBisectorLine, SplitEpsilon));
 
-	if (*candidatePoint == Vector2d::Empty())
+	if (candidatePoint->IsEmpty())
 		return nullptr;
 
 	if (edge->BisectorPrevious->IsOnRightSite(*candidatePoint, SplitEpsilon)
@@ -1002,7 +1019,7 @@ std::shared_ptr<Edge> SkeletonBuilder::ChoseLessParallelVertexEdge(sp<Vertex> ve
 
 	auto edgeADot = fabs(edge->Norm->Dot(*edgeA->Norm));
 	auto edgeBDot = fabs(edge->Norm->Dot(*edgeB->Norm));
-
+	//std::cout << (edgeADot + edgeBDot) << "\n";
 	// both lines are parallel to given edge
 	if (edgeADot + edgeBDot >= 2 - SplitEpsilon)
 		return nullptr;

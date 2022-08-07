@@ -27,10 +27,8 @@ bool FaceQueue::IsUnconnected()
 
 void FaceQueue::AddPush(spfn node, spfn newNode)
 {
-    (node->GetVertex());
     if (Closed())
     {
-        std::cout << (newNode->List == nullptr) << "\n";
         throw std::runtime_error("Can't add node to closed FaceQueue");
     }
     
@@ -40,7 +38,9 @@ void FaceQueue::AddPush(spfn node, spfn newNode)
     }
 
     if (node->Previous != nullptr && node->Next != nullptr)
+    {
         throw std::runtime_error("Can't push new node. Node is inside a Queue. New node can by added only at the end of queue.");
+    }
     
     newNode->List = this->getptr();
     size++;

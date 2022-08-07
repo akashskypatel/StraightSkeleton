@@ -20,7 +20,6 @@ static bool EqualEpsilon(double d1, double d2)
 static bool ContainsEpsilon(std::vector<Vector2d> list, const Vector2d p)
 {
     return std::any_of(list.begin(), list.end(), [&p](Vector2d l) { return EqualEpsilon(l.X, p.X) && EqualEpsilon(l.Y, p.Y); });
-    //list.Any(l = > EqualEpsilon(l.X, p.X) && EqualEpsilon(l.Y, p.Y));
 }
 
 static std::vector<Vector2d> GetFacePoints(Skeleton sk)
@@ -56,7 +55,6 @@ static bool AssertExpectedPoints(std::vector<Vector2d> expectedList, std::vector
 
     if (sb.tellp() > 0)
     {
-        std::cout << sb.str();
         return false;
     }
     else
@@ -68,10 +66,10 @@ static bool AssertExpectedPoints(std::vector<Vector2d> expectedList, std::vector
 int main()
 {	
     std::vector<Vector2d> polygon = {
-        Vector2d(0.0, 0.0),
-        Vector2d(7.087653026630875, -0.0572739636795121),
-        Vector2d(7.035244566479503, -6.5428208800475005),
-        Vector2d(-0.052408459722688594, -6.485546915224834)
+                Vector2d(0.0, 0.0),
+                Vector2d(7.087653026630875, -0.0572739636795121),
+                Vector2d(7.035244566479503, -6.5428208800475005),
+                Vector2d(-0.052408459722688594, -6.485546915224834)
     };
 
     std::vector<Vector2d> hole = {
@@ -111,6 +109,6 @@ int main()
 	{
 		std::cout << e.first.ToString() << "\n";
 	}
-    std::cout << AssertExpectedPoints(expected, GetFacePoints(sk)) << "\n";
+    AssertExpectedPoints(expected, GetFacePoints(sk));
 	//_CrtDumpMemoryLeaks();
 }
