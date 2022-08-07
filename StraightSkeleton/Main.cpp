@@ -64,10 +64,10 @@ static bool AssertExpectedPoints(std::vector<Vector2d> expectedList, std::vector
 int main()
 {	
     std::vector<Vector2d> polygon = {
-                Vector2d(0.0, 0.0),
-                Vector2d(7.087653026630875, -0.0572739636795121),
-                Vector2d(7.035244566479503, -6.5428208800475005),
-                Vector2d(-0.052408459722688594, -6.485546915224834)
+        Vector2d(0.0, 0.0),
+        Vector2d(7.087653026630875, -0.0572739636795121),
+        Vector2d(7.035244566479503, -6.5428208800475005),
+        Vector2d(-0.052408459722688594, -6.485546915224834)
     };
 
     std::vector<Vector2d> hole = {

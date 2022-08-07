@@ -15,9 +15,9 @@ Skeleton SkeletonBuilder::Build(listVector2d& polygon, nestedlistVector2d& holes
 	MakeClockwise(holes);
 
 	auto queue = std::make_shared<queueSkeletonEvent>(); 
-	auto sLav = std::make_shared<std::unordered_set<std::shared_ptr<CircularList>, CircularList::HashFunction>>();
-	auto faces = std::make_shared<std::vector<std::shared_ptr<FaceQueue>>>();
-	auto edges = std::make_shared<std::list<std::shared_ptr<Edge>>>();
+	auto sLav = std::make_shared<hashsetCircularList>();
+	auto faces = std::make_shared<listFaceQueue>();
+	auto edges = std::make_shared<listEdge>();
 
 	InitSlav(polygon, sLav, edges, faces);
 

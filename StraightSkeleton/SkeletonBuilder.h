@@ -26,6 +26,7 @@
 #include "LavUtil.h"
 #include "SingleEdgeChain.h"
 
+/*
 class SkeletonEventDistanseComparer
 {
 public:
@@ -34,7 +35,7 @@ public:
 		return left->Distance > right->Distance;
 	}
 };
-
+*/
 /// <summary> 
 ///     Straight skeleton algorithm implementation. Base on highly modified Petr
 ///     Felkel and Stepan Obdrzalek algorithm. 
@@ -58,6 +59,14 @@ protected:
 private:	
 	// Error epsilon.
 	static const double SplitEpsilon;
+	class SkeletonEventDistanseComparer
+	{
+	public:
+		bool operator()(std::shared_ptr<SkeletonEvent> const& left, std::shared_ptr<SkeletonEvent> const& right) const
+		{
+			return left->Distance > right->Distance;
+		}
+	};
 	class ChainComparer
 	{
 	private:
@@ -200,16 +209,6 @@ private:
 	static double CalcDistance(Vector2d intersect, Edge currentEdge);
 	static Vector2d CalcVectorBisector(Vector2d norm1, Vector2d norm2);
 	static sp<LineParametric2d> CalcBisector(sp<Vector2d> p, Edge e1, Edge e2);
-	template<typename T>
-	size_t hash(const std::shared_ptr<T>& ptr)
-	{
-		return ((size_t)ptr.get()) / sizeof(T);
-	}
-	template<typename T>
-	bool equal_to(const std::shared_ptr<T>& left, const std::shared_ptr<T>& right)
-	{
-		return left.get() == right.get();
-	}
 
 public:
 	//std::vector<Vector2d> Polygon;
