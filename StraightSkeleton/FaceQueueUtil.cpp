@@ -24,7 +24,7 @@ void FaceQueueUtil::ConnectQueues(spfn firstFace, spfn secondFace)
 		firstFace->QueueClose();
 		return;
 	}
-	if (!firstFace->IsQueueUnconnected() && !secondFace->IsQueueUnconnected()) //ERROR HERE
+	if (!firstFace->IsQueueUnconnected() && !secondFace->IsQueueUnconnected())
 		throw std::runtime_error("can't connect two diffrent queues if each of them is connected to edge");
 
 	if (!firstFace->IsQueueUnconnected())
