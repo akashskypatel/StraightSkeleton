@@ -13,7 +13,6 @@ private:
     spe _oppositeEdge = nullptr;
     spv _previousVertex = nullptr;
 public:
-    //SingleEdgeChain(Edge oppositeEdge, Vertex nextVertex);
     SingleEdgeChain(spe oppositeEdge, spv nextVertex);
     ~SingleEdgeChain() override;
     spe PreviousEdge() override;

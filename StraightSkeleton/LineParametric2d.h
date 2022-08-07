@@ -12,7 +12,6 @@ public:
 	spv2d U = nullptr;
 	static LineParametric2d Empty();
 	LineParametric2d();
-	//LineParametric2d(const LineParametric2d& other);
 	LineParametric2d(spv2d pA, spv2d pU);
 	LineParametric2d(Vector2d pA, Vector2d pU);
 	~LineParametric2d();

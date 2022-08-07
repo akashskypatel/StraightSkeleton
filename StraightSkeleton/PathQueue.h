@@ -43,20 +43,6 @@ public:
 			}
 		}
 	}
-	/*
-	void AddFirst(T data)
-	{
-		T newData(data);
-		PathQueueNode* newNode = new PathQueueNode(newData);
-		AddFirst(newNode);
-	}
-	void AddFirst(T* data)
-	{
-		T newData(*data);
-		PathQueueNode* newNode = new PathQueueNode(newData);
-		AddFirst(newNode);
-	}
-	*/
 	PathQueueNode* Pop(PathQueueNode* node)
 	{
 		if (node->List == this && size > 0 && node->IsEnd())

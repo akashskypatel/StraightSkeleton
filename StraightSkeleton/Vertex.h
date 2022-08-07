@@ -35,9 +35,6 @@ public:
     bool IsProcessed;
 
     Vertex();
-    //Vertex(const Vertex& val);
-    //Vertex(Vector2d point, double distance, LineParametric2d bisector, Edge previousEdge, Edge nextEdge, spn nextNode = nullptr, spn prevNode = nullptr, CircularList* list = nullptr);
-    //Vertex(Vector2d* point, double distance, LineParametric2d* bisector, Edge* previousEdge, Edge* nextEdge);
     Vertex(spv2d point, double distance, splp2d bisector, spe previousEdge, spe nextEdge);
     Vertex& operator = (const Vertex& other);
     bool operator==(const Vertex& other) const;

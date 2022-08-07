@@ -15,7 +15,6 @@ public:
 	spfn Next = nullptr;
 	spfn Previous = nullptr;
 	spfq List = nullptr;
-	//FaceNode(Vertex* vert);
 	FaceNode(spv vert);
 	~FaceNode();
 	std::shared_ptr<Vertex> GetVertex();

@@ -1,5 +1,3 @@
-// StraightSkeleton.cpp : This file contains the 'main' function. Program execution begins and ends there.
-//
 #pragma once
 #include <iostream>
 #include <string>
@@ -7,9 +5,9 @@
 #include <unordered_set>
 #include <sstream>
 #include "SkeletonBuilder.h"
-//#define _CRTDBG_MAP_ALLOC
-//#include <stdlib.h>
-//#include <crtdbg.h>
+#define _CRTDBG_MAP_ALLOC
+#include <stdlib.h>
+#include <crtdbg.h>
 
 
 static bool EqualEpsilon(double d1, double d2)
@@ -110,5 +108,5 @@ int main()
 		std::cout << e.first.ToString() << "\n";
 	}
     AssertExpectedPoints(expected, GetFacePoints(sk));
-	//_CrtDumpMemoryLeaks();
+	_CrtDumpMemoryLeaks();
 }

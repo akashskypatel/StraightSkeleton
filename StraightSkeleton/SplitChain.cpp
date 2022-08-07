@@ -11,7 +11,7 @@ SplitChain::~SplitChain()
 
 std::shared_ptr<Edge> SplitChain::OppositeEdge()
 {
-    if (typeid(*_splitEvent) != typeid(VertexSplitEvent)) //TODO verify
+    if (typeid(*_splitEvent) != typeid(VertexSplitEvent))
         return _splitEvent->OppositeEdge;
     return nullptr;
 }

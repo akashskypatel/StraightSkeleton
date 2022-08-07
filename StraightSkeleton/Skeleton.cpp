@@ -8,6 +8,5 @@ Skeleton::Skeleton(spver edges, spmv2d distances)
 
 Skeleton::~Skeleton()
 {
-	//delete Edges;
-	//delete Distances;
+
 }

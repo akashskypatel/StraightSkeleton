@@ -4,14 +4,7 @@ bool EdgeEvent::IsObsolete()
 {
     return (PreviousVertex->IsProcessed || NextVertex->IsProcessed);
 }
-/*
-EdgeEvent::EdgeEvent(Vector2d point, double distance, Vertex previousVertex, Vertex nextVertex) :
-    SkeletonEvent(point, distance)
-{
-    PreviousVertex = new Vertex(previousVertex);
-    NextVertex = new Vertex(nextVertex);
-}
-*/
+
 EdgeEvent::EdgeEvent(spv2d point, double distance, spv previousVertex, spv nextVertex) : SkeletonEvent(point, distance)
 {
     PreviousVertex = previousVertex;
@@ -20,8 +13,7 @@ EdgeEvent::EdgeEvent(spv2d point, double distance, spv previousVertex, spv nextV
 
 EdgeEvent::~EdgeEvent()
 {
-    //delete NextVertex;
-    //delete PreviousVertex;
+
 }
 
 std::string EdgeEvent::ToString()

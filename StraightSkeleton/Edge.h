@@ -25,15 +25,14 @@ public:
     };
     friend class CircularNode;
     Edge();
-    //Edge(const Edge& val, spn nextNode = nullptr, spn prevNode = nullptr, CircularList* list = nullptr);
     Edge(Vector2d begin,Vector2d end, spn nextNode = nullptr, spn prevNode = nullptr, CircularList* list = nullptr);
     Edge(spv2d begin, spv2d end);
-    spv2d Begin = nullptr;                      // Vector2d* Begin;
-    spv2d End = nullptr;                        // Vector2d* End;
-    spv2d Norm = nullptr;                       // Vector2d* Norm;
-    splp2d BisectorNext = nullptr;       // LineParametric2d* BisectorNext
-    splp2d BisectorPrevious = nullptr;   // LineParametric2d* BisectorPrevious;
-    spll2d lineLinear2d = nullptr;                  // LineLinear2d* lineLinear2d; 
+    spv2d Begin = nullptr;               
+    spv2d End = nullptr;                 
+    spv2d Norm = nullptr;                
+    splp2d BisectorNext = nullptr;       
+    splp2d BisectorPrevious = nullptr;   
+    spll2d lineLinear2d = nullptr;                  
     std::string ToString() const override;
     Edge& operator=(const Edge& val);
     unsigned int GetInstanceId() const;

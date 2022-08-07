@@ -8,6 +8,5 @@ EdgeResult::EdgeResult(spe edge, spvv2d polygon)
 
 EdgeResult::~EdgeResult()
 {
-    //delete edge;
-    //delete Polygon;
+
 }

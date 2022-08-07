@@ -1,6 +1,3 @@
-#ifndef MULTISPLITEVENT_H_
-#define MULTISPLITEVENT_H_
-
 #pragma once
 #include <vector>
 #include "SkeletonEvent.h"
@@ -17,5 +14,3 @@ public:
     MultiSplitEvent(spv2d point, double distance, spvic chains);
     bool IsObsolete() override;
 };
-
-#endif // !MULTISPLITEVENT_H_

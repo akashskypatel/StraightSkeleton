@@ -1,6 +1,3 @@
-#ifndef SKELETONBUILDER_H_
-#define SKELETONBUILDER_H_
-
 #pragma once
 #include <vector>
 #include <unordered_set>
@@ -70,7 +67,6 @@ private:
 		ChainComparer(Vector2d center)
 		{
 			_center = center;
-			//std::cout << _center.ToString() << "\n";
 		}
 
 		bool operator()(std::shared_ptr<IChain> x, std::shared_ptr<IChain> y)
@@ -80,9 +76,7 @@ private:
 
 			auto angle1 = Angle(_center, *y->PreviousEdge()->Begin);
 			auto angle2 = Angle(_center, *x->PreviousEdge()->Begin);
-			//std::cout << std::format("center: {0} : {1} , {2} , {3}\n", _center.ToString(), angle1, angle2, angle1 > angle2);
 			return angle1 > angle2;
-			//return angle1 > angle2 ? 1 : -1;
 		}
 
 		double Angle(Vector2d p0, Vector2d p1)
@@ -135,11 +129,6 @@ private:
 	using listFaceQueue = std::vector<sp<FaceQueue>>;
 	using listVertex = std::vector<sp<Vertex>>;
 	
-	//hashsetCircularList sLav;
-	//queueSkeletonEvent queue;
-	//listFaceQueue faces;
-	//listEdge edges;
-
 	static listVector2d InitPolygon(listVector2d& polygon);
 	static void ProcessTwoNodeLavs(sp<hashsetCircularList> sLav);
 	static void RemoveEmptyLav(sp<hashsetCircularList> sLav);
@@ -230,5 +219,3 @@ public:
 	/// <summary> Creates straight skeleton for given polygon with holes. </summary>
 	static Skeleton Build(listVector2d& polygon, nestedlistVector2d& holes);
 };
-
-#endif /* SKELETONBUILDER_H_ */

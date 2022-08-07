@@ -80,6 +80,6 @@ void LavUtil::MoveAllVertexToLavEnd(std::shared_ptr<Vertex> vertex, CircularList
         auto ver = vertex;
         vertex = static_pointer_cast<Vertex>(vertex->Next);
         ver->Remove(ver);
-        newLaw.AddLast(ver); //TODO: verify
+        newLaw.AddLast(ver);
     }
 }

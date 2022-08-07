@@ -15,7 +15,6 @@ public:
     spv NextVertex = nullptr;
     spv PreviousVertex = nullptr;
     bool IsObsolete() override;
-    //EdgeEvent(Vector2d point, double distance, Vertex previousVertex, Vertex nextVertex);
     EdgeEvent(spv2d point, double distance, spv previousVertex, spv nextVertex);
     ~EdgeEvent();
     std::string ToString();

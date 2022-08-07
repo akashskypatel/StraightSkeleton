@@ -2,13 +2,6 @@
 #include "Vertex.h"
 #include "FaceQueue.h"
 
-/*
-FaceNode::FaceNode(Vertex* vert)
-{
-	vertex = vert;
-}
-*/
-
 FaceNode::FaceNode(spv vert)
 {
 	vertex = vert;
@@ -16,7 +9,7 @@ FaceNode::FaceNode(spv vert)
 
 FaceNode::~FaceNode()
 {
-	//delete vertex;
+
 }
 
 std::shared_ptr<Vertex> FaceNode::GetVertex()
@@ -45,8 +38,6 @@ std::shared_ptr<FaceNode> FaceNode::AddQueue(spfn nodeQueue, spfn queue)
 {
 	if (List == queue->List)
 		return nullptr;
-
-	//spfn currentQueue(this); //not gonna work
 
 	spfn current(queue);
 

@@ -1,6 +1,3 @@
-#ifndef PICKEVENT_H_
-#define PICKEVENT_H_
-
 #pragma once
 #include "SkeletonEvent.h"
 #include "EdgeChain.h"
@@ -15,5 +12,3 @@ public:
     PickEvent(spv2d point, double distance, spec chain);
     bool IsObsolete() override;
 };
-
-#endif // !PICKEVENT_H_

@@ -13,17 +13,9 @@ LineParametric2d::LineParametric2d()
 	A = nullptr;
 	U = nullptr;
 }
-/*
-LineParametric2d::LineParametric2d(const LineParametric2d& other)
-{
-	A = new Vector2d(*other.A);
-	U = new Vector2d(*other.U);
-}
-*/
+
 LineParametric2d::LineParametric2d(spv2d pA, spv2d pU)
 {
-	//A = new Vector2d(pA.X, pA.Y);
-	//U = new Vector2d(pU.X, pU.Y);
 	A = pA;
 	U = pU;
 }
@@ -36,8 +28,7 @@ LineParametric2d::LineParametric2d(Vector2d pA, Vector2d pU)
 
 LineParametric2d::~LineParametric2d()
 {
-	//delete A;
-	//delete U;
+
 }
 
 LineLinear2d LineParametric2d::CreateLinearForm()
@@ -55,7 +46,6 @@ LineLinear2d LineParametric2d::CreateLinearForm()
 Vector2d LineParametric2d::Collide(LineParametric2d ray, LineLinear2d line, double epsilon)
 {
 	Vector2d collide = LineLinear2d::Collide(ray.CreateLinearForm(), line);
-	//std::cout << collide.ToString() << "\n";
 	if (collide.IsEmpty())
 		return Vector2d::Empty();
 
