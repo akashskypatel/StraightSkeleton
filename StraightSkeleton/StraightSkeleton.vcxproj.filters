@@ -99,12 +99,6 @@
     <ClCompile Include="MultiSplitEvent.cpp">
       <Filter>Source Files\Events</Filter>
     </ClCompile>
-    <ClCompile Include="PathQueue.cpp">
-      <Filter>Source Files\Path</Filter>
-    </ClCompile>
-    <ClCompile Include="PathQueueNode.cpp">
-      <Filter>Source Files\Path</Filter>
-    </ClCompile>
     <ClCompile Include="PickEvent.cpp">
       <Filter>Source Files\Events</Filter>
     </ClCompile>
@@ -130,9 +124,6 @@
       <Filter>Source Files\Events</Filter>
     </ClCompile>
     <ClCompile Include="PrimitiveUtils.cpp">
-      <Filter>Source Files\Primitives</Filter>
-    </ClCompile>
-    <ClCompile Include="PriorityQueue.cpp">
       <Filter>Source Files\Primitives</Filter>
     </ClCompile>
     <ClCompile Include="CircularNode.cpp">
@@ -206,17 +197,8 @@
     <ClInclude Include="PrimitiveUtils.h">
       <Filter>Header Files\Primitives</Filter>
     </ClInclude>
-    <ClInclude Include="PriorityQueue.h">
-      <Filter>Header Files\Primitives</Filter>
-    </ClInclude>
     <ClInclude Include="Vector2d.h">
       <Filter>Header Files\Primitives</Filter>
-    </ClInclude>
-    <ClInclude Include="PathQueueNode.h">
-      <Filter>Header Files\Path</Filter>
-    </ClInclude>
-    <ClInclude Include="PathQueue.h">
-      <Filter>Header Files\Path</Filter>
     </ClInclude>
     <ClInclude Include="FaceQueue.h">
       <Filter>Header Files\Path</Filter>

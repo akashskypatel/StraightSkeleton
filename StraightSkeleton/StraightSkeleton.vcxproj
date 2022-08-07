@@ -158,11 +158,8 @@
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="MultiEdgeEvent.cpp" />
     <ClCompile Include="MultiSplitEvent.cpp" />
-    <ClCompile Include="PathQueue.cpp" />
-    <ClCompile Include="PathQueueNode.cpp" />
     <ClCompile Include="PickEvent.cpp" />
     <ClCompile Include="PrimitiveUtils.cpp" />
-    <ClCompile Include="PriorityQueue.cpp" />
     <ClCompile Include="SingleEdgeChain.cpp" />
     <ClCompile Include="Skeleton.cpp" />
     <ClCompile Include="SkeletonBuilder.cpp" />
@@ -190,11 +187,8 @@
     <ClInclude Include="LineParametric2d.h" />
     <ClInclude Include="MultiEdgeEvent.h" />
     <ClInclude Include="MultiSplitEvent.h" />
-    <ClInclude Include="PathQueue.h" />
-    <ClInclude Include="PathQueueNode.h" />
     <ClInclude Include="PickEvent.h" />
     <ClInclude Include="PrimitiveUtils.h" />
-    <ClInclude Include="PriorityQueue.h" />
     <ClInclude Include="SingleEdgeChain.h" />
     <ClInclude Include="Skeleton.h" />
     <ClInclude Include="SkeletonBuilder.h" />
