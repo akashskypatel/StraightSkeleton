@@ -8,8 +8,8 @@ private:
 	using spe = std::shared_ptr<Edge>;
 	using spvv2d = std::shared_ptr<std::vector<std::shared_ptr<Vector2d>>>;
 public:
-	spe edge;
-	spvv2d Polygon;
+	spe edge = nullptr;
+	spvv2d Polygon = nullptr;
     EdgeResult(spe edge, spvv2d polygon);
 	~EdgeResult();
 };

@@ -10,8 +10,8 @@ private:
 	using spver = std::shared_ptr<std::vector<std::shared_ptr<EdgeResult>>>;
 	using spmv2d = std::shared_ptr<std::map<Vector2d, double>>;
 public:
-	spver Edges;
-	spmv2d Distances;
+	spver Edges = nullptr;
+	spmv2d Distances = nullptr;
 	Skeleton(spver edges, spmv2d distances);
 	~Skeleton();
 };

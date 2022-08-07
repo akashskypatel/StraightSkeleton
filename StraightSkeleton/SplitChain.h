@@ -11,7 +11,7 @@ private:
     using spe = std::shared_ptr<Edge>;
     using spv = std::shared_ptr<Vertex>;
     using spse = std::shared_ptr<SplitEvent>;
-    spse _splitEvent;
+    spse _splitEvent = nullptr;
 public:
     SplitChain(spse event);
     ~SplitChain() override;

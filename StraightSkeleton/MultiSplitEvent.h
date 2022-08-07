@@ -13,7 +13,7 @@ private:
     using spv2d = std::shared_ptr<Vector2d>;
     using spvic = std::shared_ptr<std::vector<std::shared_ptr<IChain>>>;
 public:
-    spvic Chains;
+    spvic Chains = nullptr;
     MultiSplitEvent(spv2d point, double distance, spvic chains);
     bool IsObsolete() override;
 };

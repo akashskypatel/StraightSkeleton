@@ -2,21 +2,24 @@
 #include "Edge.h"
 #include "FaceNode.h"
 
-class FaceQueue
+class FaceQueue : public std::enable_shared_from_this<FaceQueue>
 {
 private:	
     using spfn = std::shared_ptr<FaceNode>;	
-	std::shared_ptr<Edge> edge = nullptr;
+	using spe = std::shared_ptr<Edge>;
+	using spfq = std::shared_ptr<FaceQueue>;
+	spe edge = nullptr;
 	bool closed = false;
 	size_t size = 0;
-	std::shared_ptr<FaceNode> first = nullptr;
+	spfn first = nullptr;
+	FaceQueue() = default;
 public:
 	struct Iterator
 	{
-		std::shared_ptr<FaceNode> first;
+		spfn first;
 		size_t s;
 		size_t i;
-		std::shared_ptr<FaceNode> operator*()
+		spfn operator*()
 		{
 			return first;
 		}
@@ -44,7 +47,7 @@ public:
 			++* this;
 			return iterator;
 		}
-		Iterator& operator = (std::shared_ptr<FaceNode> rhs)
+		Iterator& operator = (spfn rhs)
 		{
 			this->first = rhs;
 			return *this;
@@ -80,17 +83,17 @@ public:
 	{ 
 		return Iterator{ nullptr, size }; 
 	}
-    std::shared_ptr<Edge> GetEdge();
-	FaceQueue();
+	[[nodiscard]] static spfq Create();
+	spfq getptr();
+    spe GetEdge();	
     bool Closed();
     bool IsUnconnected();
-    void AddPush(std::shared_ptr<FaceNode> node, std::shared_ptr<FaceNode> newNode);
-    void AddFirst(std::shared_ptr<FaceNode> node);
-	std::shared_ptr<FaceNode> Pop(std::shared_ptr<FaceNode> node);
-    void SetEdge(std::shared_ptr<Edge> val);
-    ~FaceQueue();
+    void AddPush(spfn node, spfn newNode);
+    void AddFirst(spfn node);
+	spfn Pop(spfn node);
+    void SetEdge(spe val);
     void Close();
     size_t Size();
-	std::shared_ptr<FaceNode> First();
+	spfn First();
 };
 

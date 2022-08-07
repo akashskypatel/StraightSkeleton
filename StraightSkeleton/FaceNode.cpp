@@ -24,11 +24,6 @@ std::shared_ptr<Vertex> FaceNode::GetVertex()
 	return vertex;
 }
 
-FaceQueue* FaceNode::GetFaceQueue()
-{
-	return this->List;
-}
-
 bool FaceNode::IsQueueUnconnected()
 {
 	return false;
@@ -45,19 +40,8 @@ std::shared_ptr<FaceNode> FaceNode::Pop(spfn node)
 {
 	return List->Pop(node);
 }
-//not used
-std::shared_ptr<FaceNode> FaceNode::FindEnd() 
-{
-	if (IsEnd())
-		return spfn(this); //not gonna work
 
-	spfn current(this); //not gonna work
-	while (current->Previous != nullptr)
-		current = current->Previous;
-
-	return current;
-}
-std::shared_ptr<FaceNode> FaceNode::AddQueue(spfn thisQueue, spfn queue)
+std::shared_ptr<FaceNode> FaceNode::AddQueue(spfn nodeQueue, spfn queue)
 {
 	if (List == queue->List)
 		return nullptr;
@@ -69,13 +53,13 @@ std::shared_ptr<FaceNode> FaceNode::AddQueue(spfn thisQueue, spfn queue)
 	while (current != nullptr)
 	{
 		spfn next(current->Pop(current));
-		thisQueue->AddPush(thisQueue, current);
-		thisQueue = current;
+		nodeQueue->AddPush(nodeQueue, current);
+		nodeQueue = current;
 
 		current = next;
 	}
 
-	return thisQueue;
+	return nodeQueue;
 }
 
 void FaceNode::QueueClose()
