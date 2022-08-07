@@ -41,7 +41,9 @@ void Vector2d::Normalize()
 Vector2d Vector2d::Normalized() const
 {
 	double val = 1.0f / sqrt(X * X + Y * Y);
-	return Vector2d(X * val, Y * val);
+	double x = X * val;
+	double y = Y * val;
+	return Vector2d(x, y);
 }
 
 double Vector2d::Dot(Vector2d val) const
@@ -68,7 +70,7 @@ std::string Vector2d::ToString() const
 
 Vector2d Vector2d::Empty()
 {
-	return Vector2d(std::numeric_limits<double>::quiet_NaN(), std::numeric_limits<double>::quiet_NaN());
+	return Vector2d();
 }
 
 Vector2d Vector2d::operator - (Vector2d right)
@@ -124,6 +126,11 @@ size_t Vector2d::HashFunction::operator()(const Vector2d& vector) const
 size_t Vector2d::hash() const
 {
 	return (std::hash<double>()(X) * 397) ^ std::hash<double>()(Y);
+}
+
+bool Vector2d::IsEmpty() const
+{
+	return isnan(X) && isnan(Y);
 }
 
 bool Vector2d::operator < (const Vector2d& right) const

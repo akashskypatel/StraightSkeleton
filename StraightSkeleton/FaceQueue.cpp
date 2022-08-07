@@ -5,6 +5,14 @@ std::shared_ptr<Edge> FaceQueue::GetEdge()
     return edge;
 }
 
+FaceQueue::FaceQueue()
+{
+    edge = nullptr;
+    closed = false;
+    size = 0;
+    first = nullptr;
+}
+
 bool FaceQueue::Closed()
 {
     return closed;
@@ -17,11 +25,17 @@ bool FaceQueue::IsUnconnected()
 
 void FaceQueue::AddPush(std::shared_ptr<FaceNode> node, std::shared_ptr<FaceNode> newNode)
 {
+    (node->GetVertex());
     if (Closed())
+    {
+        std::cout << (newNode->List == nullptr) << "\n";
         throw std::runtime_error("Can't add node to closed FaceQueue");
+    }
     
     if (newNode->List != nullptr)
+    {
         throw std::runtime_error("Node is already assigned to different list!");
+    }
 
     if (node->Previous != nullptr && node->Next != nullptr)
         throw std::runtime_error("Can't push new node. Node is inside a Queue. New node can by added only at the end of queue.");

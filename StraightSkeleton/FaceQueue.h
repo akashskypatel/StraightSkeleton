@@ -81,6 +81,7 @@ public:
 		return Iterator{ nullptr, size }; 
 	}
     std::shared_ptr<Edge> GetEdge();
+	FaceQueue();
     bool Closed();
     bool IsUnconnected();
     void AddPush(std::shared_ptr<FaceNode> node, std::shared_ptr<FaceNode> newNode);

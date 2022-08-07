@@ -35,5 +35,6 @@ public:
 	std::string ToString() const;
 	static Vector2d Empty();
 	size_t hash() const;
+	bool IsEmpty() const;
 };
 

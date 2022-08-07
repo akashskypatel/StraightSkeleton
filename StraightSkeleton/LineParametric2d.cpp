@@ -1,5 +1,7 @@
 #include "LineParametric2d.h"
 #include "PrimitiveUtils.h"
+#include <iostream>
+#include <cmath>
 
 LineParametric2d LineParametric2d::Empty()
 {
@@ -53,7 +55,8 @@ LineLinear2d LineParametric2d::CreateLinearForm()
 Vector2d LineParametric2d::Collide(LineParametric2d ray, LineLinear2d line, double epsilon)
 {
 	Vector2d collide = LineLinear2d::Collide(ray.CreateLinearForm(), line);
-	if (collide.Equals(Vector2d::Empty()))
+	//std::cout << collide.ToString() << "\n";
+	if (collide.IsEmpty())
 		return Vector2d::Empty();
 
 	Vector2d collideVector = collide - *ray.A;

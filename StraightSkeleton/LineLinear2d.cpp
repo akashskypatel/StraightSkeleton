@@ -19,7 +19,7 @@ LineLinear2d::LineLinear2d(Vector2d pP1, Vector2d pP2)
 {
 	A = pP1.Y - pP2.Y;
 	B = pP2.X - pP1.X;
-	C = pP1.X * pP2.Y - pP2.X * pP1.Y;
+	C = (pP1.X * pP2.Y) - (pP2.X * pP1.Y);
 }
 
 LineLinear2d::LineLinear2d(double pA, double pB, double pC)

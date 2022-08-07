@@ -37,8 +37,8 @@ Edge::Edge(spv2d begin, spv2d end)
 	_id = ++_idCounter;
 	Begin = begin;
 	End = end;
-	lineLinear2d = std::make_shared<LineLinear2d>(LineLinear2d(*begin.get(), *end.get()));
-	Norm = std::make_shared<Vector2d>(Vector2d((*end.get() - *begin.get()).Normalized()));
+	lineLinear2d = std::make_shared<LineLinear2d>(LineLinear2d(*begin, *end));
+	Norm = std::make_shared<Vector2d>(Vector2d((*end - *begin).Normalized()));
 }
 
 std::string Edge::ToString() const

@@ -7,10 +7,10 @@ void FaceQueueUtil::MoveNodes(spfn firstFace, spfn secondFace)
 
 void FaceQueueUtil::ConnectQueues(spfn firstFace, spfn secondFace)
 {
-	if (firstFace == nullptr)
+	if (firstFace->List == nullptr)
 		throw std::runtime_error("firstFace.list cannot be null.");
 
-	if(secondFace == nullptr)
+	if(secondFace->List == nullptr)
 		throw std::runtime_error("secondFace.list cannot be null.");
 
 	if (firstFace->List == secondFace->List)
