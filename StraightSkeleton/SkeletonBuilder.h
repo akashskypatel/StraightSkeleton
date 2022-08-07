@@ -26,16 +26,6 @@
 #include "LavUtil.h"
 #include "SingleEdgeChain.h"
 
-/*
-class SkeletonEventDistanseComparer
-{
-public:
-	bool operator()(std::shared_ptr<SkeletonEvent> const& left, std::shared_ptr<SkeletonEvent> const& right) const
-	{
-		return left->Distance > right->Distance;
-	}
-};
-*/
 /// <summary> 
 ///     Straight skeleton algorithm implementation. Base on highly modified Petr
 ///     Felkel and Stepan Obdrzalek algorithm. 
