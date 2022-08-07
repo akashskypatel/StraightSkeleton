@@ -11,7 +11,7 @@ using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 namespace SkeletonTest
 {
     TEST_CLASS(SkeletonTest)
-    {
+    {        
     private:
         static std::vector<Vector2d> GetFacePoints(Skeleton sk)
         {
@@ -63,7 +63,7 @@ namespace SkeletonTest
         static bool EqualEpsilon(double d1, double d2)
         {
             return fabs(d1 - d2) < 5E-6;
-        }
+        }        
     public:
         TEST_METHOD(CircularAddTest)
         {

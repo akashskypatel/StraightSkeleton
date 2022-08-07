@@ -166,6 +166,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
       <LanguageStandard Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">stdcpp20</LanguageStandard>
     </ClCompile>
+    <ClCompile Include="SkeletonExtendedTest.cpp" />
     <ClCompile Include="SkeletonLevelEventsTest.cpp" />
     <ClCompile Include="SkeletonTest.cpp" />
     <ClCompile Include="Vector2dTests.cpp">
