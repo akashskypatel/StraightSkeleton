@@ -71,7 +71,7 @@ private:
 		bool operator()(std::shared_ptr<IChain> x, std::shared_ptr<IChain> y)
 		{
 			if (x == y)
-				return true; //0;
+				return true;
 
 			auto angle1 = Angle(_center, *y->PreviousEdge()->Begin);
 			auto angle2 = Angle(_center, *x->PreviousEdge()->Begin);
@@ -201,8 +201,6 @@ private:
 	static sp<LineParametric2d> CalcBisector(sp<Vector2d> p, Edge e1, Edge e2);
 
 public:
-	//std::vector<Vector2d> Polygon;
-	//std::vector<std::vector<Vector2d>> Holes;
 	/// <summary> Creates straight skeleton for given polygon. </summary>
 	static Skeleton Build(listVector2d& polygon);
 	/// <summary> Creates straight skeleton for given polygon with holes. </summary>
