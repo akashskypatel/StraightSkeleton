@@ -10,6 +10,11 @@ std::shared_ptr<FaceQueue> FaceQueue::Create()
     return std::shared_ptr<FaceQueue>(new FaceQueue());
 }
 
+FaceQueue::~FaceQueue()
+{
+    edge = nullptr;
+}
+
 std::shared_ptr<Edge> FaceQueue::GetEdge()
 {
     return edge;

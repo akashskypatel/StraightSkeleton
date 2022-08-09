@@ -8,5 +8,6 @@ EdgeResult::EdgeResult(spe edge, spvv2d polygon)
 
 EdgeResult::~EdgeResult()
 {
-
+    edge = nullptr;
+    Polygon = nullptr;
 }

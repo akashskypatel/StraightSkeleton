@@ -12,5 +12,6 @@ private:
 public:
     spvic Chains = nullptr;
     MultiSplitEvent(spv2d point, double distance, spvic chains);
+    ~MultiSplitEvent();
     bool IsObsolete() override;
 };

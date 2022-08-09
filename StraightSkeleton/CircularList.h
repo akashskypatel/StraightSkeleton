@@ -11,17 +11,17 @@ class CircularList
 {
 private:
 	using spn = std::shared_ptr<CircularNode>;
+	using spl = std::shared_ptr<CircularList>;
 	unsigned int _id;
 	static unsigned int _idCounter;
 	spn first = nullptr;
-	spn last = nullptr;
 	size_t size = 0;
 	spn GetNode(size_t index) const;
 public:	
 	struct HashFunction
 	{
 		size_t operator()(const CircularList& val) const;
-		size_t operator()(const std::shared_ptr<CircularList> val) const;
+		size_t operator()(const spl val) const;
 	};
 	struct Iterator 
 	{

@@ -9,7 +9,10 @@ FaceNode::FaceNode(spv vert)
 
 FaceNode::~FaceNode()
 {
-
+	vertex = nullptr;
+	Next = nullptr;
+	Previous = nullptr;
+	List = nullptr;
 }
 
 std::shared_ptr<Vertex> FaceNode::GetVertex()

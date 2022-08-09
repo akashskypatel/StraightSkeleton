@@ -6,6 +6,11 @@ MultiSplitEvent::MultiSplitEvent(spv2d point, double distance, spvic chains)
     Chains = chains;
 }
 
+MultiSplitEvent::~MultiSplitEvent()
+{
+    Chains = nullptr;
+}
+
 bool MultiSplitEvent::IsObsolete()
 {
     return false;

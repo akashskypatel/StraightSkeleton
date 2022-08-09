@@ -61,8 +61,8 @@ static bool AssertExpectedPoints(std::vector<Vector2d> expectedList, std::vector
     }
 }
 
-int main()
-{	
+void BuildSkeleton()
+{
     std::vector<Vector2d> polygon = {
         Vector2d(0.0, 0.0),
         Vector2d(7.087653026630875, -0.0572739636795121),
@@ -93,20 +93,25 @@ int main()
     expected.insert(expected.end(), polygon.begin(), polygon.end());
     expected.insert(expected.end(), hole.begin(), hole.end());
 
-	std::cout << "inital polygon: " << "\n";
-	for (auto p : polygon)
-	{
-		std::cout << p.ToString() << "\n";
-	}
+    std::cout << "inital polygon: " << "\n";
+    for (auto p : polygon)
+    {
+        std::cout << p.ToString() << "\n";
+    }
 
-	std::cout << "build: " << "\n";
+    std::cout << "build: " << "\n";
     auto sk = SkeletonBuilder::Build(polygon, holes);
 
-	std::cout << "output: " << "\n";
-	for (auto e : *sk.Distances)
-	{
-		std::cout << e.first.ToString() << "\n";
-	}
+    std::cout << "output: " << "\n";
+    for (auto e : *sk.Distances)
+    {
+        std::cout << e.first.ToString() << "\n";
+    }
     AssertExpectedPoints(expected, GetFacePoints(sk));
+}
+
+int main()
+{	
 	_CrtDumpMemoryLeaks();
+    
 }

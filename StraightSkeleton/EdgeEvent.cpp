@@ -13,7 +13,8 @@ EdgeEvent::EdgeEvent(spv2d point, double distance, spv previousVertex, spv nextV
 
 EdgeEvent::~EdgeEvent()
 {
-
+    NextVertex = nullptr;
+    PreviousVertex = nullptr;
 }
 
 std::string EdgeEvent::ToString()

@@ -8,7 +8,7 @@ SkeletonEvent::SkeletonEvent(spv2d point, double distance)
 
 SkeletonEvent::~SkeletonEvent()
 {
-
+    V = nullptr;
 }
 
 std::string SkeletonEvent::ToString()

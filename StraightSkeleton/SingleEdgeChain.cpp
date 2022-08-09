@@ -8,6 +8,9 @@ SingleEdgeChain::SingleEdgeChain(spe oppositeEdge, spv nextVertex)
 }
 SingleEdgeChain::~SingleEdgeChain()
 {
+    _nextVertex = nullptr;
+    _oppositeEdge = nullptr;
+    _previousVertex = nullptr;
 }
 
 std::shared_ptr<Edge> SingleEdgeChain::PreviousEdge()

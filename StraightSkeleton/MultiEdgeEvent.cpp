@@ -5,6 +5,11 @@ MultiEdgeEvent::MultiEdgeEvent(spv2d point, double distance, spec chain) : Skele
     Chain = chain;
 }
 
+MultiEdgeEvent::~MultiEdgeEvent()
+{
+    Chain = nullptr;
+}
+
 bool MultiEdgeEvent::IsObsolete()
 {
     return false;

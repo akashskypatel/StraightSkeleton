@@ -10,5 +10,6 @@ private:
 public:
     spec Chain = nullptr;
     PickEvent(spv2d point, double distance, spec chain);
+    ~PickEvent();
     bool IsObsolete() override;
 };

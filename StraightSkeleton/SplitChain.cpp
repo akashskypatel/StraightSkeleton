@@ -7,6 +7,7 @@ SplitChain::SplitChain(spse event)
 
 SplitChain::~SplitChain()
 {
+    _splitEvent = nullptr;
 }
 
 std::shared_ptr<Edge> SplitChain::OppositeEdge()

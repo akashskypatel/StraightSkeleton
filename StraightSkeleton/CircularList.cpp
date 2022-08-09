@@ -7,7 +7,6 @@ CircularList::CircularList()
 	size = 0;
 	_id = ++_idCounter;
 	first = nullptr;
-	last = nullptr;
 }
 
 CircularList::~CircularList()
@@ -61,7 +60,6 @@ void CircularList::AddLast(spn node)
 		node->List = this;
 		node->Next = node;
 		node->Previous = node;
-		last = node;
 		size++;
 	}
 	else
@@ -197,7 +195,7 @@ size_t CircularList::HashFunction::operator()(const CircularList& val) const
 	return val.GetInstanceId();
 }
 
-size_t CircularList::HashFunction::operator()(const std::shared_ptr<CircularList> val) const
+size_t CircularList::HashFunction::operator()(const spl val) const
 {
 	return val->GetInstanceId();
 }

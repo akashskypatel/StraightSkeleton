@@ -28,7 +28,8 @@ LineParametric2d::LineParametric2d(Vector2d pA, Vector2d pU)
 
 LineParametric2d::~LineParametric2d()
 {
-
+	A = nullptr;
+	U = nullptr;
 }
 
 LineLinear2d LineParametric2d::CreateLinearForm()
@@ -36,11 +37,11 @@ LineLinear2d LineParametric2d::CreateLinearForm()
 	double x = A->X;
 	double y = A->Y;
 
-	double B = -U->X;
-	double A = U->Y;
+	double b = -U->X;
+	double a = U->Y;
 
-	double C = -(A * x + B * y);
-	return LineLinear2d(A, B, C);
+	double c = -(a * x + b * y);
+	return LineLinear2d(a, b, c);
 }
 
 Vector2d LineParametric2d::Collide(LineParametric2d ray, LineLinear2d line, double epsilon)

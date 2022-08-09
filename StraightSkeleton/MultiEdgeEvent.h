@@ -11,5 +11,6 @@ private:
 public:
     spec Chain = nullptr;
     MultiEdgeEvent(spv2d point, double distance, spec chain);
+    ~MultiEdgeEvent();
     bool IsObsolete() override;
 };

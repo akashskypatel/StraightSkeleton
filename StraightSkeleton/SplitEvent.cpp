@@ -9,7 +9,8 @@ SplitEvent::SplitEvent(spv2d point, double distance, spv parent, spe oppositeEdg
 
 SplitEvent::~SplitEvent()
 {
-
+    OppositeEdge = nullptr;
+    Parent = nullptr;
 }
 
 bool SplitEvent::IsObsolete()

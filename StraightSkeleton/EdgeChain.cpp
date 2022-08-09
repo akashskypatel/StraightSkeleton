@@ -8,6 +8,7 @@ EdgeChain::EdgeChain(spvee edgeList)
 
 EdgeChain::~EdgeChain()
 {
+    EdgeList = nullptr;
 }
 
 std::shared_ptr<Edge> EdgeChain::PreviousEdge()

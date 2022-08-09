@@ -1,11 +1,8 @@
 #include "Edge.h"
 #include "CircularList.h"
 
-unsigned int Edge::_idCounter = 0;
-
 Edge::Edge()
 {
-	_id = ++_idCounter;
 	Begin = nullptr;
 	End = nullptr;
 	lineLinear2d = nullptr;
@@ -14,20 +11,18 @@ Edge::Edge()
 
 Edge::Edge(Vector2d begin,Vector2d end, spn nextNode, spn prevNode, CircularList* list) : CircularNode(nextNode, prevNode, list)
 {
-	_id = ++_idCounter;
-	Begin = std::make_shared<Vector2d>(Vector2d(begin)); 					 
-	End = std::make_shared<Vector2d>(Vector2d(end)); 						 
-	lineLinear2d = std::make_shared<LineLinear2d>(LineLinear2d(begin, end)); 
-	Norm = std::make_shared<Vector2d>(Vector2d((end - begin).Normalized())); 
+	Begin = std::make_shared<Vector2d>(begin); 					 
+	End = std::make_shared<Vector2d>(end); 						 
+	lineLinear2d = std::make_shared<LineLinear2d>(begin, end); 
+	Norm = std::make_shared<Vector2d>((end - begin).Normalized()); 
 }
 
 Edge::Edge(spv2d begin, spv2d end)
 {
-	_id = ++_idCounter;
 	Begin = begin;
 	End = end;
-	lineLinear2d = std::make_shared<LineLinear2d>(LineLinear2d(*begin, *end));
-	Norm = std::make_shared<Vector2d>(Vector2d((*end - *begin).Normalized()));
+	lineLinear2d = std::make_shared<LineLinear2d>(*begin, *end);
+	Norm = std::make_shared<Vector2d>((*end - *begin).Normalized());
 }
 
 std::string Edge::ToString() const
@@ -47,17 +42,12 @@ Edge& Edge::operator=(const Edge& other)
 	return *this;
 };
 
-unsigned int Edge::GetInstanceId() const
+Edge::~Edge()
 {
-	return _id;
-}
-
-size_t Edge::HashFunction::operator()(const Edge& val) const
-{
-	return val.GetInstanceId();
-}
-
-size_t Edge::HashFunction::operator()(const std::shared_ptr<Edge> val) const
-{
-	return val->GetInstanceId();
+	Begin = nullptr;
+	End = nullptr;
+	Norm = nullptr;
+	BisectorNext = nullptr;
+	BisectorPrevious = nullptr;
+	lineLinear2d = nullptr;
 }

@@ -278,7 +278,7 @@ bool PrimitiveUtils::IsPointInsidePolygon(Vector2d point, std::shared_ptr<std::v
 /// <param name="polygon">List of polygon points.</param>
 /// <returns> Area. </returns>
 
-double PrimitiveUtils::Area(std::vector<Vector2d> polygon)
+double PrimitiveUtils::Area(std::vector<Vector2d>& polygon)
 {
     size_t n = polygon.size();
     double A = 0.0f;
@@ -292,7 +292,7 @@ double PrimitiveUtils::Area(std::vector<Vector2d> polygon)
 /// <param name="polygon"> List of polygon points. </param>
 /// <returns> If polygon is clockwise. </returns>
 
-bool PrimitiveUtils::IsClockwisePolygon(std::vector<Vector2d> polygon)
+bool PrimitiveUtils::IsClockwisePolygon(std::vector<Vector2d>& polygon)
 {
     return Area(polygon) < 0;
 }

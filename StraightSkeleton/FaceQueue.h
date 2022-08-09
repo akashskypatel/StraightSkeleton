@@ -84,6 +84,7 @@ public:
 		return Iterator{ nullptr, size }; 
 	}
 	[[nodiscard]] static spfq Create();
+	~FaceQueue();
 	spfq getptr();
     spe GetEdge();	
     bool Closed();
