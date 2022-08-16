@@ -240,9 +240,9 @@ namespace SkeletonLevelEventsTest
 
             auto sk = SkeletonBuilder::Build(polygon);
 
-            Assert::IsTrue(AssertExpectedPoints(expected, GetFacePoints(sk)));
-
             AssertPolygonWithEdges(7, sk);
+
+            Assert::IsTrue(AssertExpectedPoints(expected, GetFacePoints(sk)));
         }
         TEST_METHOD(SkeletonTest_multiple)
         {
