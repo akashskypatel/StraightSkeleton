@@ -94,6 +94,7 @@ public:
 	spfn Pop(spfn node);
     void SetEdge(spe val);
     void Close();
+	void Clear();
     size_t Size();
 	spfn First();
 };

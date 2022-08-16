@@ -379,7 +379,7 @@ void SkeletonBuilder::CreateOppositeEdgeChains(sp<hashsetCircularList> sLav, sp<
 	{
 		for (size_t i = 0; i < chains->size(); i++)
 		{
-			if (chain = chains->at(i))
+			if (chain == chains->at(i))
 			{
 				chains->erase(chains->begin() + i);
 				i--;

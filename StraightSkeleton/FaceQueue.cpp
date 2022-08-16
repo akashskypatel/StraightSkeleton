@@ -13,6 +13,7 @@ std::shared_ptr<FaceQueue> FaceQueue::Create()
 FaceQueue::~FaceQueue()
 {
     edge = nullptr;
+    Clear();
 }
 
 std::shared_ptr<Edge> FaceQueue::GetEdge()
@@ -140,6 +141,12 @@ void FaceQueue::SetEdge(spe val)
 void FaceQueue::Close()
 {
     closed = true;
+}
+
+void FaceQueue::Clear()
+{
+    while (size > 0)
+        Pop(first);
 }
 
 size_t FaceQueue::Size()
