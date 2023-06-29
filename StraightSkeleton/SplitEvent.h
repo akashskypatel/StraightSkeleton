@@ -1,6 +1,5 @@
 #pragma once
 #include <string>
-#include <format>
 #include "SkeletonEvent.h"
 #include "Edge.h"
 #include "Vertex.h"

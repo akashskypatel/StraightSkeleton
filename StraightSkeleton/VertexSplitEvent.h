@@ -1,6 +1,5 @@
 #pragma once
 #include <string>
-#include <format>
 #include "SplitEvent.h"
 
 class VertexSplitEvent :

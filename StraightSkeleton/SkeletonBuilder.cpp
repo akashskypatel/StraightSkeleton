@@ -357,7 +357,7 @@ void SkeletonBuilder::CreateOppositeEdgeChains(sp<hashsetCircularList> sLav, sp<
 		{
 			auto splitChain = std::dynamic_pointer_cast<SplitChain>(chain);
 			auto oppositeEdge = splitChain->OppositeEdge();
-			if (oppositeEdge != nullptr && !oppositeEdges->contains(oppositeEdge))
+			if (oppositeEdge != nullptr && !(oppositeEdges->find(oppositeEdge) != oppositeEdges->end()) )
 			{
 				// find lav vertex for opposite edge
 				auto nextVertex = FindOppositeEdgeLav(sLav, oppositeEdge, center);
@@ -433,7 +433,7 @@ std::shared_ptr<std::vector<std::shared_ptr<IChain>>> SkeletonBuilder::CreateCha
 		if (typeid(*skeletonEvent) == typeid(VertexSplitEvent))
 		{
 			auto vertexEvent = std::dynamic_pointer_cast<VertexSplitEvent>(skeletonEvent);
-			if (!vertexEventsParents->contains(vertexEvent->Parent))
+			if (!( vertexEventsParents->find(vertexEvent->Parent) != vertexEventsParents->end() ))
 			{
 				// It can be created multiple vertex events for one parent.
 				// Its is caused because two edges share one vertex and new
@@ -614,12 +614,12 @@ bool SkeletonBuilder::IsEventInGroup(sp<hashsetVertex> parentGroup, sp<SkeletonE
 	if (typeid(*event) == typeid(SplitEvent))
 	{
 		auto splitEvent = std::dynamic_pointer_cast<SplitEvent>(event);
-		return parentGroup->contains(splitEvent->Parent);
+		return parentGroup->find(splitEvent->Parent) != parentGroup->end();
 	}
 	else if (typeid(*event) == typeid(EdgeEvent))
 	{
 		auto edgeEvent = std::dynamic_pointer_cast<EdgeEvent>(event);
-		return parentGroup->contains(edgeEvent->PreviousVertex) || parentGroup->contains(edgeEvent->NextVertex);
+		return ( parentGroup->find(edgeEvent->PreviousVertex) != parentGroup->end() ) || (parentGroup->find(edgeEvent->NextVertex) != parentGroup->end());
 	}
 	return false;
 }
@@ -741,8 +741,8 @@ void SkeletonBuilder::InitSlav(listVector2d& polygon, sp<hashsetCircularList> sL
 	for (auto edge : edgesList)
 	{
 		auto nextEdge = std::static_pointer_cast<Edge>(edge->Next);
-		auto curEdge = static_pointer_cast<Edge>(edge);
-		auto end = static_pointer_cast<Edge>(edge)->End;
+		auto curEdge = std::static_pointer_cast<Edge>(edge);
+		auto end = std::static_pointer_cast<Edge>(edge)->End;
 		auto bisector = CalcBisector(end, *curEdge, *nextEdge);
 		
 		curEdge->BisectorNext = bisector;
@@ -753,14 +753,14 @@ void SkeletonBuilder::InitSlav(listVector2d& polygon, sp<hashsetCircularList> sL
 	sLav->insert(lav);
 	for (auto edge : edgesList)
 	{
-		auto curEdge = static_pointer_cast<Edge>(edge);
+		auto curEdge = std::static_pointer_cast<Edge>(edge);
 		auto nextEdge = std::static_pointer_cast<Edge>(edge->Next);
 		auto vertex = std::make_shared<Vertex>(curEdge->End, 0, curEdge->BisectorNext, curEdge, nextEdge);
 		lav->AddLast(vertex);
 	}
 	for (auto vertex : *lav)
 	{
-		auto curVertex = static_pointer_cast<Vertex>(vertex);
+		auto curVertex = std::static_pointer_cast<Vertex>(vertex);
 		auto next = std::static_pointer_cast<Vertex>(vertex->Next);
 		
 		// create face on right site of vertex
@@ -794,8 +794,9 @@ Skeleton SkeletonBuilder::AddFacesToOutput(sp<listFaceQueue> faces)
 			{
 				auto point = fn->GetVertex()->Point;
 				faceList->push_back(point);
-				if (!distances->contains(*point))
+				if (!(distances->find(*point) != distances->end())) {
 					distances->insert(std::pair<Vector2d, double>(*point, fn->GetVertex()->Distance));
+				}
 
 			}
 			edgeOutputs->push_back(std::make_shared<EdgeResult>(face->GetEdge(), faceList));
@@ -1099,7 +1100,7 @@ std::shared_ptr<Vertex> SkeletonBuilder::GetEdgeInLav(sp<CircularList> lav, sp<E
 {
 	for (auto node : *lav)
 	{
-		auto e = static_pointer_cast<Vertex>(node);
+		auto e = std::static_pointer_cast<Vertex>(node);
 		auto epn = std::static_pointer_cast<Edge>(e->Previous->Next);
 		if (oppositeEdge == e->PreviousEdge || oppositeEdge == epn)
 			return e;

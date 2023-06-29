@@ -1,10 +1,10 @@
 #include "SingleEdgeChain.h"
-
+#include <memory>
 SingleEdgeChain::SingleEdgeChain(spe oppositeEdge, spv nextVertex)
 {
     _oppositeEdge = oppositeEdge;
     _nextVertex = nextVertex;
-    _previousVertex = dynamic_pointer_cast<Vertex>(nextVertex->Previous);
+    _previousVertex = std::dynamic_pointer_cast<Vertex>(nextVertex->Previous);
 }
 SingleEdgeChain::~SingleEdgeChain()
 {

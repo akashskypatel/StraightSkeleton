@@ -1,8 +1,7 @@
 #pragma once
 #include <string>
-#include <format>
 #include "LineLinear2d.h"
-
+#include <memory>
 class LineParametric2d
 {
 private:

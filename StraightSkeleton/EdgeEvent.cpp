@@ -22,5 +22,5 @@ std::string EdgeEvent::ToString()
     std::string str1 = V->ToString();
     std::string str2 = (PreviousVertex != nullptr ? PreviousVertex->Point->ToString() : "null");
     std::string str3 = (NextVertex != nullptr ? NextVertex->Point->ToString() : "null");
-    return std::format("EdgeEvent [V={0}, PreviousVertex={1}, NextVertex={2}, Distance={3}]", str1, str2, str3, SkeletonEvent::Distance);
+    return std::string("EdgeEvent " + str1 + " PreviousVertex = " + str2 +" NextVertex = " + str3 + " Distance = " + std::to_string(SkeletonEvent::Distance));
 }

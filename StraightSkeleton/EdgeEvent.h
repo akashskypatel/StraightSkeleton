@@ -1,6 +1,5 @@
 #pragma once
 #include <string>
-#include <format>
 #include "SkeletonEvent.h"
 #include "Vertex.h"
 #include "Vector2d.h"

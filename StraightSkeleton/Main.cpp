@@ -42,13 +42,13 @@ static bool AssertExpectedPoints(std::vector<Vector2d> expectedList, std::vector
     for (const Vector2d& expected : expectedList)
     {
         if (!ContainsEpsilon(givenList, expected))
-            sb << std::format("Can't find expected point ({0}, {1}) in given list\n" , expected.X , expected.Y);
+            sb << std::string("Can't find expected point ("+ std::to_string(expected.X) +", "+ std::to_string(expected.Y) +") in given list\n");
     }
 
     for (const Vector2d& given : givenList)
     {
         if (!ContainsEpsilon(expectedList, given))
-            sb << std::format("Can't find given point ({0}, {1}) in expected list\n" , given.X , given.Y);
+            sb << std::string("Can't find given point (" + std::to_string(given.X) + ", " + std::to_string(given.Y) + ") in expected list\n");
     }
 
     if (sb.tellp() > 0)
@@ -112,6 +112,5 @@ void BuildSkeleton()
 
 int main()
 {	
-	_CrtDumpMemoryLeaks();
-    
+  BuildSkeleton();
 }

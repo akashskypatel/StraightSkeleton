@@ -20,5 +20,5 @@ bool SplitEvent::IsObsolete()
 
 std::string SplitEvent::ToString()
 {
-    return std::format("SplitEvent [V={0}, Parent={1}, Distance={2}]", V->ToString(), (Parent != nullptr ? Parent->Point->ToString() : "null"), Distance);
+    return std::string("SplitEvent " + V->ToString() + " Parent = " + (Parent != nullptr ? Parent->Point->ToString() : "null") + " Distance = " + std::to_string(Distance));
 }
