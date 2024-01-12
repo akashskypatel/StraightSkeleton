@@ -7,5 +7,5 @@ VertexSplitEvent::VertexSplitEvent(spv2d point, double distance, spv parent) :
 
 std::string VertexSplitEvent::ToString()
 {
-    return std::format("VertexSplitEvent [V={0}, Parent={1}, Distance={2}]", V->ToString(), (Parent != nullptr ? Parent->Point->ToString() : "null"), Distance);
+    return std::string("VertexSplitEvent [V=" + V->ToString() + " , Parent = " + (Parent != nullptr ? Parent->Point->ToString() : "null") + " , Distance = " + std::to_string( Distance ) );
 }

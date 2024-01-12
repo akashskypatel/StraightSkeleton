@@ -43,7 +43,10 @@ Vertex& Vertex::operator = (const Vertex& other)
 
 std::string Vertex::ToString() const
 {
-    return std::format("Vertex [v={0}, IsProcessed={1}, Bisector={2}, PreviousEdge={3}, NextEdge={4}]", Point->ToString(), IsProcessed, Bisector->ToString(), PreviousEdge->ToString(), NextEdge->ToString());
+    return std::string("Vertex [v="+ Point->ToString() + 
+      ", IsProcessed="+std::to_string(IsProcessed) + 
+      ", Bisector= "+ Bisector->ToString() + 
+      ", PreviousEdge="+ PreviousEdge->ToString() +", NextEdge="+ NextEdge->ToString() +"]");
 }
 
 double Vertex::Round(double value, double precision)

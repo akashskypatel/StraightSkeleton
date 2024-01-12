@@ -1,6 +1,5 @@
 #pragma once
 #include <string>
-#include <format>
 #include <limits>
 #include "Edge.h"
 #include "Vector2d.h"

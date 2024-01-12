@@ -1,5 +1,7 @@
 #include "PrimitiveUtils.h"
 
+PrimitiveUtils::IntersectPoints PrimitiveUtils::Empty = IntersectPoints();
+
 PrimitiveUtils::IntersectPoints::IntersectPoints()
 {
     Intersect = Vector2d::Empty();

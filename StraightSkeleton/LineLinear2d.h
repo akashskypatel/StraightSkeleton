@@ -1,6 +1,5 @@
 #pragma once
 #include <string>
-#include <format>
 #include "Vector2d.h"
 #include "LineLinear2d.h"
 

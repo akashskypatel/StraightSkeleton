@@ -27,7 +27,7 @@ Edge::Edge(spv2d begin, spv2d end)
 
 std::string Edge::ToString() const
 {
-	return std::format("Edge [p1={0}, p2={1}]", Begin->ToString(), End->ToString());
+	return std::string("Edge " + Begin->ToString() + " " + End->ToString());
 }
 
 Edge& Edge::operator=(const Edge& other)

@@ -65,7 +65,7 @@ bool Vector2d::Equals(Vector2d val) const
 
 std::string Vector2d::ToString() const
 {
-	return std::format("({0}, {1})", X, Y);
+	return std::string(std::to_string(X) + " " + std::to_string(Y));
 }
 
 Vector2d Vector2d::Empty()

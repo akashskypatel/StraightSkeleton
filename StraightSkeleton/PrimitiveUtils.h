@@ -30,11 +30,11 @@ public:
     static double Area(std::vector<Vector2d>& polygon);
     static bool IsClockwisePolygon(std::vector<Vector2d>& polygon);
     static std::vector<Vector2d> MakeCounterClockwise(std::vector<Vector2d>& polygon);
+    
 private:
     /// <summary> Error epsilon. Anything that avoids division. </summary>
     static constexpr double SmallNum = 0.00000001;
     /// <summary> Return value if there is no intersection. </summary>
-    inline static const IntersectPoints Empty = IntersectPoints();
-
+    static IntersectPoints Empty;
 };
 

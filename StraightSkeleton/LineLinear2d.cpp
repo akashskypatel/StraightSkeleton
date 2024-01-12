@@ -54,5 +54,5 @@ bool LineLinear2d::Contains(Vector2d point)
 
 std::string LineLinear2d::ToString() const
 {
-	return std::format("Line [A={0}, B={1}, C={2}]", A, B, C);
+	return std::string("Line [A=" + std::to_string(A) + " , B = " + std::to_string(B) + " , C = " + std::to_string(C));
 }

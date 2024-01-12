@@ -1,4 +1,5 @@
 #include "SplitChain.h"
+#include <memory>
 
 SplitChain::SplitChain(spse event)
 {
@@ -29,12 +30,12 @@ std::shared_ptr<Edge> SplitChain::NextEdge()
 
 std::shared_ptr<Vertex> SplitChain::PreviousVertex()
 {
-    return dynamic_pointer_cast<Vertex>(_splitEvent->Parent->Previous);
+    return std::dynamic_pointer_cast<Vertex>(_splitEvent->Parent->Previous);
 }
 
 std::shared_ptr<Vertex> SplitChain::NextVertex()
 {
-    return dynamic_pointer_cast<Vertex>(_splitEvent->Parent->Next);
+    return std::dynamic_pointer_cast<Vertex>(_splitEvent->Parent->Next);
 }
 
 std::shared_ptr<Vertex> SplitChain::CurrentVertex()
